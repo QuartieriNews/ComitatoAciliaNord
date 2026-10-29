@@ -49,9 +49,9 @@ Tale sede potrà essere cambiata ovvero trasferita qualora si rendesse necessari
 
 2) Il comitato sostiene le richieste pervenute dai cittadini intervenendo presso gli enti della pubblica amministrazione e gli organismi gestori dei servizi, per sviluppare e migliorare le condizioni di vita sotto il profilo socio-ambientale e territoriale.
 
-3) Il comitato promuove tutte le iniziative utili e necessarie, se nel caso anche giudiziarie, per la ricerca di soluzioni alle problematiche del quartiere,la difesa della qualità della vita, la salvaguardia della salute pubblica, per il miglioramento della sicurezza, dell'urbanistica, ambiente e decoro urbano,della viabilità in genere di tutti i servizi ed di tutto quanto sia di pubblica interesse.
+3) Il comitato promuove tutte le iniziative utili e necessarie, se nel caso anche giudiziarie, per la ricerca di soluzioni alle problematiche del quartiere, la difesa della qualità della vita, la salvaguardia della salute pubblica, per il miglioramento della sicurezza, dell'urbanistica, ambiente e decoro urbano, della viabilità in genere di tutti i servizi ed di tutto quanto sia di pubblica interesse.
 
-4) Il comitato promuove attivita’ aggregative, ludiche, sportive, divulgative per la valorizzazione delle Eccellenze del territorio come per esempio quelle turistiche( Ficana) naturalistiche (Riserva Statale del litorale romano),storiche (casette Pater e stabili di storica valenza), sociali (religiose e laiche), commerciali (artigianali e industriali)
+4) Il comitato promuove attivita’ aggregative, ludiche, sportive, divulgative per la valorizzazione delle Eccellenze del territorio come per esempio quelle turistiche (Ficana) naturalistiche (Riserva Statale del litorale romano), storiche (casette Pater e stabili di storica valenza), sociali (religiose e laiche), commerciali (artigianali e industriali)
 
 5) Il comitato promuove azioni concrete per il completamento del Piano di Recupero Urbano Acilia Dragona artt. 11 Legge 493/93
 

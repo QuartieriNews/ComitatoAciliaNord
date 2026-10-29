@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ElencoNotizie from '../components/ElencoNotizie.astro';
-import { comitato, sostenitori } from '../data/comitato';
+import { comitato, doveSiamo, sostenitori } from '../data/comitato';
 import { giornalino } from '../data/giornalino';
 import { tutteLeNotizie } from '../data/notizie';
 
@@ -14,10 +14,7 @@ const ultimoNumero = giornalino[0];
     <div class="apertura-griglia">
       <div>
         <h1>Ogni {comitato.apertura.giorno}, {comitato.apertura.orario}, la casetta del comitato è aperta</h1>
-        <p>
-          Vieni a portare una segnalazione, un'idea o una mano. Ci trovi in {comitato.sede.indirizzo.replace(/^Via /, 'via ')},
-          {comitato.sede.riferimento}.
-        </p>
+        <p>Vieni a portare una segnalazione, un'idea o una mano. Ci trovi in {doveSiamo}.</p>
         <div class="azioni">
           <a class="bottone bottone-pieno" href={comitato.sede.mappa}>Apri la mappa</a>
           <a class="bottone bottone-vuoto" href={comitato.whatsapp.link}>Entra in {comitato.whatsapp.nome}</a>

@@ -89,7 +89,9 @@ ol {
   margin-inline: auto;
 }
 
-.misura {
+/* Colonna di testo allineata a sinistra con il titolo della pagina, con righe non troppo lunghe */
+.misura > *,
+.testo > * {
   max-width: var(--misura);
 }
 
@@ -265,6 +267,10 @@ ol {
   display: grid;
   place-items: center;
   padding: 1.4rem;
+}
+
+.apertura-logo img {
+  border-radius: 50%;
 }
 
 @media (max-width: 48rem) {
@@ -469,6 +475,7 @@ ol {
 }
 
 .pagina-testa h1 {
+  max-width: 24ch;
   margin-bottom: 0.4em;
 }
 
@@ -479,10 +486,6 @@ ol {
 }
 
 /* Testi lunghi: statuto, notizie */
-.testo {
-  max-width: var(--misura);
-}
-
 .testo h2 {
   font-size: 1.35rem;
   margin-top: 2em;

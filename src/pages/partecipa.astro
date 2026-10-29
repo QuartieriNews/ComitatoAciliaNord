@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { comitato, donazioni } from '../data/comitato';
+import { comitato, donazioni, doveSiamo } from '../data/comitato';
 ---
 
 <Base
@@ -22,8 +22,8 @@ import { comitato, donazioni } from '../data/comitato';
       <div>
         <h2>Vieni alla casetta</h2>
         <p>
-          Ogni {comitato.apertura.giorno} {comitato.apertura.orario} siamo in {comitato.sede.indirizzo.replace(/^Via /, 'via ')},
-          {comitato.sede.riferimento}. Porta un'idea, una segnalazione, o passa solo a conoscerci.
+          Ogni {comitato.apertura.giorno} {comitato.apertura.orario} siamo in {doveSiamo}. Porta un'idea, una
+          segnalazione, o passa solo a conoscerci.
         </p>
         <p>Le assemblee pubbliche e gli eventi si tengono di solito al Casale Raggio di Sole, in via di Monte Cugno 10.</p>
         <a class="bottone bottone-vuoto" href={comitato.sede.mappa}>Apri la mappa</a>
@@ -58,8 +58,7 @@ import { comitato, donazioni } from '../data/comitato';
       <div>
         <h2>Diventa socio</h2>
         <p>
-          Con un piccolo contributo sostieni le attività del comitato. Per iscriverti passa alla casetta il
-          {comitato.apertura.giorno} o scrivici.
+          Con un piccolo contributo sostieni le attività del comitato. Per iscriverti passa alla casetta il {comitato.apertura.giorno} o scrivici.
         </p>
         <a class="bottone bottone-vuoto" href={`mailto:${comitato.email}?subject=Diventare%20socio`}>Chiedi come iscriverti</a>
       </div>

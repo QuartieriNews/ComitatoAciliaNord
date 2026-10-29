@@ -28,6 +28,9 @@ export const comitato = {
   mappaQuartiere: 'https://www.openstreetmap.org/#map=15/41.7899/12.3570',
 };
 
+// L'indirizzo dentro una frase: «Ci trovi in via dei Monti di San Paolo 40, di fronte all'Ufficio Postale».
+export const doveSiamo = `${comitato.sede.indirizzo.replace(/^Via /, 'via ')}, ${comitato.sede.riferimento}`;
+
 export const direttivo = {
   eletto: "l'11 e il 12 aprile 2026",
   cariche: [
