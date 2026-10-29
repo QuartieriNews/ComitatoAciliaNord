@@ -10,6 +10,10 @@
   --linea: #d5e0d8;
   --carta: #ffffff;
   --giornalino: #c75f00;
+  /* Versione B della home: fondo color carta con una grana leggera, inchiostro scuro */
+  --inchiostro: #1d2530;
+  --carta-b: #f3ede4
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .35 0 0 0 0 .27 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   --font: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif;
   --larghezza: 70rem;
   --misura: 40rem;
@@ -224,6 +228,66 @@ ol {
 
   .nav-stretta {
     display: block;
+  }
+}
+
+/* Testata della versione B: stesso fondo color carta dell'intestazione animata */
+.testata-b {
+  background: var(--carta-b);
+}
+
+.marchio-nome-b {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--inchiostro);
+}
+
+.testata-b .marchio img {
+  width: 48px;
+  border-radius: 50%;
+}
+
+.testata-b .nav-ampia a {
+  color: var(--inchiostro);
+}
+
+.testata-b .nav-stretta summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  color: var(--inchiostro);
+  border: 0;
+  border-radius: 10px;
+  padding: 0.5rem 0.85rem;
+  box-shadow: 0 2px 10px rgb(29 37 48 / 0.12);
+}
+
+/* Sui telefoni stretti il nome resta su una riga: il pulsante del menu mostra solo l'icona */
+@media (max-width: 26rem) {
+  .marchio-nome-b {
+    font-size: 0.92rem;
+  }
+
+  .testata-b .marchio {
+    gap: 0.55rem;
+  }
+
+  .testata-b .marchio img {
+    width: 40px;
+  }
+
+  .testata-b .nav-stretta summary {
+    padding: 0.6rem 0.7rem;
+  }
+
+  .testata-b .menu-testo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

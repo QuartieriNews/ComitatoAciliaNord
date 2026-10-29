@@ -1,0 +1,675 @@
+---
+// Intestazione animata della home (versione B), ricostruita dal video di Riccardo.
+// È tutta disegnata in SVG: pesa pochi KB, è nitida su ogni schermo e il testo resta testo vero.
+// L'animazione parte una volta sola all'apertura della pagina; chi ha chiesto di ridurre
+// il movimento sul proprio dispositivo vede direttamente la scena ferma.
+
+// Le 30 persone del cerchio, in senso orario partendo dall'alto (colori presi dal video).
+const colori = [
+  '#2aa9e0', '#617dd8', '#9853cf', '#9246b9', '#823e9e', '#a12692', '#d60a8b', '#d90a75', '#b12152', '#aa323b',
+  '#ce3b38', '#e84435', '#ea512c', '#ed5e24', '#f3761f', '#f99217', '#f9af20', '#f9d12b', '#cccf2f', '#96c935',
+  '#6dc03c', '#45b142', '#279a3f', '#0f7638', '#025c3b', '#034c4f', '#094865', '#116486', '#1b80a5', '#2093c1',
+];
+
+// Una persona: la testa e le braccia a mezzaluna, rivolte verso l'esterno del cerchio.
+const braccia = 'M-33.47 5.86A33.5 33.5 0 1 0 33.47 5.86A36.6 36.6 0 0 1-33.47 5.86Z';
+const persone = (raggio: number, scala: number) =>
+  colori.map((colore, i) => ({ colore, i, posizione: `rotate(${i * 12}) translate(0 ${-raggio}) scale(${scala})` }));
+
+type Casa = { x: number; w: number; top: number; h: number; corpo: string; tetto: string; righe: number; accese: number[] };
+
+// Finestre su due colonne, in proporzione alla larghezza della casa.
+function finestre(c: Casa, passo: number, altezza: number, inizio: number) {
+  const larghezza = Math.round(c.w * 0.2);
+  const colonne = [c.x + Math.round(c.w * 0.2), c.x + Math.round(c.w * 0.6)];
+  return Array.from({ length: c.righe * 2 }, (_, n) => ({
+    x: colonne[n % 2],
+    y: c.top + inizio + Math.floor(n / 2) * passo,
+    w: larghezza,
+    h: altezza,
+    accesa: c.accese.includes(n),
+  }));
+}
+
+const tetto = (c: Casa, sporgenza: number) =>
+  `${c.x - sporgenza},${c.top + 1} ${c.x + c.w / 2},${c.top - c.h} ${c.x + c.w + sporgenza},${c.top + 1}`;
+
+const caseComputer: Casa[] = [
+  { x: -12, w: 107, top: 893, h: 50, corpo: '#7d3c96', tetto: '#a14ece', righe: 2, accese: [] },
+  { x: 100, w: 115, top: 843, h: 46, corpo: '#36ac47', tetto: '#87c735', righe: 3, accese: [0, 3] },
+  { x: 215, w: 120, top: 913, h: 51, corpo: '#1a7ca2', tetto: '#29a8df', righe: 2, accese: [3] },
+  { x: 335, w: 120, top: 858, h: 49, corpo: '#f99217', tetto: '#f9d62e', righe: 3, accese: [2] },
+  { x: 455, w: 130, top: 898, h: 52, corpo: '#e94138', tetto: '#ed5a28', righe: 2, accese: [2] },
+  { x: 1330, w: 115, top: 838, h: 46, corpo: '#ee0089', tetto: '#a14ece', righe: 3, accese: [1] },
+  { x: 1450, w: 125, top: 882, h: 50, corpo: '#35a2d8', tetto: '#073f5d', righe: 2, accese: [1] },
+  { x: 1575, w: 120, top: 852, h: 48, corpo: '#87c735', tetto: '#36ac45', righe: 3, accese: [4] },
+  { x: 1690, w: 120, top: 903, h: 51, corpo: '#f99217', tetto: '#e94138', righe: 2, accese: [0, 3] },
+  { x: 1810, w: 125, top: 868, h: 50, corpo: '#2aa7df', tetto: '#1a7ca2', righe: 2, accese: [0, 3] },
+];
+
+const caseTelefono: Casa[] = [
+  { x: -12, w: 117, top: 1565, h: 63, corpo: '#7d3c96', tetto: '#a14ece', righe: 3, accese: [1, 4] },
+  { x: 105, w: 125, top: 1503, h: 59, corpo: '#36ac47', tetto: '#87c735', righe: 3, accese: [0, 4] },
+  { x: 230, w: 135, top: 1592, h: 65, corpo: '#1a7ca2', tetto: '#29a8df', righe: 2, accese: [0, 3] },
+  { x: 365, w: 135, top: 1522, h: 61, corpo: '#f99217', tetto: '#f9d62e', righe: 3, accese: [] },
+  { x: 500, w: 130, top: 1573, h: 67, corpo: '#e94138', tetto: '#ed5a28', righe: 3, accese: [2] },
+  { x: 630, w: 140, top: 1497, h: 59, corpo: '#ee0089', tetto: '#a14ece', righe: 3, accese: [2, 5] },
+  { x: 770, w: 135, top: 1554, h: 64, corpo: '#35a2d8', tetto: '#073f5d', righe: 3, accese: [1] },
+  { x: 905, w: 150, top: 1516, h: 61, corpo: '#87c735', tetto: '#36ac45', righe: 3, accese: [1, 4] },
+];
+
+type Albero = { tronco?: string; chioma: [number, number, number, number][] };
+
+const alberiComputer: Albero[] = [
+  { tronco: 'M66 868V800M66 814 34 792M66 808 106 790', chioma: [[52, 712, 58, 38], [126, 706, 58, 40], [168, 742, 42, 32], [94, 748, 94, 36]] },
+  { chioma: [[470, 808, 50, 32], [545, 798, 58, 34], [600, 830, 40, 28], [522, 838, 82, 30]] },
+  { chioma: [[1330, 805, 52, 32], [1405, 795, 60, 34], [1462, 828, 46, 28], [1388, 838, 86, 30]] },
+  { tronco: 'M1866 868V800M1866 814 1832 792M1866 808 1904 790', chioma: [[1792, 706, 60, 40], [1868, 700, 62, 40], [1916, 735, 50, 34], [1842, 748, 96, 34]] },
+];
+
+const alberiTelefono: Albero[] = [
+  { tronco: 'M96 1580 84 1480M86 1500 52 1468M88 1494 126 1462', chioma: [[66, 1404, 72, 44], [168, 1394, 82, 46], [232, 1440, 58, 38], [120, 1452, 122, 42]] },
+  { tronco: 'M968 1570 978 1480M976 1500 1010 1468M974 1494 936 1462', chioma: [[872, 1404, 76, 44], [972, 1394, 86, 46], [1052, 1436, 56, 38], [934, 1452, 126, 42]] },
+];
+
+// Scintille: [x, y, grandezza, colore]
+type Scintilla = [number, number, number, string];
+const scintilleComputer: Scintilla[] = [
+  [260, 168, 1.4, '#f9d12b'], [580, 98, 0.9, '#8fd0ee'], [1338, 122, 1.2, '#f06aa6'], [1671, 189, 1.5, '#f9d12b'],
+  [40, 476, 0.9, '#8fd0ee'], [1880, 488, 1, '#f06aa6'], [770, 52, 0.7, '#f9d12b'], [1150, 64, 0.8, '#8fd0ee'],
+];
+const scintilleTelefono: Scintilla[] = [
+  [110, 70, 1.2, '#f9d12b'], [930, 50, 1.4, '#f9d12b'], [300, 235, 0.9, '#8fd0ee'], [820, 280, 1, '#f06aa6'],
+  [50, 600, 0.9, '#8fd0ee'], [1030, 640, 1, '#f06aa6'],
+];
+
+const scintilla = 'M0-12C1.6-3.2 3.2-1.6 12 0 3.2 1.6 1.6 3.2 0 12-1.6 3.2-3.2 1.6-12 0-3.2-1.6-1.6-3.2 0-12Z';
+const segnaposto = 'M0 0C-5-9-22-22-22-36A22 22 0 1 1 22-36C22-22 5-9 0 0Z';
+
+// Icona che cambia con il calendario: albero a Natale, maschera a Carnevale, uovo a Pasqua,
+// scopa del decoro urbano nel resto dell'anno. La sceglie il piccolo script in fondo.
+const iconeStagione = `
+  <g class="icona icona-decoro">
+    <circle r="40" fill="#7b3fa0"/>
+    <g transform="rotate(-32)" fill="#fff">
+      <rect x="-3.5" y="-31" width="7" height="34" rx="3.5"/>
+      <path d="M-13 3h26l6 23h-38z"/>
+    </g>
+  </g>
+  <g class="icona icona-natale">
+    <rect x="-7" y="34" width="14" height="16" rx="2" fill="#7a4a2a"/>
+    <path d="M0-44 22-14H12L32 12H18L40 38H-40L-18 12H-32L-12-14H-22Z" fill="#2a9d47"/>
+    <path d="M0-60 2.47-53.4 9.51-53.09 3.99-48.7 5.88-41.91 0-45.8-5.88-41.91-3.99-48.7-9.51-53.09-2.47-53.4Z" fill="#f9d12b"/>
+    <circle cx="-8" cy="-6" r="4" fill="#e84435"/>
+    <circle cx="10" cy="6" r="4" fill="#f9d12b"/>
+    <circle cx="-14" cy="24" r="4" fill="#2aa9e0"/>
+    <circle cx="16" cy="28" r="4" fill="#d60a8b"/>
+  </g>
+  <g class="icona icona-carnevale">
+    <path d="M34-4 52-44" stroke="#2fac4a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-46-8C-34-22-14-18 0-8 14-18 34-22 46-8 44 12 28 22 12 14 6 11 3 10 0 10-3 10-6 11-12 14-28 22-44 12-46-8Z" fill="#e6007e"/>
+    <ellipse cx="-20" rx="9" ry="6" fill="#f3ede4"/>
+    <ellipse cx="20" rx="9" ry="6" fill="#f3ede4"/>
+  </g>
+  <g class="icona icona-pasqua">
+    <path d="M0-42C20-42 32-10 32 10 32 30 18 42 0 42-18 42-32 30-32 10-32-10-20-42 0-42Z" fill="#9b4fd0"/>
+    <path d="M-31 4-21-6-11 4-1-6 9 4 19-6 29 4" fill="none" stroke="#f9d12b" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="-12" cy="22" r="4" fill="#fff"/>
+    <circle cx="4" cy="27" r="4" fill="#fff"/>
+    <circle cx="18" cy="18" r="4" fill="#fff"/>
+  </g>`;
+
+const tavolozza = `
+  <circle r="42" fill="#1b6f93"/>
+  <path d="M2-25C-15-25-27-12-27 3-27 17-15 27 0 27 6 27 9 23 7 19 5 15 7 11 13 11H19C25 11 29 6 29-2 29-15 17-25 2-25Z" fill="#fff"/>
+  <circle cx="-14" cy="0" r="4.6" fill="#e84435"/>
+  <circle cx="-6" cy="-12" r="4.6" fill="#f9d12b"/>
+  <circle cx="8" cy="-13" r="4.6" fill="#45b142"/>
+  <circle cx="18" cy="-3" r="4.6" fill="#2aa9e0"/>`;
+
+const bottoni = [
+  { testo: 'Chi siamo', href: '/chi-siamo/', classe: 'pillola-piena' },
+  { testo: 'Cosa facciamo', href: '/chi-siamo/#cosa-facciamo', classe: 'pillola-vuota' },
+];
+---
+
+<div class="scena-contenitore">
+  <div class="scena" data-stagione="decoro">
+    <!-- Computer e tablet: composizione orizzontale, come il video 1920×1080 -->
+    <svg class="scena-computer" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="nastro-computer" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1920" y2="0">
+          <stop offset="0" stop-color="#9b4fd0" />
+          <stop offset=".16" stop-color="#d60a8b" />
+          <stop offset=".32" stop-color="#e84435" />
+          <stop offset=".47" stop-color="#f3761f" />
+          <stop offset=".6" stop-color="#f9d12b" />
+          <stop offset=".72" stop-color="#96c935" />
+          <stop offset=".84" stop-color="#279a3f" />
+          <stop offset="1" stop-color="#0b4f5c" />
+        </linearGradient>
+      </defs>
+
+      {scintilleComputer.map(([x, y, s, colore], i) => (
+        <g transform={`translate(${x} ${y}) scale(${s})`}>
+          <path class="scintilla" style={`--i:${i}`} d={scintilla} fill={colore} />
+        </g>
+      ))}
+
+      <path class="nastro" pathLength="1" d="M-40 772C260 770 520 790 760 815S1180 866 1420 862 1800 845 1960 838" fill="none" stroke="url(#nastro-computer)" stroke-width="24" stroke-linecap="round" />
+
+      <g transform="translate(960 540)">
+        {persone(351.8, 1).map((p) => (
+          <g transform={p.posizione}>
+            <g class="persona" style={`--i:${p.i}`} fill={p.colore}>
+              <circle r="17.2" />
+              <path d={braccia} />
+            </g>
+          </g>
+        ))}
+      </g>
+
+      {alberiComputer.map((a, i) => (
+        <g class="albero" style={`--i:${i}`}>
+          {a.tronco && <path d={a.tronco} fill="none" stroke="#1f1914" stroke-width="9" stroke-linecap="round" />}
+          <g fill="#3c8a32" transform="translate(0 9)">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+          <g fill="#5ba844">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+        </g>
+      ))}
+
+      {caseComputer.map((c, i) => (
+        <g class="casa" style={`--i:${i < 5 ? i : 9 - i}`}>
+          <rect x={c.x} y={c.top} width={c.w} height={1082 - c.top} fill={c.corpo} />
+          <polygon points={tetto(c, 8)} fill={c.tetto} />
+          {finestre(c, 52, 27, 24).map((f, k) => (
+            <rect class:list={['finestra', { accesa: f.accesa }]} style={`--i:${(i * 3 + k) % 8}`} x={f.x} y={f.y} width={f.w} height={f.h} rx="2" />
+          ))}
+        </g>
+      ))}
+
+      <g transform="translate(276 860)">
+        <g class="segnaposto">
+          <path d={segnaposto} fill="#e8097f" />
+          <circle cy="-36" r="8" fill="#fff" />
+        </g>
+      </g>
+
+      <g transform="translate(290 500)"><g class="icona-scena" set:html={iconeStagione} /></g>
+      <g transform="translate(1660 380)"><g class="icona-scena tardi" set:html={tavolozza} /></g>
+    </svg>
+
+    <!-- Telefono: composizione verticale, come il video 1080×1920 -->
+    <svg class="scena-telefono" viewBox="0 0 1080 1800" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="nastro-telefono" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0">
+          <stop offset="0" stop-color="#a14ece" />
+          <stop offset=".18" stop-color="#e0168c" />
+          <stop offset=".3" stop-color="#b12152" />
+          <stop offset=".42" stop-color="#e84435" />
+          <stop offset=".56" stop-color="#f3761f" />
+          <stop offset=".68" stop-color="#f9d12b" />
+          <stop offset=".8" stop-color="#96c935" />
+          <stop offset=".9" stop-color="#45b142" />
+          <stop offset="1" stop-color="#146c44" />
+        </linearGradient>
+      </defs>
+
+      {scintilleTelefono.map(([x, y, s, colore], i) => (
+        <g transform={`translate(${x} ${y}) scale(${s})`}>
+          <path class="scintilla" style={`--i:${i}`} d={scintilla} fill={colore} />
+        </g>
+      ))}
+
+      <path class="nastro" pathLength="1" d="M-20 172C160 150 330 142 520 160S860 198 1000 188" fill="none" stroke="url(#nastro-telefono)" stroke-width="24" stroke-linecap="round" />
+
+      <g transform="translate(540 720)">
+        {persone(450, 1.17).map((p) => (
+          <g transform={p.posizione}>
+            <g class="persona" style={`--i:${p.i}`} fill={p.colore}>
+              <circle r="17.2" />
+              <path d={braccia} />
+            </g>
+          </g>
+        ))}
+      </g>
+
+      {alberiTelefono.map((a, i) => (
+        <g class="albero" style={`--i:${i}`}>
+          {a.tronco && <path d={a.tronco} fill="none" stroke="#1f1914" stroke-width="10" stroke-linecap="round" />}
+          <g fill="#3c8a32" transform="translate(0 10)">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+          <g fill="#5ba844">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+        </g>
+      ))}
+
+      {caseTelefono.map((c, i) => (
+        <g class="casa" style={`--i:${i}`}>
+          <rect x={c.x} y={c.top} width={c.w} height={1802 - c.top} fill={c.corpo} />
+          <polygon points={tetto(c, 9)} fill={c.tetto} />
+          {finestre(c, 62, 34, 26).map((f, k) => (
+            <rect class:list={['finestra', { accesa: f.accesa }]} style={`--i:${(i * 3 + k) % 8}`} x={f.x} y={f.y} width={f.w} height={f.h} rx="3" />
+          ))}
+        </g>
+      ))}
+
+      <g transform="translate(298 1524) scale(1.15)">
+        <g class="segnaposto">
+          <path d={segnaposto} fill="#e8097f" />
+          <circle cy="-36" r="8" fill="#fff" />
+        </g>
+      </g>
+
+      <g transform="translate(110 290)"><g class="icona-scena" set:html={iconeStagione} /></g>
+      <g transform="translate(985 365)"><g class="icona-scena tardi" set:html={tavolozza} /></g>
+    </svg>
+
+    <div class="scena-centro">
+      <h1>
+        <span class="occhiello">Comitato di quartiere</span>
+        <span class="nome">Acilia Nord</span>
+      </h1>
+      <span class="arcobaleno" aria-hidden="true"></span>
+      <p class="motto">Dal 2018, insieme per un quartiere più bello in cui vivere.</p>
+      <div class="scena-bottoni solo-computer">
+        {bottoni.map((b) => <a class:list={['pillola', b.classe]} href={b.href}>{b.testo}</a>)}
+      </div>
+    </div>
+
+    <div class="scena-bottoni solo-telefono">
+      {bottoni.map((b) => <a class:list={['pillola', b.classe]} href={b.href}>{b.testo}</a>)}
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Sceglie l'icona della stagione: Natale (1 dicembre – 6 gennaio), Carnevale (le due
+  // settimane prima del martedì grasso), Pasqua (le due settimane prima, fino a Pasquetta).
+  (function () {
+    function pasqua(y) {
+      var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+      var f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+      var i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+      var mese = Math.floor((h + l - 7 * m + 114) / 31), giorno = ((h + l - 7 * m + 114) % 31) + 1;
+      return new Date(y, mese - 1, giorno);
+    }
+    var oggi = new Date();
+    oggi = new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate());
+    var giorni = Math.round((oggi - pasqua(oggi.getFullYear())) / 864e5);
+    var m = oggi.getMonth(), g = oggi.getDate();
+    var stagione = 'decoro';
+    if (m === 11 || (m === 0 && g <= 6)) stagione = 'natale';
+    else if (giorni >= -14 && giorni <= 1) stagione = 'pasqua';
+    else if (giorni >= -61 && giorni <= -47) stagione = 'carnevale';
+    document.querySelectorAll('.scena').forEach(function (el) {
+      el.setAttribute('data-stagione', stagione);
+    });
+  })();
+</script>
+
+<style>
+  .scena-contenitore {
+    container-type: inline-size;
+  }
+
+  /* Computer: la scena è larga almeno 1280px (sugli schermi più stretti si tagliano i lati)
+     e alta al massimo quanto il video in 16:9. --u è un'unità del disegno in pixel. */
+  .scena {
+    --larghezza: max(100cqw, 1280px);
+    --u: calc(var(--larghezza) / 1920);
+    position: relative;
+    overflow: hidden;
+    background: var(--carta-b);
+    height: clamp(calc(1080 * var(--u) * 0.84), calc(100svh - 4.4rem), calc(1080 * var(--u)));
+  }
+
+  .scena svg {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .scena-computer {
+    width: var(--larghezza);
+  }
+
+  .scena-telefono {
+    display: none;
+    width: 100%;
+  }
+
+  /* Il testo sta dentro il cerchio: un quadrato centrato sul centro del cerchio */
+  .scena-centro {
+    position: absolute;
+    left: 50%;
+    bottom: calc(240 * var(--u));
+    width: calc(600 * var(--u));
+    height: calc(600 * var(--u));
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--inchiostro);
+    font-size: clamp(2.2rem, calc(80 * var(--u)), 4.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .occhiello {
+    display: block;
+    margin-bottom: 0.6em;
+    color: #0f6a8d;
+    font-size: clamp(0.72rem, calc(21 * var(--u)), 1.1rem);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .nome {
+    display: block;
+  }
+
+  .arcobaleno {
+    display: block;
+    width: calc(150 * var(--u));
+    height: max(5px, calc(7 * var(--u)));
+    margin: 0.75rem auto 1rem;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #d60a8b, #f3761f, #f9d12b, #45b142, #2093c1);
+  }
+
+  .motto {
+    max-width: 21em;
+    margin: 0 0 1.3rem;
+    color: #3a414b;
+    font-size: clamp(1rem, calc(27 * var(--u)), 1.45rem);
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  .scena-bottoni {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .solo-telefono {
+    display: none;
+  }
+
+  .pillola {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5em 1.35em;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    font-size: clamp(0.9rem, calc(22 * var(--u)), 1.1rem);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .pillola-piena {
+    background: #e2007a;
+    color: #fff;
+    box-shadow: 0 8px 18px rgb(226 0 122 / 0.28);
+  }
+
+  .pillola-piena:hover {
+    background: #c4006a;
+  }
+
+  .pillola-vuota {
+    background: #fff;
+    border-color: var(--inchiostro);
+    color: var(--inchiostro);
+  }
+
+  .pillola-vuota:hover {
+    background: #fdf1f7;
+  }
+
+  .finestra {
+    fill: #fcf6ee;
+  }
+
+  .finestra.accesa {
+    fill: #f7d872;
+  }
+
+  /* Icona della stagione: se ne vede una sola */
+  .icona-scena :global(.icona) {
+    display: none;
+  }
+
+  .scena[data-stagione='decoro'] .icona-scena :global(.icona-decoro),
+  .scena[data-stagione='natale'] .icona-scena :global(.icona-natale),
+  .scena[data-stagione='carnevale'] .icona-scena :global(.icona-carnevale),
+  .scena[data-stagione='pasqua'] .icona-scena :global(.icona-pasqua) {
+    display: inline;
+  }
+
+  /* Telefono: composizione verticale, larga quanto lo schermo */
+  @media (max-aspect-ratio: 2/3) {
+    .scena {
+      --u: calc(100cqw / 1080);
+      height: calc(1800 * var(--u));
+    }
+
+    .scena-computer {
+      display: none;
+    }
+
+    .scena-telefono {
+      display: block;
+    }
+
+    .scena-centro {
+      bottom: calc(700 * var(--u));
+      width: calc(760 * var(--u));
+      height: calc(760 * var(--u));
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .occhiello {
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+    }
+
+    .arcobaleno {
+      width: 5.5rem;
+      height: 5px;
+      margin: 0.6rem auto 0.7rem;
+    }
+
+    .motto {
+      max-width: 14.5em;
+      margin: 0;
+      font-size: 0.92rem;
+    }
+
+    .solo-computer {
+      display: none;
+    }
+
+    .solo-telefono {
+      display: flex;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(1206 * var(--u));
+    }
+
+    .pillola {
+      font-size: 0.92rem;
+      padding: 0.45em 1.15em;
+    }
+  }
+
+  /* L'animazione, una volta sola: il cerchio si forma, spuntano case e alberi,
+     passa il nastro, cade il segnaposto, si accendono le finestre. */
+  @media (prefers-reduced-motion: no-preference) {
+    .persona {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: scena-persona 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      animation-delay: calc(0.1s + var(--i) * 28ms);
+    }
+
+    .casa {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: scena-casa 0.7s cubic-bezier(0.22, 1.15, 0.36, 1) both;
+      animation-delay: calc(0.15s + var(--i) * 70ms);
+    }
+
+    .albero {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: scena-albero 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+      animation-delay: calc(0.4s + var(--i) * 90ms);
+    }
+
+    .nastro {
+      stroke-dasharray: 1 1;
+      animation: scena-nastro 1.1s cubic-bezier(0.45, 0, 0.25, 1) 0.9s both;
+    }
+
+    .segnaposto {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: scena-segnaposto 0.75s cubic-bezier(0.3, 1.45, 0.5, 1) 1.8s both;
+    }
+
+    .icona-scena {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: scena-icona 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 2s both;
+    }
+
+    .icona-scena.tardi {
+      animation-delay: 2.25s;
+    }
+
+    .scintilla {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: scena-scintilla 1.4s ease-in-out both;
+      animation-delay: calc(0.3s + var(--i) * 0.22s);
+    }
+
+    .finestra.accesa {
+      animation: scena-luce 0.4s ease-out both;
+      animation-delay: calc(2.1s + var(--i) * 0.12s);
+    }
+
+    h1,
+    .motto,
+    .scena-bottoni {
+      animation: scena-testo 0.6s ease-out both;
+    }
+
+    .motto {
+      animation-delay: 0.15s;
+    }
+
+    .scena-bottoni {
+      animation-delay: 0.3s;
+    }
+
+    .arcobaleno {
+      animation: scena-riga 0.8s cubic-bezier(0.45, 0, 0.25, 1) 0.75s both;
+    }
+  }
+
+  @keyframes scena-persona {
+    from {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+
+  @keyframes scena-casa {
+    from {
+      transform: translateY(105%);
+    }
+  }
+
+  @keyframes scena-albero {
+    from {
+      opacity: 0;
+      transform: scale(0.1);
+    }
+  }
+
+  @keyframes scena-nastro {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes scena-segnaposto {
+    0% {
+      opacity: 0;
+      transform: translateY(-160%);
+    }
+    60% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scena-icona {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+  }
+
+  @keyframes scena-scintilla {
+    0% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1.35);
+    }
+    70% {
+      transform: scale(0.7);
+    }
+  }
+
+  @keyframes scena-luce {
+    from {
+      fill: #fcf6ee;
+    }
+  }
+
+  @keyframes scena-testo {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes scena-riga {
+    from {
+      transform: scaleX(0);
+    }
+  }
+</style>

@@ -18,6 +18,13 @@ npm run dev      # anteprima locale su http://localhost:4321
 npm run build    # genera il sito in dist/
 ```
 
+## Due versioni della home in prova
+
+- **Versione A** – `src/pages/index.astro`, all'indirizzo `/`: intestazione con l'orario della casetta.
+- **Versione B** – `src/pages/versione-b.astro`, all'indirizzo `/versione-b/`: intestazione animata (`src/components/ScenaHome.astro`) con la testata color carta (`versione="b"` in `Base.astro`).
+
+Quando il comitato sceglie, la versione scelta diventa `src/pages/index.astro` e l'altra si cancella.
+
 ## Anteprima e lancio
 
 Finché il sito è in anteprima non deve essere indicizzato dai motori di ricerca. Al momento del lancio:

@@ -7,13 +7,18 @@ import { comitato } from '../data/comitato';
 interface Props {
   title?: string;
   description?: string;
+  // 'b' = home con l'intestazione animata, in prova accanto alla versione attuale
+  versione?: 'b';
 }
 
 const {
   title,
   description = 'Il comitato di quartiere di Monti di San Paolo e Poggio di Acilia, a Roma: segnalazioni, decoro, eventi e storia del quartiere.',
+  versione,
 } = Astro.props;
 
+const b = versione === 'b';
+const home = b ? '/versione-b/' : '/';
 const titoloCompleto = title ? `${title} – ${comitato.nome}` : comitato.nome;
 
 const voci = [
@@ -44,19 +49,23 @@ const attiva = (href: string) => percorso.startsWith(href);
     <meta property="og:title" content={titoloCompleto} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL('/logo-comitato.jpg', Astro.site)} />
-    <meta name="theme-color" content="#146c44" />
+    <meta name="theme-color" content={b ? '#f3ede4' : '#146c44'} />
   </head>
   <body>
     <a class="salta" href="#contenuto">Vai al contenuto</a>
 
-    <header class="testata">
+    <header class:list={['testata', { 'testata-b': b }]}>
       <div class="testata-riga">
-        <a class="marchio" href="/">
+        <a class="marchio" href={home}>
           <img src="/logo-comitato.webp" alt="" width="54" height="57" />
-          <span class="marchio-nome">
-            <span>Comitato di Quartiere</span>
-            <strong>Acilia Nord</strong>
-          </span>
+          {b ? (
+            <span class="marchio-nome-b">{comitato.nomeStatuto}</span>
+          ) : (
+            <span class="marchio-nome">
+              <span>Comitato di Quartiere</span>
+              <strong>Acilia Nord</strong>
+            </span>
+          )}
         </a>
 
         <nav class="nav-ampia" aria-label="Menu principale">
@@ -70,10 +79,17 @@ const attiva = (href: string) => percorso.startsWith(href);
         </nav>
 
         <details class="nav-stretta">
-          <summary>Menu</summary>
+          <summary>
+            {b && (
+              <svg class="hamburger" viewBox="0 0 20 14" width="20" height="14" aria-hidden="true">
+                <path d="M1 1h18M1 7h18M1 13h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+              </svg>
+            )}
+            <span class="menu-testo">Menu</span>
+          </summary>
           <nav aria-label="Menu principale">
             <ul>
-              <li><a href="/" aria-current={percorso === '/' ? 'page' : undefined}>Home</a></li>
+              <li><a href={home} aria-current={percorso === home ? 'page' : undefined}>Home</a></li>
               {voci.map((v) => (
                 <li>
                   <a href={v.href} aria-current={attiva(v.href) ? 'page' : undefined}>{v.nome}</a>
@@ -83,7 +99,7 @@ const attiva = (href: string) => percorso.startsWith(href);
           </nav>
         </details>
       </div>
-      <div class="fregio" aria-hidden="true"></div>
+      {!b && <div class="fregio" aria-hidden="true"></div>}
     </header>
 
     <main id="contenuto">

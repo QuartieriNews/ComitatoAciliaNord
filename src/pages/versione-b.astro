@@ -1,0 +1,78 @@
+---
+// Home, versione B: intestazione animata con il cerchio di persone del logo.
+// In prova accanto alla versione A (index.astro): il comitato sceglie, l'altra si cancella.
+import Base from '../layouts/Base.astro';
+import HomeSezioni from '../components/HomeSezioni.astro';
+import ScenaHome from '../components/ScenaHome.astro';
+import { comitato, doveSiamo } from '../data/comitato';
+---
+
+<Base versione="b">
+  <ScenaHome />
+
+  <section class="fascia-casetta">
+    <div class="contenitore fascia-riga">
+      <p>
+        <strong>La casetta è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>, in {doveSiamo}.
+      </p>
+      <div class="fascia-azioni">
+        <a class="fascia-bottone" href={comitato.sede.mappa}>Apri la mappa</a>
+        <a class="fascia-bottone fascia-bottone-vuoto" href={comitato.whatsapp.link}>Entra in {comitato.whatsapp.nome}</a>
+      </div>
+    </div>
+  </section>
+
+  <HomeSezioni />
+</Base>
+
+<style>
+  /* La strada su cui poggiano le case */
+  .fascia-casetta {
+    background: var(--pino);
+    color: #fff;
+    padding: 1.35rem 0;
+  }
+
+  .fascia-riga {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+
+  .fascia-riga p {
+    margin: 0;
+    max-width: 38rem;
+    font-size: 1.05rem;
+  }
+
+  .fascia-azioni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .fascia-bottone {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.45em 1.2em;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--pino);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .fascia-bottone-vuoto {
+    background: transparent;
+    color: #fff;
+  }
+
+  .fascia-bottone:hover {
+    background: var(--pino-chiaro);
+    color: var(--pino-scuro);
+  }
+</style>

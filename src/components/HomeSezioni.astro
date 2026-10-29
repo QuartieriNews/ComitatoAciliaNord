@@ -1,0 +1,69 @@
+---
+// Le sezioni della home sotto l'intestazione, uguali per la versione A e la versione B.
+import ElencoNotizie from './ElencoNotizie.astro';
+import { comitato, sostenitori } from '../data/comitato';
+import { giornalino } from '../data/giornalino';
+import { tutteLeNotizie } from '../data/notizie';
+
+const ultime = tutteLeNotizie().slice(0, 5);
+const ultimoNumero = giornalino[0];
+---
+
+<section class="sezione">
+  <div class="contenitore doppia">
+    <div>
+      <div class="sezione-testa">
+        <h2>Ultime notizie</h2>
+        <a href="/news/">Tutte le notizie</a>
+      </div>
+      <ElencoNotizie notizie={ultime} />
+    </div>
+
+    <div>
+      <div class="sezione-testa">
+        <h2>Il giornalino</h2>
+        <a href="/giornalino/">Archivio</a>
+      </div>
+      <article class="numero">
+        <p class="numero-testa">La Voce di Acilia Nord, numero {ultimoNumero.numero}, {ultimoNumero.uscita}</p>
+        <h3>{ultimoNumero.titolo}</h3>
+        <p>{ultimoNumero.sommario}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sezione">
+  <div class="contenitore">
+    <div class="sezione-testa">
+      <h2>Come partecipare</h2>
+      <a href="/partecipa/">Tutti i modi</a>
+    </div>
+    <div class="tre">
+      <div class="passo">
+        <h3>Segnala un problema</h3>
+        <p>Mandaci una foto, l'indirizzo preciso e una descrizione chiara. Portiamo noi la segnalazione agli uffici competenti e la seguiamo.</p>
+        <a href={`mailto:${comitato.email}?subject=Segnalazione`}>Scrivi una segnalazione</a>
+      </div>
+      <div class="passo">
+        <h3>Entra in {comitato.whatsapp.nome}</h3>
+        <p>Il gruppo WhatsApp del comitato, per sapere cosa succede nel quartiere.</p>
+        <a href={comitato.whatsapp.link}>Entra nel gruppo</a>
+      </div>
+      <div class="passo">
+        <h3>Diventa socio</h3>
+        <p>Con la quota associativa sostieni le attività del comitato e partecipi alle sue iniziative.</p>
+        <a href={`mailto:${comitato.email}?subject=Diventare%20socio`}>Chiedi come iscriverti</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sezione">
+  <div class="contenitore">
+    <h2>Grazie a chi ci sostiene</h2>
+    <ul class="sostenitori">
+      {sostenitori.map((s) => <li>{s.link ? <a href={s.link}>{s.nome}</a> : <span>{s.nome}</span>}</li>)}
+    </ul>
+  </div>
+</section>
