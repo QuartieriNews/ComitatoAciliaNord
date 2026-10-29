@@ -18,12 +18,11 @@ npm run dev      # anteprima locale su http://localhost:4321
 npm run build    # genera il sito in dist/
 ```
 
-## Due versioni della home in prova
+## La home
 
-- **Versione A** – `src/pages/index.astro`, all'indirizzo `/`: intestazione con l'orario della casetta.
-- **Versione B** – `src/pages/versione-b.astro`, all'indirizzo `/versione-b/`: intestazione animata (`src/components/ScenaHome.astro`) con la testata color carta (`versione="b"` in `Base.astro`).
+L'intestazione animata della home è in `src/components/ScenaHome.astro`: il cerchio di persone del logo, le case, il nastro arcobaleno. Si anima una volta sola e rispetta l'impostazione «riduci movimento» del dispositivo. Il vecchio indirizzo di prova `/versione-b/` rimanda alla home (`public/_redirects`).
 
-Quando il comitato sceglie, la versione scelta diventa `src/pages/index.astro` e l'altra si cancella.
+La denominazione è sempre «Comitato di Quartiere Acilia Nord 2018» (`src/data/comitato.ts`); l'unica eccezione è il centro dell'intestazione della home. La sede si chiama «la sede del comitato».
 
 ## Anteprima e lancio
 

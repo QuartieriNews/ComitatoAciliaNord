@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/Testo.astro
 title: Statuto
-description: Lo statuto del Comitato Acilia Nord 2018.
-introduzione: "Lo statuto del Comitato Acilia Nord 2018: finalità, regole e organi del comitato."
+description: Lo statuto del Comitato di Quartiere Acilia Nord 2018.
+introduzione: "Lo statuto del Comitato di Quartiere Acilia Nord 2018: finalità, regole e organi del comitato."
 ---
 
 Nel presente Statuto sono denominati:

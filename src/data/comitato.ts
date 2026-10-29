@@ -1,8 +1,8 @@
 // Dati del comitato usati in tutto il sito. Fonte: documento "dati-comitato" del progetto.
 
 export const comitato = {
-  nome: 'Comitato di Quartiere Acilia Nord',
-  nomeStatuto: 'Comitato Acilia Nord 2018',
+  // Denominazione da usare ovunque (unica eccezione: il centro dell'intestazione della home)
+  nome: 'Comitato di Quartiere Acilia Nord 2018',
   fondazione: '13 gennaio 2018',
   zone: 'Monti di San Paolo e Poggio di Acilia',
   email: 'info@comitatoacilianord.it',
