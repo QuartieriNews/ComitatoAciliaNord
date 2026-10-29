@@ -151,6 +151,24 @@ const attivita = [
     </div>
   </section>
 
+  <section class="sezione" id="premio">
+    <div class="contenitore premio">
+      <div class="premio-testo">
+        <h2>Premio «Energie per Roma» 2026</h2>
+        <p>Il 12 gennaio 2026, nella Sala della Protomoteca in Campidoglio, il {comitato.nome} ha ricevuto il premio «Energie per Roma» del Centro Europeo Studi Culturali. Su 1.200 candidature, la commissione ha scelto 50 realtà di Roma: imprenditori, artisti, professionisti, associazioni e comitati.</p>
+        <blockquote>
+          <p>«In riconoscimento per lo straordinario contributo profuso nella valorizzazione e nella promozione della Città di Roma.»</p>
+          <footer>La motivazione scritta sull'attestato</footer>
+        </blockquote>
+        <p>È un premio per le volontarie e i volontari che dedicano il loro tempo al quartiere. Se vuoi unirti a loro, <a href="/partecipa/">ecco come partecipare</a>.</p>
+      </div>
+      <figure class="premio-foto">
+        <img src="/premio/energie-per-roma-2026.webp" alt="L'attestato del premio «Energie per Roma» mostrato nella Sala della Protomoteca, in Campidoglio" width="924" height="1155" loading="lazy" />
+        <img class="premio-attestato" src="/premio/attestato.webp" alt="L'attestato del premio «Energie per Roma» 2026, conferito al Comitato Acilia Nord 2018" width="480" height="640" loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
   <section class="sezione direttivo" id="direttivo">
     <div class="contenitore">
       <h2>Il direttivo</h2>
@@ -220,6 +238,84 @@ const attivita = [
       max-width: 100%;
       max-height: 80svh;
       margin-inline: auto;
+    }
+  }
+
+  /* Il premio: testo a sinistra, foto a destra con l'attestato appoggiato sopra.
+     Il bronzo richiama i fregi dell'attestato. */
+  .premio {
+    --bronzo: #a0692c;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  .premio-testo > * {
+    max-width: var(--misura);
+  }
+
+  .premio blockquote {
+    margin: 1.6rem 0;
+    padding: 0.15rem 0 0.15rem 1.2rem;
+    border-left: 4px solid var(--bronzo);
+  }
+
+  .premio blockquote p {
+    margin: 0 0 0.45rem;
+    font-size: 1.3rem;
+    line-height: 1.42;
+    color: var(--inchiostro);
+  }
+
+  .premio blockquote footer {
+    color: var(--tenue);
+    font-size: 0.95rem;
+  }
+
+  .premio-foto {
+    position: relative;
+    width: 100%;
+    max-width: 25rem;
+    margin: 0 1.25rem 1.75rem auto;
+  }
+
+  .premio-foto > img:first-child {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow:
+      0 1px 3px rgb(29 37 48 / 0.12),
+      0 12px 30px rgb(29 37 48 / 0.14);
+  }
+
+  .premio-attestato {
+    position: absolute;
+    right: -1.25rem;
+    bottom: -1.75rem;
+    width: 36%;
+    border: 6px solid #fff;
+    border-radius: 4px;
+    box-shadow:
+      0 2px 6px rgb(29 37 48 / 0.18),
+      0 14px 32px rgb(29 37 48 / 0.22);
+    transform: rotate(2.5deg);
+  }
+
+  @media (max-width: 52rem) {
+    .premio {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .premio-foto {
+      margin: 0 auto 2.25rem;
+      max-width: 22rem;
+    }
+
+    .premio-attestato {
+      right: -0.4rem;
+      bottom: -2.25rem;
+      width: 34%;
     }
   }
 
