@@ -559,9 +559,17 @@ ol {
   margin-bottom: 0.35em;
 }
 
-.foto-notizia {
+.testo {
+  overflow-wrap: anywhere;
+}
+
+.foto-notizia,
+.testo p img {
   width: 100%;
   border-radius: 6px;
+}
+
+.foto-notizia {
   margin-bottom: 1.5rem;
 }
 

@@ -1,0 +1,13 @@
+{
+  "name": "notizie-da-facebook",
+  "private": true,
+  "type": "module",
+  "description": "Trasforma i post della pagina Facebook del comitato in notizie del sito",
+  "scripts": {
+    "importa": "node importa.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.35.5",
+    "yaml": "^2.9.1"
+  }
+}

@@ -1,0 +1,65 @@
+# Ogni mezz'ora legge i post della pagina Facebook del comitato e li trasforma in notizie.
+# Se ci sono novità le carica su GitHub, e Cloudflare aggiorna il sito da solo.
+# Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
+name: Notizie da Facebook
+
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: notizie-facebook
+  cancel-in-progress: false
+
+jobs:
+  importa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/facebook/package-lock.json
+
+      - name: Installa gli strumenti
+        working-directory: scripts/facebook
+        run: npm ci
+
+      - name: Leggi i post e prepara le notizie
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: node scripts/facebook/importa.mjs
+
+      - name: Carica le novità
+        run: |
+          git add -A src/content/news public/news scripts/facebook/stato.json
+          if git diff --cached --quiet; then
+            echo "Nessuna novità da caricare."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "$(cat "$RUNNER_TEMP/messaggio-facebook.txt")"
+          git push
+
+      - name: Avvisa se Facebook non risponde
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          titolo="Il sito non riesce a leggere la pagina Facebook"
+          if [ -z "$(gh issue list --state open --search "in:title \"$titolo\"" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$titolo" --body "L'automazione che trasforma i post di Facebook in notizie si è fermata. Di solito succede quando il codice di accesso (token) di Facebook è scaduto o è cambiata la password dell'account che lo ha creato.
+
+          Cosa fare: apri una chat con Claude e scrivi «rinnoviamo il token di Facebook».
+
+          Dettagli tecnici: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
