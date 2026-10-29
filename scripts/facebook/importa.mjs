@@ -1,5 +1,10 @@
 // Legge i post della pagina Facebook del comitato e li trasforma in notizie del sito.
-// Gira da solo su GitHub ogni mezz'ora: vedi .github/workflows/notizie-facebook.yml.
+// Gira da solo su GitHub più volte al giorno: vedi .github/workflows/notizie-facebook.yml.
+//
+// Due modi per leggere la pagina:
+// - APIFY_TOKEN: con «Facebook Posts Scraper» di Apify, che legge la pagina pubblica (pochi centesimi a lettura);
+// - FB_PAGE_TOKEN: con le API ufficiali di Meta, se un giorno l'app di Meta sarà pronta (gratis).
+// Se ci sono tutti e due, si usano le API di Meta.
 //
 // Regole decise con il comitato:
 // - ogni post diventa una notizia, tranne:
@@ -31,9 +36,12 @@ const FILE_STATO = path.join(RADICE, 'scripts/facebook/stato.json');
 const FILE_MESSAGGIO = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'messaggio-facebook.txt');
 
 const VERSIONE_API = process.env.FB_VERSIONE_API || 'v26.0';
+const PAGINA_FACEBOOK = 'https://www.facebook.com/ComitatoAciliaNord/';
+const ATTORE_APIFY = 'apify~facebook-posts-scraper';
 const GIORNO = 24 * 60 * 60 * 1000;
 const GIORNI_STORICO = 30; // al primo avvio
-const GIORNI_CONTROLLO = 60; // quanto indietro si controllano modifiche e cancellazioni
+const GIORNI_CONTROLLO = 60; // quanto indietro si controllano modifiche e cancellazioni (API di Meta)
+const GIORNI_CONTROLLO_APIFY = 1; // con Apify si rilegge solo l'ultimo giorno, per spendere poco
 const GIORNI_DOPPIONI = 7;
 const DOMINIO_SITO = 'comitatoacilianord.it';
 const MAX_FOTO = 10;
@@ -81,6 +89,71 @@ async function leggiPost(token, daQuando) {
     indirizzo = dati.paging?.next;
   }
   return tutti;
+}
+
+class ErroreApify extends Error {}
+
+async function leggiPostApify(token, daQuando, limite) {
+  const risposta = await fetch(`https://api.apify.com/v2/acts/${ATTORE_APIFY}/run-sync-get-dataset-items?timeout=280`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      startUrls: [{ url: PAGINA_FACEBOOK }],
+      resultsLimit: limite,
+      onlyPostsNewerThan: daQuando.toISOString().slice(0, 19),
+    }),
+  });
+  const dati = await risposta.json().catch(() => null);
+  if (!risposta.ok || !Array.isArray(dati)) {
+    throw new ErroreApify(`Apify ha risposto con un errore (${risposta.status}): ${JSON.stringify(dati)?.slice(0, 300)}`);
+  }
+  return dati.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+}
+
+// Trasforma un post letto da Apify nella stessa forma delle API di Meta
+function daApify(voce) {
+  const media = Array.isArray(voce.media) ? voce.media : [];
+  const src = (m) => m.image?.uri || m.photo_image?.uri || m.thumbnail;
+  const foto = media.filter((m) => (m.__typename === 'Photo' || m.__isMedia === 'Photo') && src(m));
+  const video = media.find((m) => m.__typename === 'Video' || m.__isMedia === 'Video' || m.is_playable === true);
+  const linkMedia = media
+    .map((m) => m.story_attachment_link_renderer?.attachment?.web_link?.url || m.story_attachment_link_renderer?.attachment?.url)
+    .find(Boolean);
+  const link = voce.link || linkMedia;
+
+  let allegati;
+  if (video) {
+    allegati = [{ media_type: 'video', type: 'video_inline', media: src(video) ? { image: { src: src(video) } } : undefined, target: { id: video.id } }];
+  } else if (foto.length > 1) {
+    allegati = [
+      {
+        media_type: 'album',
+        type: 'album',
+        subattachments: { data: foto.map((m) => ({ media_type: 'photo', type: 'photo', media: { image: { src: src(m) } }, target: { id: m.id } })) },
+      },
+    ];
+  } else if (foto.length === 1) {
+    allegati = [{ media_type: 'photo', type: 'photo', media: { image: { src: src(foto[0]) } }, target: { id: foto[0].id } }];
+  } else if (link) {
+    const titolo = media.map((m) => m.title_with_entities?.text).find(Boolean);
+    allegati = [{ media_type: 'link', type: 'share', url: link, title: titolo }];
+  }
+
+  return {
+    id: String(voce.postId),
+    message: voce.text ?? '',
+    created_time: voce.time,
+    permalink_url: voce.url,
+    status_type: video ? 'added_video' : foto.length ? 'added_photos' : link ? 'shared_story' : 'mobile_status_update',
+    attachments: allegati ? { data: allegati } : undefined,
+  };
+}
+
+// Un'impronta del contenuto del post: se cambia, il post è stato modificato su Facebook
+function versioneDelPost(p) {
+  const a = allegato(p);
+  const id = [a?.target?.id, ...(a?.subattachments?.data ?? []).map((s) => s.target?.id)].filter(Boolean);
+  return createHash('sha1').update(`${p.message ?? ''}|${id.join(',')}`).digest('hex').slice(0, 12);
 }
 
 async function scarica(indirizzo) {
@@ -136,7 +209,7 @@ function linkPulito(p) {
 // Lo stesso link in forma breve, per riconoscerlo anche se scritto in modo diverso
 function linkEsterno(p) {
   const u = linkPulito(p);
-  if (!u) return null;
+  if (!u || /(^|\.)facebook\.com$/.test(u.hostname)) return null;
   return `${u.hostname.replace(/^www\./, '').toLowerCase()}${u.pathname.replace(/\/+$/, '')}${u.search}`;
 }
 
@@ -240,15 +313,60 @@ async function preparaFoto(p) {
 
 // ---------- Testi provvisori ----------
 
-const EMOJI = /[\p{Extended_Pictographic}️‍]/gu;
+const EMOJI = /[\p{Extended_Pictographic}\p{Emoji_Modifier}\u{FE0F}\u{200D}\u{20E3}]/gu;
 
-// Le frasi del post, senza link, hashtag ed emoji
-function frasi(testo) {
+// Nomi da lasciare con la maiuscola quando un titolo scritto TUTTO MAIUSCOLO diventa normale
+const NOMI_PROPRI = [
+  'Acilia', 'Nord', 'Monti', 'San', 'Paolo', 'Poggio', 'Todis', 'AMA', 'ATAC', 'Cotral', 'Roma', 'Municipio', 'X',
+  'Capelvenere', 'Ficana', 'Pater', 'Casette', 'Retake', 'FTS', 'PRU', 'Dragona', 'Ostia', 'Ostiense', 'Tevere',
+  'Pasolini', 'Natale', 'Pasqua', 'Carnevale', 'Calle', 'Lido', 'Duranti', 'Raggio', 'Sole', 'Cugno', 'Labsus', 'Lazio',
+];
+const MAPPA_NOMI = new Map(NOMI_PROPRI.map((n) => [n.toLowerCase(), n]));
+
+function minuscoleConNomi(testo) {
+  const t = testo.toLowerCase().replace(/\p{L}+/gu, (parola) => MAPPA_NOMI.get(parola) ?? parola);
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+// Toglie link, hashtag in fondo alle righe ed emoji; gli hashtag dentro la frase restano come parole
+function pulisci(testo) {
   return testo
     .replace(/https?:\/\/\S+/g, '')
-    .replace(/#[\p{L}\p{N}_]+/gu, '')
+    .replace(/(\s*#[\p{L}\p{N}_]+)+\s*$/gmu, '')
+    .replace(/#([\p{L}\p{N}_]+)/gu, '$1')
+    .replace(EMOJI, ' ');
+}
+
+// I post del comitato spesso iniziano con un titolo TUTTO MAIUSCOLO: «INSIEME PER IL DECORO AL POGGIO 💁 …».
+// Se c'è, diventa il titolo (con le minuscole) e il resto del post fa da sommario.
+function separaTitolo(testo) {
+  const righe = pulisci(testo).split('\n');
+  const parole = righe[0].split(/\s+/).filter(Boolean);
+  const prese = [];
+  let i = 0;
+  for (; i < parole.length; i++) {
+    const lettere = parole[i].replace(/[^\p{L}]/gu, '');
+    if (lettere ? lettere !== lettere.toUpperCase() : !/^[\d;:,.!?'’"()–-]+$/.test(parole[i])) break;
+    prese.push(parole[i]);
+  }
+  let titolo = prese.join(' ');
+  let avanzo = '';
+  const taglio = titolo.search(/\s*[;:]/);
+  if (taglio > 0) {
+    avanzo = titolo.slice(taglio).replace(/^\s*[;:]\s*/, '');
+    titolo = titolo.slice(0, taglio);
+  }
+  titolo = titolo.replace(/[\s.,;:!?–-]+$/, '');
+  if (titolo.split(/\s+/).filter((p) => /\p{L}{2,}/u.test(p)).length < 2) return null;
+  const resto = [avanzo ? minuscoleConNomi(avanzo) : '', parole.slice(i).join(' '), ...righe.slice(1)].filter(Boolean).join('\n');
+  return { titolo: minuscoleConNomi(titolo), resto };
+}
+
+// Le frasi di un testo già ripulito
+function frasi(testo) {
+  return pulisci(testo)
     .split('\n')
-    .map((r) => r.replace(EMOJI, '').replace(/\s+/g, ' ').trim())
+    .map((r) => r.replace(/\s+/g, ' ').trim())
     .filter((r) => /[\p{L}\p{N}]/u.test(r))
     .flatMap((r) => r.split(/(?<=[.!?…])\s+/))
     .map((f) => f.replace(/\s*\S+:$/, '').trim()) // toglie le etichette rimaste sole, come «Info:»
@@ -258,12 +376,15 @@ function frasi(testo) {
 const accorcia = (t, max) => (t.length > max ? `${t.slice(0, max).replace(/\s+\S*$/, '')}…` : t);
 
 function primaFrase(testo) {
+  const separato = separaTitolo(testo);
+  if (separato) return accorcia(separato.titolo, 90);
   const frase = (frasi(testo)[0] ?? '').replace(/[.:;,\s]+$/, '');
-  return frase ? accorcia(frase, 90) : 'Notizia dalla pagina Facebook del comitato';
+  return frase ? accorcia(frase, 90) : 'Notizia dal comitato';
 }
 
 function sommarioProvvisorio(testo) {
-  const resto = frasi(testo).slice(1).join(' ');
+  const separato = separaTitolo(testo);
+  const resto = separato ? frasi(separato.resto).join(' ') : frasi(testo).slice(1).join(' ');
   return resto ? accorcia(resto, 170) : undefined;
 }
 
@@ -330,7 +451,7 @@ function corpoNotizia(p, testo, foto, slug) {
   for (let i = 1; i < foto.length; i++) parti.push(`![](/news/${slug}/${i + 1}.webp)`);
   if (eVideo(p) && p.permalink_url) parti.push(`[Guarda il video su Facebook](${p.permalink_url})`);
   const link = linkPulito(p);
-  if (link) {
+  if (link && !/(^|\.)facebook\.com$/.test(link.hostname)) {
     const etichetta = (allegato(p).title || link.hostname.replace(/^www\./, '')).trim();
     parti.push(`[${proteggi(etichetta)}](<${link.href}>)`);
   }
@@ -372,7 +493,7 @@ async function leggiNotizie() {
 }
 
 async function scriviNotizia(notizia, corpo) {
-  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'facebook', 'facebook_id', 'aggiornato', 'ai', 'firma'];
+  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'facebook', 'facebook_id', 'versione', 'ai', 'firma'];
   const dati = Object.fromEntries(ordine.filter((k) => notizia.dati[k] !== undefined).map((k) => [k, notizia.dati[k]]));
   await writeFile(notizia.file, `---\n${YAML.stringify(dati, { lineWidth: 0 })}---\n\n${corpo}`);
 }
@@ -404,7 +525,7 @@ async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
       imageAlt: foto.length ? '' : undefined,
       facebook: p.permalink_url,
       facebook_id: p.id,
-      aggiornato: p.updated_time,
+      versione: versioneDelPost(p),
       ai: false,
       firma,
     },
@@ -428,7 +549,7 @@ async function aggiornaNotizia(notizia, p, testo) {
   notizia.dati.image = foto.length ? `/news/${notizia.slug}/1.webp` : undefined;
   if (!foto.length) notizia.dati.imageAlt = undefined;
   notizia.dati.facebook = p.permalink_url;
-  notizia.dati.aggiornato = p.updated_time;
+  notizia.dati.versione = versioneDelPost(p);
   notizia.dati.firma = firma;
   await salvaFoto(notizia.slug, foto);
   await scriviNotizia(notizia, corpoNotizia(p, testo, foto, notizia.slug));
@@ -453,18 +574,28 @@ async function leggiStato() {
 
 async function main() {
   const token = process.env.FB_PAGE_TOKEN;
+  const tokenApify = process.env.APIFY_TOKEN;
   const finto = process.env.FB_FINTO;
-  if (!token && !finto) {
-    console.log('Il codice di accesso a Facebook non è ancora configurato: per ora non faccio niente.');
+  const fintoApify = process.env.FB_FINTO_APIFY;
+  if (!token && !tokenApify && !finto && !fintoApify) {
+    console.log('Nessun collegamento con Facebook configurato (APIFY_TOKEN o FB_PAGE_TOKEN): per ora non faccio niente.');
     return;
   }
+  const conApify = !token && Boolean(tokenApify || fintoApify);
 
   const adesso = Date.now();
   const stato = await leggiStato();
   stato.inizio ??= new Date(adesso - GIORNI_STORICO * GIORNO).toISOString();
-  const daQuando = new Date(Math.max(new Date(stato.inizio).getTime(), adesso - GIORNI_CONTROLLO * GIORNO));
+  const primoAvvio = !stato.ultimaLettura;
+  const giorniControllo = conApify && !primoAvvio ? GIORNI_CONTROLLO_APIFY : GIORNI_CONTROLLO;
+  const daQuando = new Date(Math.max(new Date(stato.inizio).getTime(), adesso - giorniControllo * GIORNO));
 
-  const post = finto ? JSON.parse(await readFile(finto, 'utf8')).data : await leggiPost(token, daQuando);
+  let post;
+  if (finto) post = JSON.parse(await readFile(finto, 'utf8')).data;
+  else if (fintoApify) post = JSON.parse(await readFile(fintoApify, 'utf8')).map(daApify);
+  else if (token) post = await leggiPost(token, daQuando);
+  else post = await leggiPostApify(tokenApify, daQuando, primoAvvio ? 80 : 15);
+  for (const p of post) p.updated_time ??= p.created_time;
   post.sort((a, b) => new Date(a.created_time) - new Date(b.created_time));
 
   await mkdir(CARTELLA_NOTIZIE, { recursive: true });
@@ -486,12 +617,12 @@ async function main() {
         conta.tolte++;
         console.log(`Tolta: ${esistente.slug} (${motivo})`);
       }
-      stato.saltati[p.id] = { motivo, data: p.created_time, aggiornato: p.updated_time };
+      stato.saltati[p.id] = { motivo, data: p.created_time, versione: versioneDelPost(p) };
       continue;
     }
 
     if (esistente) {
-      if (esistente.dati.aggiornato !== p.updated_time) {
+      if (esistente.dati.versione !== versioneDelPost(p)) {
         await aggiornaNotizia(esistente, p, testo);
         conta.aggiornate++;
         console.log(`Aggiornata: ${esistente.slug}`);
@@ -501,13 +632,13 @@ async function main() {
 
     if (new Date(p.created_time) < new Date(stato.inizio)) continue; // pubblicato prima dell'avvio
     const giaSaltato = stato.saltati[p.id];
-    if (giaSaltato && giaSaltato.aggiornato === p.updated_time) continue;
+    if (giaSaltato && giaSaltato.versione === versioneDelPost(p)) continue;
 
     const foto = await preparaFoto(p);
     const firma = { testo: improntaTesto(testo), foto: foto[0]?.impronta ?? null, link: linkEsterno(p) };
     const doppione = trovaDoppione(firma, p.created_time, notizie.elenco);
     if (doppione) {
-      stato.saltati[p.id] = { motivo: `uguale a ${doppione.slug}`, data: p.created_time, aggiornato: p.updated_time };
+      stato.saltati[p.id] = { motivo: `uguale a ${doppione.slug}`, data: p.created_time, versione: versioneDelPost(p) };
       console.log(`Saltato il post ${p.id}: uguale a ${doppione.slug}`);
       continue;
     }
@@ -537,6 +668,7 @@ async function main() {
   for (const [id, voce] of Object.entries(stato.saltati)) {
     if (new Date(voce.data) < daQuando) delete stato.saltati[id];
   }
+  stato.ultimaLettura = new Date(adesso).toISOString();
   await writeFile(FILE_STATO, `${JSON.stringify(stato, null, 2)}\n`);
 
   const parti = [];

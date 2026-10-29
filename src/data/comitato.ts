@@ -34,7 +34,11 @@ export const comitato = {
 // L'indirizzo dentro una frase: «Ci trovi in via dei Monti di San Paolo 40, di fronte all'Ufficio Postale».
 export const doveSiamo = `${comitato.sede.indirizzo.replace(/^Via /, 'via ')}, ${comitato.sede.riferimento}`;
 
-export const direttivo = {
+// Il direttivo. Ogni persona può avere una foto: file quadrato in public/direttivo/,
+// per esempio foto: '/direttivo/massimo-facchini.webp'. Senza foto si vedono le iniziali.
+export type Persona = { nome: string; ruolo?: string; foto?: string };
+
+export const direttivo: { eletto: string; cariche: Persona[]; consiglieri: Persona[] } = {
   eletto: "l'11 e il 12 aprile 2026",
   cariche: [
     { ruolo: 'Presidente', nome: 'Massimo Facchini' },
@@ -43,15 +47,15 @@ export const direttivo = {
     { ruolo: 'Segretaria', nome: 'Annie Illuzzi' },
   ],
   consiglieri: [
-    'Riccardo Benvenuti',
-    'Davide Ceccarini',
-    'Vincenzo Fabbri',
-    'Stefania Ferramola',
-    'Stefano Gasbarro',
-    'Fabio Gerlando',
-    'Giada Nardacci',
-    'Liliana Pozzi',
-    'Fabiola Vicari',
+    { nome: 'Riccardo Benvenuti' },
+    { nome: 'Davide Ceccarini' },
+    { nome: 'Vincenzo Fabbri' },
+    { nome: 'Stefania Ferramola' },
+    { nome: 'Stefano Gasbarro' },
+    { nome: 'Fabio Gerlando' },
+    { nome: 'Giada Nardacci' },
+    { nome: 'Liliana Pozzi' },
+    { nome: 'Fabiola Vicari' },
   ],
 };
 
@@ -62,13 +66,12 @@ export const donazioni = {
   whatsapp: '338 851 8023',
 };
 
-// I loghi arriveranno: per ora mostriamo i nomi.
-export const sostenitori = [
-  { nome: 'Rotostampa', link: 'https://rotostampa.com/' },
-  { nome: 'Serra Madre', link: 'http://www.serramadre.it/' },
-  { nome: 'Per dirsi ciao' },
-  { nome: 'Adomar' },
-  { nome: 'Todis' },
+// Chi sostiene il comitato: logo in public/sostenitori/ e sito, quando c'è.
+export const sostenitori: { nome: string; logo: string; link?: string }[] = [
+  { nome: 'Rotostampa', logo: '/sostenitori/rotostampa.webp', link: 'https://rotostampa.com/' },
+  { nome: 'Todis', logo: '/sostenitori/todis.webp' },
+  { nome: 'Per dirsi ciao', logo: '/sostenitori/per-dirsi-ciao.webp' },
+  { nome: 'Serra Madre', logo: '/sostenitori/serra-madre.webp', link: 'http://www.serramadre.it/' },
 ];
 
 export const linkUtili = [

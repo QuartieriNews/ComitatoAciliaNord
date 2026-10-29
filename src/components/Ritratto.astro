@@ -1,0 +1,47 @@
+---
+// Foto rotonda di una persona del direttivo. Finché la foto non c'è, si vedono le sue iniziali
+// su un tondo con uno dei colori del logo. La grandezza la decide chi lo usa con --misura-ritratto.
+interface Props {
+  nome: string;
+  foto?: string;
+  colore: string;
+}
+
+const { nome, foto, colore } = Astro.props;
+const parole = nome.split(/\s+/).filter(Boolean);
+const iniziali = `${parole[0]?.[0] ?? ''}${parole.length > 1 ? parole[parole.length - 1][0] : ''}`.toUpperCase();
+---
+
+{
+  foto ? (
+    <img class="ritratto" src={foto} alt="" width="320" height="320" loading="lazy" style={`--colore:${colore}`} />
+  ) : (
+    <span class="ritratto ritratto-vuoto" style={`--colore:${colore}`} aria-hidden="true">
+      {iniziali}
+    </span>
+  )
+}
+
+<style>
+  .ritratto {
+    display: grid;
+    place-items: center;
+    width: var(--misura-ritratto, 8rem);
+    height: var(--misura-ritratto, 8rem);
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--colore);
+    /* doppio anello: bianco e poi il colore, come una medaglia */
+    box-shadow:
+      0 0 0 4px var(--carta),
+      0 0 0 7px var(--colore);
+  }
+
+  .ritratto-vuoto {
+    color: #fff;
+    font-size: calc(var(--misura-ritratto, 8rem) * 0.34);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+</style>

@@ -1,12 +1,12 @@
 ---
-// Le sezioni della home sotto l'intestazione, uguali per la versione A e la versione B.
+// Le sezioni della home sotto l'intestazione animata.
 import ElencoNotizie from './ElencoNotizie.astro';
 import { comitato, sostenitori } from '../data/comitato';
-import { giornalino } from '../data/giornalino';
+import { giornalino, nomeGiornalino, pesoPdf } from '../data/giornalino';
 import { tutteLeNotizie } from '../data/notizie';
 
 const ultime = tutteLeNotizie().slice(0, 5);
-const ultimoNumero = giornalino[0];
+const ultimoNumero = giornalino.find((n) => n.pdf) ?? giornalino[0];
 ---
 
 <section class="sezione">
@@ -21,13 +21,26 @@ const ultimoNumero = giornalino[0];
 
     <div>
       <div class="sezione-testa">
-        <h2>Il giornalino</h2>
-        <a href="/giornalino/">Archivio</a>
+        <h2>{nomeGiornalino}</h2>
+        <a href="/giornalino/">Tutti i numeri</a>
       </div>
-      <article class="numero">
-        <p class="numero-testa">La Voce di Acilia Nord, numero {ultimoNumero.numero}, {ultimoNumero.uscita}</p>
-        <h3>{ultimoNumero.titolo}</h3>
-        <p>{ultimoNumero.sommario}</p>
+      <article class="ultimo-numero">
+        {ultimoNumero.copertina && ultimoNumero.pdf && (
+          <a class="ultimo-copertina" href={ultimoNumero.pdf} tabindex="-1" aria-hidden="true">
+            <img src={ultimoNumero.copertina} alt="" width="640" height="842" loading="lazy" />
+          </a>
+        )}
+        <div>
+          <p class="numero-testa">Numero {ultimoNumero.numero}, {ultimoNumero.uscita}</p>
+          <h3>{ultimoNumero.titolo}</h3>
+          <p>{ultimoNumero.sommario}</p>
+          {ultimoNumero.pdf && (
+            <p>
+              <a href={ultimoNumero.pdf}>Sfoglia il numero {ultimoNumero.numero}</a>
+              <span class="tenue"> (PDF, {pesoPdf(ultimoNumero.pdf)})</span>
+            </p>
+          )}
+        </div>
       </article>
     </div>
   </div>
@@ -62,8 +75,74 @@ const ultimoNumero = giornalino[0];
 <section class="sezione">
   <div class="contenitore">
     <h2>Grazie a chi ci sostiene</h2>
-    <ul class="sostenitori">
-      {sostenitori.map((s) => <li>{s.link ? <a href={s.link}>{s.nome}</a> : <span>{s.nome}</span>}</li>)}
+    <ul class="loghi">
+      {sostenitori.map((s) => (
+        <li>
+          {s.link ? (
+            <a href={s.link}>
+              <img src={s.logo} alt={s.nome} width="420" height="420" loading="lazy" />
+            </a>
+          ) : (
+            <img src={s.logo} alt={s.nome} width="420" height="420" loading="lazy" />
+          )}
+        </li>
+      ))}
     </ul>
   </div>
 </section>
+
+<style>
+  .ultimo-numero {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .ultimo-copertina {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgb(29 37 48 / 0.12),
+      0 8px 22px rgb(29 37 48 / 0.12);
+  }
+
+  .ultimo-numero h3 {
+    margin: 0.2rem 0 0.4rem;
+  }
+
+  .ultimo-numero p {
+    margin-bottom: 0.6em;
+  }
+
+  .loghi {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .loghi img {
+    display: block;
+    width: 8.5rem;
+    height: 8.5rem;
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px var(--linea);
+  }
+
+  .loghi a:hover img {
+    box-shadow:
+      0 0 0 1px var(--linea),
+      0 8px 20px rgb(29 37 48 / 0.15);
+  }
+
+  @media (max-width: 26rem) {
+    .ultimo-numero {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+  }
+</style>

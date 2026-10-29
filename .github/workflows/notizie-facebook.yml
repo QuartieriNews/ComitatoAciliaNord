@@ -1,11 +1,13 @@
-# Ogni mezz'ora legge i post della pagina Facebook del comitato e li trasforma in notizie.
+# Sei volte al giorno legge i post della pagina Facebook del comitato e li trasforma in notizie.
 # Se ci sono novità le carica su GitHub, e Cloudflare aggiorna il sito da solo.
+# Legge la pagina con Apify (segreto APIFY_TOKEN) oppure, se un giorno ci sarà, con le API di Meta (FB_PAGE_TOKEN).
 # Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
 name: Notizie da Facebook
 
 on:
   schedule:
-    - cron: '7,37 * * * *'
+    # alle 7, 10, 13, 16, 19 e 22 ora italiana (in inverno; d'estate un'ora dopo)
+    - cron: '23 6-21/3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -36,6 +38,7 @@ jobs:
       - name: Leggi i post e prepara le notizie
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: node scripts/facebook/importa.mjs
 
       - name: Carica le novità
@@ -57,9 +60,9 @@ jobs:
         run: |
           titolo="Il sito non riesce a leggere la pagina Facebook"
           if [ -z "$(gh issue list --state open --search "in:title \"$titolo\"" --json number --jq '.[].number')" ]; then
-            gh issue create --title "$titolo" --body "L'automazione che trasforma i post di Facebook in notizie si è fermata. Di solito succede quando il codice di accesso (token) di Facebook è scaduto o è cambiata la password dell'account che lo ha creato.
+            gh issue create --title "$titolo" --body "L'automazione che trasforma i post di Facebook in notizie si è fermata. Di solito succede quando il codice di accesso (token) di Apify o di Facebook non è più valido, o quando su Apify è finito il credito.
 
-          Cosa fare: apri una chat con Claude e scrivi «rinnoviamo il token di Facebook».
+          Cosa fare: apri una chat con Claude e scrivi «le notizie da Facebook si sono fermate».
 
           Dettagli tecnici: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           fi

@@ -1,33 +1,46 @@
 ---
 import Base from '../layouts/Base.astro';
 import { comitato } from '../data/comitato';
-import { giornalino } from '../data/giornalino';
+import { giornalino, nomeGiornalino, pesoPdf } from '../data/giornalino';
 ---
 
 <Base
-  title="Il giornalino"
-  description="La Voce di Acilia Nord, il giornalino del comitato: tutti i numeri, con le notizie dei Monti di San Paolo e del Poggio di Acilia."
+  title={nomeGiornalino}
+  description={`${nomeGiornalino}, il giornalino del ${comitato.nome}: tutti i numeri, con le notizie dei Monti di San Paolo e del Poggio di Acilia.`}
 >
   <section class="pagina-testa">
     <div class="contenitore">
-      <h1>La Voce di Acilia Nord</h1>
+      <h1>{nomeGiornalino}</h1>
       <p class="introduzione">
-        Il giornalino del comitato, con le notizie dei Monti di San Paolo e del Poggio di Acilia. Qui trovi tutti i numeri
-        usciti, dal più recente.
+        Il giornalino del comitato, con le notizie dei Monti di San Paolo e del Poggio di Acilia. Qui puoi sfogliare tutti
+        i numeri usciti, dal più recente.
       </p>
     </div>
   </section>
 
   <section class="sezione">
     <div class="contenitore">
-      <ul class="archivio">
+      <ul class="numeri">
         {giornalino.map((n) => (
-          <li class="numero">
+          <li>
+            {n.pdf && n.copertina ? (
+              <a class="copertina" href={n.pdf} tabindex="-1" aria-hidden="true">
+                <img src={n.copertina} alt="" width="640" height="842" loading="lazy" />
+              </a>
+            ) : (
+              <div class="copertina copertina-vuota" aria-hidden="true">
+                <span>{nomeGiornalino}</span>
+                <span>Volume #{n.numero}</span>
+              </div>
+            )}
             <p class="numero-testa">Numero {n.numero}, {n.uscita}</p>
-            {n.titolo && <h2 class="numero-titolo">{n.titolo}</h2>}
+            {n.titolo && <h2>{n.titolo}</h2>}
             {n.sommario && <p>{n.sommario}</p>}
             {n.pdf ? (
-              <a class="bottone bottone-vuoto" href={n.pdf}>Leggi il numero {n.numero} (PDF)</a>
+              <p class="sfoglia">
+                <a class="bottone bottone-vuoto" href={n.pdf}>Sfoglia il numero {n.numero}</a>
+                <span class="tenue">PDF, {pesoPdf(n.pdf)}</span>
+              </p>
             ) : (
               <p class="tenue">Il PDF sarà online a breve.</p>
             )}
@@ -35,8 +48,77 @@ import { giornalino } from '../data/giornalino';
         ))}
       </ul>
       <p class="tenue nota">
-        Vuoi scrivere al giornalino o segnalare una notizia? Scrivici a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>.
+        Vuoi scrivere a «{nomeGiornalino}» o segnalare una notizia? Scrivici a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>.
       </p>
     </div>
   </section>
 </Base>
+
+<style>
+  .numeri {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 3rem 2.5rem;
+  }
+
+  .copertina {
+    display: block;
+    aspect-ratio: 640 / 842;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--carta-b);
+    box-shadow:
+      0 1px 2px rgb(29 37 48 / 0.12),
+      0 8px 22px rgb(29 37 48 / 0.12);
+  }
+
+  a.copertina:hover {
+    box-shadow:
+      0 1px 2px rgb(29 37 48 / 0.16),
+      0 12px 28px rgb(29 37 48 / 0.2);
+  }
+
+  .copertina img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .copertina-vuota {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1rem;
+    color: var(--tenue);
+    font-weight: 700;
+    text-align: center;
+    box-shadow: inset 0 0 0 1px var(--linea);
+  }
+
+  .copertina-vuota span:first-child {
+    color: var(--inchiostro);
+    font-size: 1.3rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 0.2rem 0 0.4rem;
+  }
+
+  .sfoglia {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+  }
+
+  .sfoglia .tenue {
+    font-size: 0.9rem;
+  }
+</style>

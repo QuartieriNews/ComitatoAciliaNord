@@ -3,6 +3,7 @@ import '@fontsource-variable/atkinson-hyperlegible-next';
 import '../styles/global.css';
 import { ANTEPRIMA } from '../config';
 import { comitato } from '../data/comitato';
+import { nomeGiornalino } from '../data/giornalino';
 
 interface Props {
   title?: string;
@@ -22,7 +23,7 @@ const voci = [
   { href: '/chi-siamo/', nome: 'Chi siamo' },
   { href: '/il-quartiere/', nome: 'Il quartiere' },
   { href: '/news/', nome: 'Notizie' },
-  { href: '/giornalino/', nome: 'Giornalino' },
+  { href: '/giornalino/', nome: nomeGiornalino },
   { href: '/partecipa/', nome: 'Partecipa' },
   { href: '/contatti/', nome: 'Contatti' },
 ];

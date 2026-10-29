@@ -165,6 +165,7 @@ ol {
 
 .nav-ampia a,
 .nav-stretta a {
+  white-space: nowrap;
   color: var(--inchiostro);
   font-weight: 700;
   text-decoration: none;
@@ -223,7 +224,7 @@ ol {
   color: var(--pino);
 }
 
-@media (max-width: 64rem) {
+@media (max-width: 76rem) {
   .nav-ampia {
     display: none;
   }
@@ -538,43 +539,11 @@ ol {
   font-size: 1.1rem;
 }
 
-/* Direttivo */
-.cariche {
-  list-style: none;
-  margin: 0 0 1.5rem;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
-  gap: 1rem 2rem;
-}
-
+/* Ruolo sotto un nome (direttivo) */
 .ruolo {
   display: block;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--tenue);
-}
-
-.elenco-semplice {
-  columns: 15rem;
-  column-gap: 2rem;
-  padding-left: 1.1rem;
-}
-
-/* Sostenitori */
-.sostenitori {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 2rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.sostenitori a,
-.sostenitori span {
-  color: var(--pino);
 }
 
 /* Mappa di Google nella pagina Contatti */

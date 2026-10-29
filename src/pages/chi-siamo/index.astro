@@ -1,6 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Ritratto from '../../components/Ritratto.astro';
 import { comitato, direttivo } from '../../data/comitato';
+
+// Colori dei tondi del direttivo, presi dal cerchio del logo (abbastanza scuri per le iniziali bianche)
+const coloriRitratti = ['#1182ae', '#d60a8b', '#1e8f34', '#6c2e83', '#e84435', '#0f6a8d', '#c75f00', '#9246b9', '#b12152', '#146c44', '#2d6fb7', '#d90a75', '#034c4f'];
 
 // Cosa facciamo: ogni attività ha un'icona bianca in un tondo colorato, come i badge della home.
 // I colori vengono dal cerchio di persone del logo.
@@ -40,7 +44,7 @@ const attivita = [
   },
   {
     titolo: 'Informazione',
-    testo: 'Informiamo i cittadini con volantini, social, il giornalino e le assemblee pubbliche.',
+    testo: 'Informiamo i cittadini con volantini, social, il giornalino «La voce di Acilia Nord» e le assemblee pubbliche.',
     colore: '#c75f00',
     icona: `<rect x="11" y="12" width="26" height="25" rx="2.5" fill="#fff"/><g fill="#c75f00"><rect x="14.5" y="16" width="19" height="4" rx="1"/><rect x="14.5" y="23.5" width="8.5" height="2" rx="1"/><rect x="14.5" y="27.5" width="8.5" height="2" rx="1"/><rect x="14.5" y="31.5" width="8.5" height="2" rx="1"/><rect x="25" y="23.5" width="8.5" height="10" rx="1"/></g>`,
   },
@@ -49,14 +53,63 @@ const attivita = [
 
 <Base title="Chi siamo" description="Il Comitato di Quartiere Acilia Nord 2018: chi siamo, cosa facciamo e chi fa parte del direttivo.">
   <section class="pagina-testa">
-    <div class="contenitore">
-      <h1>Chi siamo</h1>
-      <p class="introduzione">
-        Il {comitato.nome} è nato il {comitato.fondazione} dall'incontro di volontari nati e cresciuti nel quartiere.
-        Ci occupiamo di {comitato.zone}: dei problemi da risolvere, ma anche dei punti di forza e delle eccellenze che ci circondano.
-      </p>
+    <div class="contenitore chi-testa">
+      <div>
+        <h1>Chi siamo</h1>
+        <p class="introduzione">
+          Il {comitato.nome} è nato il {comitato.fondazione} dall'incontro di volontari nati e cresciuti nel quartiere.
+          Ci occupiamo di {comitato.zone}: dei problemi da risolvere, ma anche dei punti di forza e delle eccellenze che ci circondano.
+        </p>
+      </div>
+      <div class="chi-video">
+        <!-- Video del comitato: parte da solo una volta, senza audio, e si ferma sull'ultima schermata.
+             Orizzontale su computer e tablet, verticale sul telefono. -->
+        <video
+          id="video-chi-siamo"
+          muted
+          playsinline
+          controls
+          preload="metadata"
+          poster="/video/chi-siamo-orizzontale.webp"
+          width="1280"
+          height="720"
+          aria-label="Video di presentazione del comitato"
+        >
+          <source src="/video/chi-siamo-verticale.mp4" type="video/mp4" media="(max-width: 47.99rem)" />
+          <source src="/video/chi-siamo-orizzontale.mp4" type="video/mp4" />
+        </video>
+      </div>
     </div>
   </section>
+
+  <script is:inline>
+    // Il video parte quando è visibile, una sola volta. Chi ha chiesto di ridurre il movimento
+    // vede l'immagine iniziale e può avviarlo con il tasto play.
+    (function () {
+      var video = document.getElementById('video-chi-siamo');
+      if (!video) return;
+      if (window.matchMedia('(max-width: 47.99rem)').matches) video.poster = '/video/chi-siamo-verticale.webp';
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var partito = false;
+      function parti() {
+        if (partito) return;
+        partito = true;
+        var avvio = video.play();
+        if (avvio && avvio.catch) avvio.catch(function () {});
+      }
+      if (!('IntersectionObserver' in window)) return parti();
+      var osservatore = new IntersectionObserver(
+        function (voci) {
+          if (voci.some(function (v) { return v.isIntersecting; })) {
+            osservatore.disconnect();
+            parti();
+          }
+        },
+        { threshold: 0.5 },
+      );
+      osservatore.observe(video);
+    })();
+  </script>
 
   <section class="sezione">
     <div class="contenitore">
@@ -98,21 +151,27 @@ const attivita = [
     </div>
   </section>
 
-  <section class="sezione">
+  <section class="sezione direttivo" id="direttivo">
     <div class="contenitore">
       <h2>Il direttivo</h2>
       <p class="tenue">Eletto dai cittadini {direttivo.eletto}.</p>
-      <ul class="cariche">
-        {direttivo.cariche.map((c) => (
+      <ul class="persone persone-cariche">
+        {direttivo.cariche.map((p, i) => (
           <li>
-            <span class="ruolo">{c.ruolo}</span>
-            <strong>{c.nome}</strong>
+            <Ritratto nome={p.nome} foto={p.foto} colore={coloriRitratti[i % coloriRitratti.length]} />
+            <strong>{p.nome}</strong>
+            <span class="ruolo">{p.ruolo}</span>
           </li>
         ))}
       </ul>
       <h3>Consiglieri</h3>
-      <ul class="elenco-semplice">
-        {direttivo.consiglieri.map((nome) => <li>{nome}</li>)}
+      <ul class="persone persone-consiglieri">
+        {direttivo.consiglieri.map((p, i) => (
+          <li>
+            <Ritratto nome={p.nome} foto={p.foto} colore={coloriRitratti[(i + 4) % coloriRitratti.length]} />
+            <strong>{p.nome}</strong>
+          </li>
+        ))}
       </ul>
     </div>
   </section>
@@ -127,6 +186,101 @@ const attivita = [
 </Base>
 
 <style>
+  /* Testata con il video: testo a sinistra e video a destra sul computer, uno sotto l'altro sul telefono */
+  .chi-testa {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .chi-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background: #f3ede4;
+    box-shadow:
+      0 1px 3px rgb(29 37 48 / 0.12),
+      0 12px 30px rgb(29 37 48 / 0.14);
+  }
+
+  @media (max-width: 64rem) {
+    .chi-testa {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .chi-video video {
+      aspect-ratio: 9 / 16;
+      width: auto;
+      max-width: 100%;
+      max-height: 80svh;
+      margin-inline: auto;
+    }
+  }
+
+  /* Il direttivo: un tondo per ogni persona, foto o iniziali */
+  .direttivo {
+    background: var(--carta-b);
+  }
+
+  .persone {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2.25rem 1.5rem;
+    text-align: center;
+  }
+
+  .persone li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .persone li > :first-child {
+    margin-bottom: 0.9rem;
+  }
+
+  .persone strong {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .persone-cariche {
+    --misura-ritratto: 8.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    margin: 2rem 0 3.25rem;
+  }
+
+  .persone-consiglieri {
+    --misura-ritratto: 6.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    margin-top: 1.5rem;
+  }
+
+  .direttivo h3 {
+    margin-top: 0;
+  }
+
+  @media (max-width: 26rem) {
+    .persone-cariche {
+      --misura-ritratto: 7rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .persone-consiglieri {
+      --misura-ritratto: 5.25rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   .attivita {
     list-style: none;
     margin: 1.75rem 0 0;
