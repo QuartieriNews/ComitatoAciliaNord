@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import { categoria } from '../../data/categorie';
+import { dataLeggibile, tutteLeNotizie, type Notizia } from '../../data/notizie';
+
+export function getStaticPaths() {
+  return tutteLeNotizie().map((notizia) => ({
+    params: { slug: notizia.slug },
+    props: { notizia },
+  }));
+}
+
+const { notizia } = Astro.props as { notizia: Notizia };
+const cat = categoria(notizia.category);
+const { Content } = notizia;
+---
+
+<Base title={notizia.title} description={notizia.summary}>
+  <article>
+    <header class="pagina-testa">
+      <div class="contenitore">
+        <div class="meta" style={`--cat:${cat.colore}`}>
+          <time datetime={notizia.date}>{dataLeggibile(notizia.date)}</time>
+          <span class="categoria">{cat.nome}</span>
+        </div>
+        <h1>{notizia.title}</h1>
+        {notizia.summary && <p class="introduzione">{notizia.summary}</p>}
+      </div>
+    </header>
+
+    <div class="sezione">
+      <div class="contenitore testo">
+        {notizia.image && <img class="foto-notizia" src={notizia.image} alt={notizia.imageAlt ?? ''} />}
+        <Content />
+        {notizia.facebook && (
+          <p class="fonte">
+            <a href={notizia.facebook}>Leggi il post su Facebook</a>
+          </p>
+        )}
+        <p><a href="/news/">Tutte le notizie</a></p>
+      </div>
+    </div>
+  </article>
+</Base>

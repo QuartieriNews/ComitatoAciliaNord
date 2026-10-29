@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import { comitato, donazioni } from '../data/comitato';
+---
+
+<Base
+  title="Partecipa"
+  description="Come partecipare alla vita del Comitato di Quartiere Acilia Nord: la casetta del martedì, le segnalazioni, Radio Acilia Nord, l'iscrizione e le donazioni."
+>
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Partecipa</h1>
+      <p class="introduzione">
+        Il comitato è fatto da chi abita qui. Si può dare una mano in tanti modi, anche piccoli: basta un'ora il martedì
+        sera o una foto mandata al momento giusto.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore doppia">
+      <div>
+        <h2>Vieni alla casetta</h2>
+        <p>
+          Ogni {comitato.apertura.giorno} {comitato.apertura.orario} siamo in {comitato.sede.indirizzo.replace(/^Via /, 'via ')},
+          {comitato.sede.riferimento}. Porta un'idea, una segnalazione, o passa solo a conoscerci.
+        </p>
+        <p>Le assemblee pubbliche e gli eventi si tengono di solito al Casale Raggio di Sole, in via di Monte Cugno 10.</p>
+        <a class="bottone bottone-vuoto" href={comitato.sede.mappa}>Apri la mappa</a>
+      </div>
+      <div>
+        <h2>Entra in {comitato.whatsapp.nome}</h2>
+        <p>È il gruppo WhatsApp del comitato: avvisi, iniziative e notizie del quartiere, direttamente sul telefono.</p>
+        <a class="bottone bottone-pieno" href={comitato.whatsapp.link}>Entra nel gruppo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sezione" id="segnalazioni">
+    <div class="contenitore misura">
+      <h2>Segnala un problema</h2>
+      <p>
+        Rifiuti abbandonati, buche, lampioni spenti, verde da curare: mandaci la segnalazione e la portiamo noi agli uffici
+        competenti, seguendola fino alla risposta. Perché sia utile, metti:
+      </p>
+      <ul>
+        <li>una foto del problema;</li>
+        <li>l'indirizzo preciso, o un punto di riferimento vicino;</li>
+        <li>due righe di descrizione: da quanto tempo c'è, se è pericoloso.</li>
+      </ul>
+      <a class="bottone bottone-pieno" href={`mailto:${comitato.email}?subject=Segnalazione`}>Scrivi una segnalazione</a>
+      <p class="tenue nota">Il comitato non è un servizio di pronto intervento: per le emergenze chiama il 112.</p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore doppia">
+      <div>
+        <h2>Diventa socio</h2>
+        <p>
+          Con un piccolo contributo sostieni le attività del comitato. Per iscriverti passa alla casetta il
+          {comitato.apertura.giorno} o scrivici.
+        </p>
+        <a class="bottone bottone-vuoto" href={`mailto:${comitato.email}?subject=Diventare%20socio`}>Chiedi come iscriverti</a>
+      </div>
+      <div id="donazioni">
+        <h2>Prendiamoci un caffè</h2>
+        <p>Una donazione ci aiuta a portare avanti le iniziative per il quartiere. Puoi farla a uno dei nostri eventi, oppure così:</p>
+        <dl class="dati">
+          <dt>Bonifico, IBAN</dt>
+          <dd class="iban">{donazioni.iban}</dd>
+          <dt>Intestato a</dt>
+          <dd>{donazioni.beneficiario}, presidente del comitato</dd>
+          <dt>PayPal</dt>
+          <dd>{donazioni.paypal}</dd>
+        </dl>
+        <p class="nota">
+          Dopo la donazione scrivici su WhatsApp al <a href={`https://wa.me/39${donazioni.whatsapp.replace(/\s/g, '')}`}>{donazioni.whatsapp}</a>,
+          così possiamo ringraziarti.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

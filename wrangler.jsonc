@@ -1,0 +1,10 @@
+// Configurazione di Cloudflare: pubblica la cartella dist/ creata da "npm run build".
+// Il nome deve restare uguale a quello del progetto su Cloudflare.
+{
+  "name": "comitato-acilia-nord",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

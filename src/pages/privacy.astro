@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import { comitato } from '../data/comitato';
+---
+
+<Base title="Privacy" description="Come il sito del Comitato di Quartiere Acilia Nord tratta i dati personali.">
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Privacy</h1>
+      <p class="introduzione">Come questo sito tratta i dati personali, in breve e senza giri di parole.</p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore testo">
+      <h2>Chi è il titolare</h2>
+      <p>
+        Il titolare del trattamento è il {comitato.nomeStatuto}, codice fiscale {comitato.codiceFiscale}. Per qualsiasi
+        richiesta scrivi a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>.
+      </p>
+
+      <h2>Cosa raccoglie il sito</h2>
+      <p>
+        Il sito non ha moduli, iscrizioni o aree riservate, e non usa cookie di profilazione né strumenti di statistica:
+        per questo non ti chiediamo il consenso con un banner. Non incorpora mappe, video o pulsanti dei social. I
+        collegamenti a Facebook, WhatsApp e OpenStreetMap aprono i siti di quei servizi, che hanno le loro regole sulla
+        privacy.
+      </p>
+      <p>
+        Il sito è ospitato da Cloudflare, che per farlo funzionare e proteggerlo dagli attacchi tratta dati tecnici come
+        l'indirizzo IP e il tipo di browser, e può usare cookie tecnici di sicurezza, che non richiedono consenso.
+      </p>
+
+      <h2>Se ci scrivi o ci chiami</h2>
+      <p>
+        Usiamo i tuoi dati solo per risponderti e per seguire la tua richiesta o segnalazione. Non li vendiamo e non li
+        usiamo per altri scopi.
+      </p>
+
+      <h2>Notizie e foto</h2>
+      <p>
+        Le notizie del sito riprendono i post pubblicati sulla pagina Facebook del comitato, foto comprese. Se compari in
+        una foto e vuoi che venga tolta, scrivici a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>.
+      </p>
+
+      <h2>I tuoi diritti</h2>
+      <p>
+        In base al Regolamento europeo 2016/679 (GDPR) puoi chiedere in ogni momento di vedere, correggere o cancellare i
+        tuoi dati, o di limitarne l'uso, scrivendo a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>. Puoi anche
+        presentare reclamo al <a href="https://www.garanteprivacy.it/">Garante per la protezione dei dati personali</a>.
+      </p>
+
+      <p class="tenue">Ultimo aggiornamento: ottobre 2026.</p>
+    </div>
+  </section>
+</Base>

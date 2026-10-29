@@ -1,0 +1,40 @@
+---
+import { categoria } from '../data/categorie';
+import { comitato } from '../data/comitato';
+import { dataLeggibile, type Notizia } from '../data/notizie';
+
+interface Props {
+  notizie: Notizia[];
+}
+
+const { notizie } = Astro.props;
+---
+
+{
+  notizie.length > 0 ? (
+    <ul class="notizie">
+      {notizie.map((n) => {
+        const cat = categoria(n.category);
+        return (
+          <li class="notizia" style={`--cat:${cat.colore}`}>
+            <div class="meta">
+              <time datetime={n.date}>{dataLeggibile(n.date)}</time>
+              <span class="categoria">{cat.nome}</span>
+            </div>
+            <h3>
+              <a href={`/news/${n.slug}/`}>{n.title}</a>
+            </h3>
+            {n.summary && <p>{n.summary}</p>}
+          </li>
+        );
+      })}
+    </ul>
+  ) : (
+    <div class="vuoto">
+      <p>
+        Qui arriveranno in automatico i post della pagina Facebook del comitato. Nel frattempo li trovi su{' '}
+        <a href={comitato.facebook}>Facebook</a>.
+      </p>
+    </div>
+  )
+}

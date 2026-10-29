@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import { comitato, direttivo } from '../../data/comitato';
+---
+
+<Base title="Chi siamo" description="Il Comitato Acilia Nord 2018: chi siamo, cosa facciamo e chi fa parte del direttivo.">
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Chi siamo</h1>
+      <p class="introduzione">
+        Il {comitato.nomeStatuto} è nato il {comitato.fondazione} dall'incontro di volontari nati e cresciuti nel quartiere.
+        Ci occupiamo di {comitato.zone}: dei problemi da risolvere, ma anche dei punti di forza e delle eccellenze che ci circondano.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore">
+      <h2>Volontari, apolitici, uno di noi</h2>
+      <div class="tre">
+        <div class="passo">
+          <h3>Volontari</h3>
+          <p>Molti interventi a cui ci dedichiamo dovrebbero arrivare dalle amministrazioni. Ma l'esempio può spingerle a intervenire dove serve.</p>
+        </div>
+        <div class="passo">
+          <h3>Apolitici</h3>
+          <p>Il comitato è autonomo e apartitico. Chi ricopre cariche politiche o di partito non può far parte del direttivo.</p>
+        </div>
+        <div class="passo">
+          <h3>Uno di noi</h3>
+          <p>Il comitato è formato da residenti e domiciliati di Acilia Nord, e l'adesione è aperta a tutti i cittadini del quartiere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore misura">
+      <h2>Cosa facciamo</h2>
+      <ul>
+        <li>Favoriamo la partecipazione dei cittadini e la collaborazione con enti pubblici, privati e altre associazioni del territorio.</li>
+        <li>Portiamo le richieste dei residenti alla pubblica amministrazione e ai gestori dei servizi, e le seguiamo fino alla risposta.</li>
+        <li>Ci occupiamo di sicurezza, urbanistica, ambiente, decoro urbano e viabilità.</li>
+        <li>Valorizziamo le eccellenze del territorio: Ficana, la Riserva Statale del Litorale Romano, le Casette Pater.</li>
+        <li>Seguiamo il completamento del Piano di Recupero Urbano Acilia-Dragona.</li>
+        <li>Informiamo i cittadini con volantini, social, il giornalino e le assemblee pubbliche.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore">
+      <h2>Il direttivo</h2>
+      <p class="tenue">Eletto dai cittadini {direttivo.eletto}.</p>
+      <ul class="cariche">
+        {direttivo.cariche.map((c) => (
+          <li>
+            <span class="ruolo">{c.ruolo}</span>
+            <strong>{c.nome}</strong>
+          </li>
+        ))}
+      </ul>
+      <h3>Consiglieri</h3>
+      <ul class="elenco-semplice">
+        {direttivo.consiglieri.map((nome) => <li>{nome}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore misura">
+      <h2>Lo statuto</h2>
+      <p>Finalità, regole e organi del comitato, approvati alla sua fondazione.</p>
+      <a class="bottone bottone-vuoto" href="/chi-siamo/statuto/">Leggi lo statuto</a>
+    </div>
+  </section>
+</Base>

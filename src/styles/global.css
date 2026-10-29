@@ -1,0 +1,663 @@
+/* Colori presi dal logo: il verde dei pini, l'azzurro del Tevere, il cerchio di persone. */
+:root {
+  --pino: #146c44;
+  --pino-scuro: #0e5233;
+  --pino-chiaro: #e8f3ec;
+  --tevere: #0f6f95;
+  --cielo: #e3f3f9;
+  --testo: #1f2a24;
+  --tenue: #55625a;
+  --linea: #d5e0d8;
+  --carta: #ffffff;
+  --giornalino: #c75f00;
+  --font: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --larghezza: 70rem;
+  --misura: 40rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 112.5%; /* 18px: testo comodo anche per chi legge senza occhiali */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--testo);
+  background: var(--carta);
+  line-height: 1.55;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--tevere);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 0.08em;
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--tevere);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--pino);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.1rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.25rem + 1.1vw, 1.95rem);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p,
+ul,
+ol {
+  margin: 0 0 1em;
+}
+
+.contenitore {
+  width: min(100% - 2rem, var(--larghezza));
+  margin-inline: auto;
+}
+
+.misura {
+  max-width: var(--misura);
+}
+
+.tenue {
+  color: var(--tenue);
+}
+
+/* Salta al contenuto */
+.salta {
+  position: absolute;
+  left: -999px;
+  top: 0.5rem;
+  background: var(--carta);
+  padding: 0.5rem 1rem;
+  z-index: 20;
+}
+
+.salta:focus {
+  left: 1rem;
+}
+
+/* Testata */
+.testata-riga {
+  width: min(100% - 2rem, var(--larghezza));
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+}
+
+.marchio {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+}
+
+.marchio img {
+  width: 54px;
+}
+
+.marchio-nome {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  font-size: 0.9rem;
+  color: var(--tenue);
+}
+
+.marchio-nome strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--pino);
+}
+
+.nav-ampia ul,
+.nav-stretta ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-ampia ul {
+  display: flex;
+  gap: 1.3rem;
+}
+
+.nav-ampia a,
+.nav-stretta a {
+  color: var(--testo);
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.3rem 0;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-ampia a:hover,
+.nav-ampia a[aria-current='page'] {
+  color: var(--pino);
+  border-bottom-color: var(--pino);
+}
+
+.nav-stretta {
+  display: none;
+  position: relative;
+}
+
+.nav-stretta summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--pino);
+  border: 2px solid var(--pino);
+  border-radius: 6px;
+  padding: 0.35rem 0.9rem;
+}
+
+.nav-stretta summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-stretta[open] nav {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 10;
+  min-width: 14rem;
+  background: var(--carta);
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  padding: 0.5rem 1.1rem;
+  box-shadow: 0 8px 22px rgb(20 108 68 / 0.14);
+}
+
+.nav-stretta li a {
+  display: block;
+  padding: 0.55rem 0;
+}
+
+.nav-stretta li a[aria-current='page'] {
+  color: var(--pino);
+}
+
+@media (max-width: 58rem) {
+  .nav-ampia {
+    display: none;
+  }
+
+  .nav-stretta {
+    display: block;
+  }
+}
+
+/* Il fregio: il cerchio di persone del logo, srotolato */
+.fregio {
+  height: 24px;
+  background: url('/fregio.svg') repeat-x left center / 480px 24px;
+}
+
+/* Apertura della home */
+.apertura {
+  background: var(--cielo);
+}
+
+.apertura-griglia {
+  width: min(100% - 2rem, var(--larghezza));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+  padding: 3.5rem 0 3.75rem;
+}
+
+.apertura h1 {
+  max-width: 17ch;
+  margin-bottom: 0.55em;
+}
+
+.apertura p {
+  font-size: 1.2rem;
+  max-width: 34rem;
+}
+
+.apertura-logo {
+  justify-self: center;
+  width: min(100%, 19rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--carta);
+  display: grid;
+  place-items: center;
+  padding: 1.4rem;
+}
+
+@media (max-width: 48rem) {
+  .apertura-griglia {
+    grid-template-columns: 1fr;
+    padding: 2.25rem 0 2.5rem;
+  }
+
+  .apertura-logo {
+    display: none;
+  }
+}
+
+/* Pulsanti */
+.azioni {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+
+.bottone {
+  display: inline-block;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.65rem 1.15rem;
+  border-radius: 6px;
+  border: 2px solid var(--pino);
+}
+
+.bottone-pieno {
+  background: var(--pino);
+  color: var(--carta);
+}
+
+.bottone-pieno:hover {
+  background: var(--pino-scuro);
+  border-color: var(--pino-scuro);
+}
+
+.bottone-vuoto {
+  background: var(--carta);
+  color: var(--pino);
+}
+
+.bottone-vuoto:hover {
+  background: var(--pino-chiaro);
+}
+
+/* Sezioni */
+.sezione {
+  padding: 3.25rem 0;
+}
+
+.sezione + .sezione {
+  border-top: 1px solid var(--linea);
+}
+
+.sezione-testa {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sezione-testa h2 {
+  margin: 0;
+}
+
+.doppia {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 3rem;
+}
+
+.tre {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 52rem) {
+  .doppia,
+  .tre {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+}
+
+.passo {
+  border-top: 4px solid var(--pino);
+  padding-top: 0.9rem;
+}
+
+.passo p {
+  margin-bottom: 0.6em;
+}
+
+.passo h2 {
+  font-size: 1.3rem;
+}
+
+.nota {
+  margin-top: 1.25rem;
+}
+
+/* Notizie */
+.notizie {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.4rem;
+}
+
+.notizia {
+  border-left: 6px solid var(--cat, var(--pino));
+  padding: 0.15rem 0 0.15rem 1rem;
+}
+
+.notizia h3 {
+  margin: 0.15rem 0 0.3rem;
+}
+
+.notizia h3 a {
+  color: var(--testo);
+  text-decoration: none;
+}
+
+.notizia h3 a:hover {
+  text-decoration: underline;
+}
+
+.notizia p {
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1rem;
+  font-size: 0.9rem;
+  color: var(--tenue);
+}
+
+.categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.categoria::before {
+  content: '';
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--cat, var(--pino));
+}
+
+.vuoto {
+  background: var(--pino-chiaro);
+  border-radius: 8px;
+  padding: 1.2rem 1.4rem;
+}
+
+.vuoto p:last-child {
+  margin: 0;
+}
+
+/* Giornalino */
+.numero {
+  border-top: 6px solid var(--giornalino);
+  padding-top: 0.9rem;
+}
+
+.numero-testa {
+  font-weight: 700;
+  color: var(--giornalino);
+  margin-bottom: 0.2rem;
+}
+
+.archivio {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 2rem;
+}
+
+.numero-titolo {
+  font-size: 1.25rem;
+  margin: 0.2rem 0 0.4rem;
+}
+
+/* Testata delle pagine interne */
+.pagina-testa {
+  background: var(--cielo);
+  padding: 2.5rem 0 2.25rem;
+}
+
+.pagina-testa h1 {
+  margin-bottom: 0.4em;
+}
+
+.introduzione {
+  font-size: 1.2rem;
+  max-width: var(--misura);
+  margin: 0;
+}
+
+/* Testi lunghi: statuto, notizie */
+.testo {
+  max-width: var(--misura);
+}
+
+.testo h2 {
+  font-size: 1.35rem;
+  margin-top: 2em;
+}
+
+.testo li {
+  margin-bottom: 0.35em;
+}
+
+.foto-notizia {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.fonte {
+  margin-top: 2rem;
+  font-weight: 700;
+}
+
+/* Linea del tempo del quartiere */
+.linea-tempo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 3px solid var(--pino);
+  max-width: var(--misura);
+}
+
+.linea-tempo li {
+  position: relative;
+  padding: 0 0 1.8rem 1.6rem;
+}
+
+.linea-tempo li:last-child {
+  padding-bottom: 0.2rem;
+}
+
+.linea-tempo li::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 0.35rem;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--carta);
+  border: 3px solid var(--pino);
+}
+
+.anno {
+  display: block;
+  font-weight: 800;
+  color: var(--pino);
+  font-size: 1.1rem;
+}
+
+/* Direttivo */
+.cariche {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1rem 2rem;
+}
+
+.ruolo {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--tenue);
+}
+
+.elenco-semplice {
+  columns: 15rem;
+  column-gap: 2rem;
+  padding-left: 1.1rem;
+}
+
+/* Sostenitori */
+.sostenitori {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.sostenitori a,
+.sostenitori span {
+  color: var(--pino);
+}
+
+/* Riquadro dati (IBAN, indirizzo) */
+.dati {
+  background: var(--pino-chiaro);
+  border-radius: 8px;
+  padding: 1.1rem 1.4rem;
+  max-width: var(--misura);
+}
+
+.dati dt {
+  font-size: 0.9rem;
+  color: var(--tenue);
+}
+
+.dati dd {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}
+
+.dati dd:last-child {
+  margin-bottom: 0;
+}
+
+.iban {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  word-spacing: 0.15em;
+}
+
+/* Piede */
+.piede {
+  background: var(--pino);
+  color: var(--carta);
+}
+
+.piede .fregio {
+  background-color: var(--carta);
+}
+
+.piede a {
+  color: var(--carta);
+}
+
+.piede h2 {
+  color: var(--carta);
+  font-size: 1.05rem;
+  margin-bottom: 0.4em;
+}
+
+.piede-griglia {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  padding: 2.5rem 0 2rem;
+}
+
+.piede-griglia p {
+  margin: 0 0 0.35em;
+}
+
+.piede-fondo {
+  border-top: 1px solid rgb(255 255 255 / 0.25);
+  padding: 1rem 0 2rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.75rem;
+}
+
+@media (max-width: 48rem) {
+  .piede-griglia {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media print {
+  .testata,
+  .piede,
+  .fregio {
+    display: none;
+  }
+}

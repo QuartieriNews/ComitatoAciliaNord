@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { comitato } from '../data/comitato';
+import { giornalino } from '../data/giornalino';
+---
+
+<Base
+  title="Il giornalino"
+  description="La Voce di Acilia Nord, il giornalino del comitato: tutti i numeri, con le notizie dei Monti di San Paolo e del Poggio di Acilia."
+>
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>La Voce di Acilia Nord</h1>
+      <p class="introduzione">
+        Il giornalino del comitato, con le notizie dei Monti di San Paolo e del Poggio di Acilia. Qui trovi tutti i numeri
+        usciti, dal più recente.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore">
+      <ul class="archivio">
+        {giornalino.map((n) => (
+          <li class="numero">
+            <p class="numero-testa">Numero {n.numero}, {n.uscita}</p>
+            {n.titolo && <h2 class="numero-titolo">{n.titolo}</h2>}
+            {n.sommario && <p>{n.sommario}</p>}
+            {n.pdf ? (
+              <a class="bottone bottone-vuoto" href={n.pdf}>Leggi il numero {n.numero} (PDF)</a>
+            ) : (
+              <p class="tenue">Il PDF sarà online a breve.</p>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p class="tenue nota">
+        Vuoi scrivere al giornalino o segnalare una notizia? Scrivici a <a href={`mailto:${comitato.email}`}>{comitato.email}</a>.
+      </p>
+    </div>
+  </section>
+</Base>

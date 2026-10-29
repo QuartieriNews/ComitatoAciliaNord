@@ -1,0 +1,20 @@
+---
+// Impaginazione per le pagine scritte in Markdown (ad esempio lo statuto).
+import Base from './Base.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={frontmatter.title} description={frontmatter.description}>
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>{frontmatter.title}</h1>
+      {frontmatter.introduzione && <p class="introduzione">{frontmatter.introduzione}</p>}
+    </div>
+  </section>
+  <section class="sezione">
+    <div class="contenitore testo">
+      <slot />
+    </div>
+  </section>
+</Base>

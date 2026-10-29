@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import ElencoNotizie from '../../components/ElencoNotizie.astro';
+import { comitato } from '../../data/comitato';
+import { tutteLeNotizie } from '../../data/notizie';
+
+const notizie = tutteLeNotizie();
+---
+
+<Base title="Notizie" description="Le notizie del Comitato di Quartiere Acilia Nord, aggiornate in automatico dalla pagina Facebook.">
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Notizie</h1>
+      <p class="introduzione">
+        Quello che pubblichiamo sulla <a href={comitato.facebook}>pagina Facebook del comitato</a> arriva anche qui, in
+        automatico.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore misura">
+      <ElencoNotizie notizie={notizie} />
+    </div>
+  </section>
+</Base>

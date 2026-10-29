@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import { comitato } from '../data/comitato';
+---
+
+<Base
+  title="Il quartiere"
+  description="Monti di San Paolo e Poggio di Acilia: la storia del quartiere, dalle Casette Pater a oggi, e i luoghi che lo raccontano."
+>
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Il quartiere</h1>
+      <p class="introduzione">
+        Acilia Nord sono i Monti di San Paolo e il Poggio di Acilia, nel Municipio Roma X. Una borgata nata intorno alle
+        Casette Pater, tra il Tevere, la Riserva del Litorale Romano e le tracce dell'antica Ficana.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore">
+      <h2>La nostra storia</h2>
+      <ol class="linea-tempo">
+        <li>
+          <span class="anno">Nell'antichità</span>
+          Sul Monte Cugno sorgeva Ficana, antica città latina. Tra chi ne ha studiato la storia c'è Michele Mattei,
+          scomparso a fine 2024 e ricordato nel numero 4 del giornalino.
+        </li>
+        <li>
+          <span class="anno">21 aprile 1940</span>
+          Vengono inaugurate le Casette Pater, il primo nucleo della borgata.
+        </li>
+        <li>
+          <span class="anno">24 marzo 1944</span>
+          Lido Duranti, partigiano aciliano di 24 anni, viene ucciso alle Fosse Ardeatine. Lo ricordano una stele in
+          Piazza Capelvenere e, dal 10 gennaio 2024, una pietra d'inciampo in via Gianpietro Ferrari 46.
+        </li>
+        <li>
+          <span class="anno">13 gennaio 2018</span>
+          Nasce il comitato. Nello stesso anno i volontari iniziano a curare il Sentiero Pasolini, che arriva fino a via
+          Nicolaiana.
+        </li>
+        <li>
+          <span class="anno">26 aprile 2026</span>
+          Le Casette Pater compiono 86 anni: festa alla casetta del comitato, con una mostra di fotografie e filmati.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore">
+      <h2>I luoghi</h2>
+      <div class="tre">
+        <div class="passo">
+          <h3>Piazza Capelvenere</h3>
+          <p>Il cuore storico del quartiere, con la chiesa della Sacra Famiglia, i primi negozi e la stele dedicata a Lido Duranti.</p>
+        </div>
+        <div class="passo">
+          <h3>Casale Raggio di Sole</h3>
+          <p>In via di Monte Cugno 10. Qui si tengono le assemblee pubbliche e gli eventi del comitato.</p>
+        </div>
+        <div class="passo">
+          <h3>La pinetina</h3>
+          <p>La pinetina dei Monti di San Paolo è andata persa per la cocciniglia. Nel 2025 il Municipio ha piantato peri fioriti al capolinea dell'08.</p>
+        </div>
+        <div class="passo">
+          <h3>Sentiero Pasolini</h3>
+          <p>Il sentiero curato dai volontari dal 2018, che arriva fino a via Nicolaiana.</p>
+        </div>
+        <div class="passo">
+          <h3>Le parrocchie</h3>
+          <p>San Maurizio Martire e San Leonardo da Porto Maurizio, con cui il comitato collabora.</p>
+        </div>
+        <div class="passo">
+          <h3>La casetta del comitato</h3>
+          <p>
+            {comitato.sede.indirizzo}, {comitato.sede.riferimento}. Aperta il {comitato.apertura.giorno}
+            {comitato.apertura.orario}.
+          </p>
+        </div>
+      </div>
+      <div class="azioni">
+        <a class="bottone bottone-vuoto" href={comitato.mappaQuartiere}>Guarda il quartiere sulla mappa</a>
+      </div>
+    </div>
+  </section>
+</Base>

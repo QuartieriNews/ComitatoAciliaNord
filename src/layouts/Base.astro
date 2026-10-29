@@ -1,0 +1,122 @@
+---
+import '@fontsource-variable/atkinson-hyperlegible-next';
+import '../styles/global.css';
+import { ANTEPRIMA } from '../config';
+import { comitato } from '../data/comitato';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Il comitato di quartiere di Monti di San Paolo e Poggio di Acilia, a Roma: segnalazioni, decoro, eventi e storia del quartiere.',
+} = Astro.props;
+
+const titoloCompleto = title ? `${title} – ${comitato.nome}` : comitato.nome;
+
+const voci = [
+  { href: '/chi-siamo/', nome: 'Chi siamo' },
+  { href: '/il-quartiere/', nome: 'Il quartiere' },
+  { href: '/news/', nome: 'Notizie' },
+  { href: '/giornalino/', nome: 'Giornalino' },
+  { href: '/partecipa/', nome: 'Partecipa' },
+  { href: '/contatti/', nome: 'Contatti' },
+];
+
+const percorso = Astro.url.pathname;
+const attiva = (href: string) => percorso.startsWith(href);
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titoloCompleto}</title>
+    <meta name="description" content={description} />
+    {ANTEPRIMA && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:title" content={titoloCompleto} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL('/logo-comitato.jpg', Astro.site)} />
+    <meta name="theme-color" content="#146c44" />
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+
+    <header class="testata">
+      <div class="testata-riga">
+        <a class="marchio" href="/">
+          <img src="/logo-comitato.webp" alt="" width="54" height="57" />
+          <span class="marchio-nome">
+            <span>Comitato di Quartiere</span>
+            <strong>Acilia Nord</strong>
+          </span>
+        </a>
+
+        <nav class="nav-ampia" aria-label="Menu principale">
+          <ul>
+            {voci.map((v) => (
+              <li>
+                <a href={v.href} aria-current={attiva(v.href) ? 'page' : undefined}>{v.nome}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <details class="nav-stretta">
+          <summary>Menu</summary>
+          <nav aria-label="Menu principale">
+            <ul>
+              <li><a href="/" aria-current={percorso === '/' ? 'page' : undefined}>Home</a></li>
+              {voci.map((v) => (
+                <li>
+                  <a href={v.href} aria-current={attiva(v.href) ? 'page' : undefined}>{v.nome}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </details>
+      </div>
+      <div class="fregio" aria-hidden="true"></div>
+    </header>
+
+    <main id="contenuto">
+      <slot />
+    </main>
+
+    <footer class="piede">
+      <div class="fregio" aria-hidden="true"></div>
+      <div class="contenitore">
+        <div class="piede-griglia">
+          <div>
+            <h2>La casetta</h2>
+            <p>{comitato.sede.indirizzo}, {comitato.sede.citta}</p>
+            <p>Aperta il {comitato.apertura.giorno} {comitato.apertura.orario}</p>
+            <p><a href={comitato.sede.mappa}>Apri la mappa</a></p>
+          </div>
+          <div>
+            <h2>Contatti</h2>
+            <p><a href={`mailto:${comitato.email}`}>{comitato.email}</a></p>
+            <p><a href={`tel:${comitato.telefonoLink}`}>{comitato.telefono}</a></p>
+          </div>
+          <div>
+            <h2>Seguici</h2>
+            <p><a href={comitato.facebook}>Pagina Facebook</a></p>
+            <p><a href={comitato.whatsapp.link}>{comitato.whatsapp.nome} su WhatsApp</a></p>
+          </div>
+        </div>
+        <div class="piede-fondo">
+          <span>{comitato.nomeStatuto}</span>
+          <span>Codice fiscale {comitato.codiceFiscale}</span>
+          <a href="/privacy/">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
