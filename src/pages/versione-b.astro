@@ -10,10 +10,10 @@ import { comitato, doveSiamo } from '../data/comitato';
 <Base versione="b">
   <ScenaHome />
 
-  <section class="fascia-casetta">
+  <section class="fascia-sede">
     <div class="contenitore fascia-riga">
       <p>
-        <strong>La casetta è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>, in {doveSiamo}.
+        <strong>La sede del comitato è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>, in {doveSiamo}.
       </p>
       <div class="fascia-azioni">
         <a class="fascia-bottone" href={comitato.sede.mappa}>Apri la mappa</a>
@@ -27,7 +27,7 @@ import { comitato, doveSiamo } from '../data/comitato';
 
 <style>
   /* La strada su cui poggiano le case */
-  .fascia-casetta {
+  .fascia-sede {
     background: var(--pino);
     color: #fff;
     padding: 1.35rem 0;

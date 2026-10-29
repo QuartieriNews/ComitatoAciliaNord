@@ -3,38 +3,49 @@ import Base from '../layouts/Base.astro';
 import { comitato } from '../data/comitato';
 ---
 
-<Base title="Contatti" description="Dove trovare il Comitato di Quartiere Acilia Nord: la casetta di via dei Monti di San Paolo 40, email, telefono e social.">
+<Base title="Contatti" description="Dove trovare il Comitato di Quartiere Acilia Nord: la sede in via dei Monti di San Paolo 40, email, telefono e social.">
   <section class="pagina-testa">
     <div class="contenitore">
       <h1>Contatti</h1>
       <p class="introduzione">
-        Il modo più semplice per parlarci è passare alla casetta il {comitato.apertura.giorno} sera. Altrimenti scrivici o
-        chiamaci.
+        Il modo più semplice per parlarci è passare alla sede del comitato il {comitato.apertura.giorno} sera. Altrimenti
+        scrivici o chiamaci.
       </p>
     </div>
   </section>
 
   <section class="sezione">
-    <div class="contenitore tre">
-      <div class="passo">
-        <h2>La casetta</h2>
-        <p>
-          {comitato.sede.indirizzo}<br />
-          {comitato.sede.citta}<br />
-          {comitato.sede.riferimento.charAt(0).toUpperCase() + comitato.sede.riferimento.slice(1)}
-        </p>
-        <p>Aperta il {comitato.apertura.giorno} {comitato.apertura.orario}.</p>
-        <a href={comitato.sede.mappa}>Apri la mappa</a>
+    <div class="contenitore">
+      <div class="mappa">
+        <iframe
+          src={comitato.sede.mappaIncorporata}
+          title={`Mappa di Google con la sede del comitato in ${comitato.sede.indirizzo}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
       </div>
-      <div class="passo">
-        <h2>Scrivici o chiamaci</h2>
-        <p><a href={`mailto:${comitato.email}`}>{comitato.email}</a></p>
-        <p><a href={`tel:${comitato.telefonoLink}`}>{comitato.telefono}</a></p>
-      </div>
-      <div class="passo">
-        <h2>Seguici</h2>
-        <p><a href={comitato.facebook}>Pagina Facebook del comitato</a></p>
-        <p><a href={comitato.whatsapp.link}>{comitato.whatsapp.nome}</a>, il nostro gruppo WhatsApp</p>
+
+      <div class="tre">
+        <div class="passo">
+          <h2>{comitato.sede.nome}</h2>
+          <p>
+            {comitato.sede.indirizzo}<br />
+            {comitato.sede.citta}<br />
+            {comitato.sede.riferimento.charAt(0).toUpperCase() + comitato.sede.riferimento.slice(1)}
+          </p>
+          <p>Aperta il {comitato.apertura.giorno} {comitato.apertura.orario}.</p>
+          <a href={comitato.sede.mappa}>Apri in Google Maps</a>
+        </div>
+        <div class="passo">
+          <h2>Scrivici o chiamaci</h2>
+          <p><a href={`mailto:${comitato.email}`}>{comitato.email}</a></p>
+          <p><a href={`tel:${comitato.telefonoLink}`}>{comitato.telefono}</a></p>
+        </div>
+        <div class="passo">
+          <h2>Seguici</h2>
+          <p><a href={comitato.facebook}>Pagina Facebook del comitato</a></p>
+          <p><a href={comitato.whatsapp.link}>{comitato.whatsapp.nome}</a>, il nostro gruppo WhatsApp</p>
+        </div>
       </div>
     </div>
   </section>

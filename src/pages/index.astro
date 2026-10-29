@@ -1,5 +1,5 @@
 ---
-// Home, versione A: intestazione con l'orario della casetta.
+// Home, versione A: intestazione con l'orario della sede del comitato.
 import Base from '../layouts/Base.astro';
 import HomeSezioni from '../components/HomeSezioni.astro';
 import { comitato, doveSiamo } from '../data/comitato';
@@ -9,7 +9,7 @@ import { comitato, doveSiamo } from '../data/comitato';
   <section class="apertura">
     <div class="apertura-griglia">
       <div>
-        <h1>Ogni {comitato.apertura.giorno}, {comitato.apertura.orario}, la casetta del comitato è aperta</h1>
+        <h1>Ogni {comitato.apertura.giorno}, {comitato.apertura.orario}, la sede del comitato è aperta</h1>
         <p>Vieni a portare una segnalazione, un'idea o una mano. Ci trovi in {doveSiamo}.</p>
         <div class="azioni">
           <a class="bottone bottone-pieno" href={comitato.sede.mappa}>Apri la mappa</a>
