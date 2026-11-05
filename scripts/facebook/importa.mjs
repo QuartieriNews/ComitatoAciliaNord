@@ -36,6 +36,15 @@
 // tutte le foto delle notizie già pubblicate. Serve dopo un cambio nel modo di salvare le foto; con R2
 // sposta anche le foto dal repository a R2.
 //
+// Archivio, avvio a mano con FB_ARCHIVIO_DAL=AAAA-MM-GG e FB_ARCHIVIO_DATASET=id1,id2 (campi «Archivio»
+// su GitHub): importa una volta sola i post vecchi, dal giorno indicato fino all'inizio delle notizie
+// (stato.inizio), prendendoli dai dataset di Apify già letti (rileggerli non costa niente). Valgono le
+// regole di sempre, più una: si salta anche il promemoria ripetuto a settimane o mesi di distanza
+// («Incontriamoci martedì in sede»), cioè lo stesso testo di una notizia precedente con la stessa data
+// dell'evento (o senza data). Le foto vanno su R2, più post alla volta. Non tocca le notizie che ci sono
+// già, non cancella niente e non cambia stato.json; il workflow carica il risultato sul ramo
+// «archivio-notizie», non sul sito, così titoli e sommari si sistemano prima di pubblicare.
+//
 // Per le prove senza Facebook: FB_FINTO=percorso/di/post.json (stesso formato della risposta di Facebook);
 // FB_FINTO_FOTO=percorso/di/foto.json ({ "indirizzo del post": [{ "image": "file:///..." }] }).
 // Per le prove senza Cloudflare: R2_ENDPOINT verso un server finto e R2_PUBBLICO con il suo indirizzo.
@@ -49,7 +58,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import YAML from 'yaml';
-import { titoloConData } from './data-evento.mjs';
+import { dataEvento, titoloConData } from './data-evento.mjs';
 
 const RADICE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CARTELLA_NOTIZIE = path.join(RADICE, 'src/content/news');
@@ -71,6 +80,11 @@ const MAX_FOTO = 40; // per post: un tetto di sicurezza, i post del comitato ne 
 const LATO_FOTO = 1600; // pixel del lato lungo della foto grande
 const LATO_MINI = 640; // pixel del lato lungo della miniatura
 const SOGLIA_FOTO_UGUALI = 6; // differenza massima tra le impronte di due foto «uguali»
+
+// Archivio (vedi sopra): da quando, e da quali dataset di Apify
+const ARCHIVIO_DAL = (process.env.FB_ARCHIVIO_DAL || '').trim();
+const ARCHIVIO_DATASET = (process.env.FB_ARCHIVIO_DATASET || '').split(',').map((s) => s.trim()).filter(Boolean);
+const POST_IN_PARALLELO = Number(process.env.FB_POST_IN_PARALLELO) || 6; // quanti post alla volta per le foto dell'archivio
 
 // Lo spazio R2 di Cloudflare per le foto: il contenitore e il suo indirizzo pubblico.
 // Al lancio del sito l'indirizzo pubblico diventerà un sottodominio di comitatoacilianord.it.
@@ -414,13 +428,17 @@ async function scaricaFoto(fonti, chi) {
   return foto;
 }
 
-// Le foto di una notizia: tutte quelle del post se si riesce a leggerle, altrimenti quelle del lettore dei post
+// Le foto di una notizia: tutte quelle del post se si riesce a leggerle, altrimenti quelle del lettore dei post.
+// Se anche quelle non si scaricano (i loro indirizzi scadono dopo qualche giorno), valgono le foto trovate
+// dal lettore delle foto, anche se sono meno.
 async function preparaFoto(p) {
   const delPost = fontiFoto(p);
   if (!delPost.length) return [];
   const tutte = eVideo(p) ? [] : await fotoComplete(p.permalink_url);
   const foto = tutte.length >= delPost.length ? await scaricaFoto(tutte, `${p.id}`) : [];
-  return foto.length ? foto : scaricaFoto(delPost, `${p.id}`);
+  if (foto.length) return foto;
+  const delLettore = await scaricaFoto(delPost, `${p.id}`);
+  return delLettore.length || !tutte.length || tutte.length >= delPost.length ? delLettore : scaricaFoto(tutte, `${p.id}`);
 }
 
 // ---------- Dove stanno le foto ----------
@@ -700,13 +718,17 @@ function mettiVideo(notizia, p) {
   notizia.dati.video = { url, verticale };
 }
 
-async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
-  const senzaData = primaFrase(testo);
-  const titolo = titoloConData(senzaData, testo, p.created_time);
-  const base = `${dataRoma(p.created_time)}-${slugDa(senzaData) || 'notizia'}`;
+// Il nome del file (e l'indirizzo) di una notizia nuova: il giorno e le prime parole del titolo provvisorio
+function nuovoSlug(p, testo, slugEsistenti) {
+  const base = `${dataRoma(p.created_time)}-${slugDa(primaFrase(testo)) || 'notizia'}`;
   let slug = base;
   for (let n = 2; slugEsistenti.has(slug); n++) slug = `${base}-${n}`;
   slugEsistenti.add(slug);
+  return slug;
+}
+
+async function creaNotizia(p, testo, foto, firma, slugEsistenti, slug = nuovoSlug(p, testo, slugEsistenti)) {
+  const titolo = titoloConData(primaFrase(testo), testo, p.created_time);
 
   const notizia = {
     file: path.join(CARTELLA_NOTIZIE, `${slug}.md`),
@@ -778,6 +800,156 @@ async function togliNotizia(notizia) {
   await togliDaR2(chiaviSuR2(notizia.dati.foto));
 }
 
+// ---------- Archivio ----------
+
+// Mezzanotte a Roma del giorno indicato (AAAA-MM-GG)
+function mezzanotteRoma(giorno) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(giorno)) throw new Error(`Data dell'archivio non valida: «${giorno}» (serve AAAA-MM-GG).`);
+  const utc = new Date(`${giorno}T00:00:00Z`);
+  const ora = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', hourCycle: 'h23' }).format(utc));
+  return new Date(utc.getTime() - ora * 60 * 60 * 1000);
+}
+
+// Tutti i post di un dataset di Apify già letto
+async function leggiDatasetApify(token, id) {
+  const voci = [];
+  for (let offset = 0; ; offset += 1000) {
+    const risposta = await fetch(
+      `https://api.apify.com/v2/datasets/${encodeURIComponent(id)}/items?clean=true&format=json&offset=${offset}&limit=1000`,
+      { headers: { authorization: `Bearer ${token}` } },
+    );
+    const dati = await risposta.json().catch(() => null);
+    if (!risposta.ok || !Array.isArray(dati)) {
+      throw new ErroreApify(`Il dataset ${id} di Apify non si legge (${risposta.status}): ${JSON.stringify(dati)?.slice(0, 300)}`);
+    }
+    voci.push(...dati);
+    if (dati.length < 1000) break;
+  }
+  return voci.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+}
+
+// Il promemoria ripetuto a qualsiasi distanza di tempo: stesso testo di una notizia precedente e stessa
+// data dell'evento, o nessuna data per tutti e due. Lo stesso testo con un'altra data è un altro evento.
+function trovaRipetuto(firma, quando, creato, elenco) {
+  if (!firma.testo) return undefined;
+  const t = new Date(creato).getTime();
+  return elenco.find((n) => {
+    const f = n.dati.firma ?? {};
+    return 'quando' in n && n.quando === quando && new Date(n.dati.date).getTime() <= t && f.testo && stessoTesto(firma.testo, f.testo);
+  });
+}
+
+// Fa «lavoro» su ogni elemento, al massimo «quanti» alla volta; al primo errore non ne comincia altri
+async function inParallelo(elementi, quanti, lavoro) {
+  let prossimo = 0;
+  let errore = null;
+  const operaio = async () => {
+    while (!errore && prossimo < elementi.length) {
+      const elemento = elementi[prossimo++];
+      try {
+        await lavoro(elemento);
+      } catch (e) {
+        errore ??= e;
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(quanti, elementi.length) }, operaio));
+  if (errore) throw errore;
+}
+
+async function importaArchivio(tokenApify, fintoApify) {
+  if (!r2) throw new Error("Per l'archivio le foto devono andare su R2, ma i segreti R2_* non ci sono.");
+  const stato = await leggiStato();
+  const dal = mezzanotteRoma(ARCHIVIO_DAL);
+  const al = process.env.FB_ARCHIVIO_AL ? mezzanotteRoma(process.env.FB_ARCHIVIO_AL) : new Date(stato.inizio);
+  if (!(dal < al)) throw new Error(`Archivio: il ${ARCHIVIO_DAL} non viene prima dell'inizio delle notizie (${al.toISOString()}).`);
+
+  let letti;
+  if (fintoApify) {
+    letti = JSON.parse(await readFile(fintoApify, 'utf8'))
+      .filter((voce) => voce && voce.postId && !voce.error)
+      .map(daApify);
+  } else {
+    if (!ARCHIVIO_DATASET.length) throw new Error("Archivio: serve almeno un dataset di Apify (FB_ARCHIVIO_DATASET).");
+    letti = [];
+    for (const id of ARCHIVIO_DATASET) {
+      const dalDataset = await leggiDatasetApify(tokenApify, id);
+      console.log(`Dataset ${id}: ${dalDataset.length} post.`);
+      letti.push(...dalDataset);
+    }
+  }
+  // i dataset si possono sovrapporre: ogni post una volta sola
+  const perId = new Map();
+  for (const p of letti) if (!perId.has(p.id)) perId.set(p.id, p);
+  const post = [...perId.values()]
+    .filter((p) => p.created_time && new Date(p.created_time) >= dal && new Date(p.created_time) < al)
+    .sort((a, b) => new Date(a.created_time) - new Date(b.created_time));
+  const periodo = `dal ${dataRoma(dal)} al ${dataRoma(new Date(al.getTime() - 1))}`;
+  console.log(`Archivio ${periodo}: ${post.length} post.`);
+
+  const notizie = await leggiNotizie();
+  const slugEsistenti = new Set(notizie.elenco.map((n) => n.slug));
+  const saltati = {};
+  const salta = (motivo) => (saltati[motivo] = (saltati[motivo] ?? 0) + 1);
+
+  // Le impronte delle prime foto servono per riconoscere i doppioni: si calcolano prima, più post alla volta
+  const impronte = new Map();
+  const conTesto = post.filter((p) => !notizie.perId.has(p.id) && !motivoPerSaltare(p, testoDelPost(p)));
+  await inParallelo(conTesto, 8, async (p) => impronte.set(p.id, await improntaPrimaFoto(p)));
+
+  // Quali post diventano notizie, dal più vecchio, con le regole di sempre più quella dei promemoria
+  const scelti = [];
+  for (const p of post) {
+    if (notizie.perId.has(p.id)) {
+      salta('già tra le notizie');
+      continue;
+    }
+    const testo = testoDelPost(p);
+    const motivo = motivoPerSaltare(p, testo);
+    if (motivo) {
+      salta(motivo);
+      continue;
+    }
+    const firma = { testo: improntaTesto(testo), foto: impronte.get(p.id) ?? null, link: linkEsterno(p) };
+    const quando = dataEvento(testo, p.created_time)?.data ?? null;
+    if (trovaDoppione(firma, p.created_time, notizie.elenco)) {
+      salta('uguale a una notizia dei 7 giorni prima');
+      continue;
+    }
+    if (trovaRipetuto(firma, quando, p.created_time, notizie.elenco)) {
+      salta('promemoria ripetuto');
+      continue;
+    }
+    const slug = nuovoSlug(p, testo, slugEsistenti);
+    notizie.elenco.push({ slug, quando, dati: { date: new Date(p.created_time).toISOString(), firma } });
+    scelti.push({ p, testo, firma, slug });
+  }
+  console.log(`Notizie da creare: ${scelti.length}. Post saltati: ${JSON.stringify(saltati)}`);
+
+  // Le notizie, con tutte le foto su R2: più post alla volta, perché ogni lettura delle foto dura qualche secondo
+  let fatte = 0;
+  const nonRiuscite = [];
+  await inParallelo(scelti, POST_IN_PARALLELO, async ({ p, testo, firma, slug }) => {
+    try {
+      await creaNotizia(p, testo, await preparaFoto(p), firma, slugEsistenti, slug);
+      fatte++;
+    } catch (errore) {
+      nonRiuscite.push(slug);
+      console.warn(`Notizia non creata: ${slug} (${errore.message})`);
+    }
+    if (ripieghiR2 > 5) throw new Error("R2 non risponde: l'archivio si ferma, per non riempire il repository di foto.");
+    if (nonRiuscite.length > 20) throw new Error("Troppe notizie non riuscite: l'archivio si ferma.");
+    if ((fatte + nonRiuscite.length) % 25 === 0) console.log(`Archivio: ${fatte} notizie pronte su ${scelti.length}.`);
+  });
+
+  const messaggio =
+    `Notizie da Facebook: archivio ${periodo}, ${fatte} ${fatte === 1 ? 'notizia' : 'notizie'}` +
+    (nonRiuscite.length ? ` (${nonRiuscite.length} non riuscite: ${nonRiuscite.join(', ')})` : '') +
+    notaR2();
+  await writeFile(FILE_MESSAGGIO, messaggio);
+  console.log(messaggio);
+}
+
 // ---------- Stato ----------
 
 async function leggiStato() {
@@ -811,6 +983,8 @@ async function main() {
     console.log(messaggio);
     return;
   }
+
+  if (ARCHIVIO_DAL) return importaArchivio(tokenApify, fintoApify);
 
   const adesso = Date.now();
   const stato = await leggiStato();
