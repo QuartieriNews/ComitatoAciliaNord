@@ -5,14 +5,15 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
 
 <Base
   title="Partecipa"
-  description="Come partecipare alla vita del Comitato di Quartiere Acilia Nord 2018: la sede aperta il martedì, le segnalazioni, Radio Acilia Nord, l'iscrizione e le donazioni."
+  description="Come partecipare alla vita del Comitato di Quartiere Acilia Nord 2018: la sede aperta il martedì, gli eventi, l'iscrizione e le donazioni."
 >
   <section class="pagina-testa">
     <div class="contenitore">
       <h1>Partecipa</h1>
       <p class="introduzione">
-        Il comitato è fatto da chi abita qui. Si può dare una mano in tanti modi, anche piccoli: basta un'ora il martedì
-        sera o una foto mandata al momento giusto.
+        Il comitato è fatto da chi abita qui, e anche un gesto piccolo aiuta: partecipa alle nostre giornate per il decoro
+        o ai nostri eventi culturali, diventa socio o fai una donazione. E per sapere cosa succede nel quartiere, seguici
+        su <a href={comitato.facebook}>Facebook</a> e su <a href={comitato.whatsapp.link}>WhatsApp</a>.
       </p>
     </div>
   </section>
@@ -22,34 +23,20 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
       <div>
         <h2>Vieni alla sede del comitato</h2>
         <p>
-          Ogni {comitato.apertura.giorno} {comitato.apertura.orario} siamo in {doveSiamo}. Porta un'idea, una
-          segnalazione, o passa solo a conoscerci.
+          Ogni {comitato.apertura.giorno} {comitato.apertura.orario} siamo in {doveSiamo}. Porta un'idea o passa solo a
+          conoscerci.
         </p>
         <p>Le assemblee pubbliche e gli eventi si tengono di solito al Casale Raggio di Sole, in via di Monte Cugno 10.</p>
         <a class="bottone bottone-vuoto" href={comitato.sede.mappa}>Apri la mappa</a>
       </div>
-      <div>
-        <h2>Entra in {comitato.whatsapp.nome}</h2>
-        <p>È il gruppo WhatsApp del comitato: avvisi, iniziative e notizie del quartiere, direttamente sul telefono.</p>
-        <a class="bottone bottone-pieno" href={comitato.whatsapp.link}>Entra nel gruppo</a>
+      <div id="eventi">
+        <h2>Vieni e partecipa ai nostri eventi</h2>
+        <p>
+          Puliamo giardini e aree verdi, organizziamo passeggiate, feste e incontri per il quartiere. Una mano in più è
+          sempre utile, anche solo per una mattina. Le prossime giornate le trovi nelle <a href="/news/">notizie</a>.
+        </p>
+        <a class="bottone bottone-pieno" href={`mailto:${comitato.email}?subject=Voglio%20dare%20una%20mano`}>Scrivici per dare una mano</a>
       </div>
-    </div>
-  </section>
-
-  <section class="sezione" id="segnalazioni">
-    <div class="contenitore misura">
-      <h2>Segnala un problema</h2>
-      <p>
-        Rifiuti abbandonati, buche, lampioni spenti, verde da curare: mandaci la segnalazione e la portiamo noi agli uffici
-        competenti, seguendola fino alla risposta. Perché sia utile, metti:
-      </p>
-      <ul>
-        <li>una foto del problema;</li>
-        <li>l'indirizzo preciso, o un punto di riferimento vicino;</li>
-        <li>due righe di descrizione: da quanto tempo c'è, se è pericoloso.</li>
-      </ul>
-      <a class="bottone bottone-pieno" href={`mailto:${comitato.email}?subject=Segnalazione`}>Scrivi una segnalazione</a>
-      <p class="tenue nota">Il comitato non è un servizio di pronto intervento: per le emergenze chiama il 112.</p>
     </div>
   </section>
 
