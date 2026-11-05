@@ -351,7 +351,8 @@ const social = [
     position: relative;
     overflow: hidden;
     background: var(--carta-b);
-    height: clamp(calc(1080 * var(--u) * 0.84), calc(100svh - 4.4rem), calc(1080 * var(--u)));
+    /* 4.85rem: l'altezza della testata sul computer, così testata e scena insieme riempiono lo schermo */
+    height: clamp(calc(1080 * var(--u) * 0.84), calc(100svh - 4.85rem), calc(1080 * var(--u)));
   }
 
   .scena svg {

@@ -29,6 +29,11 @@ const voci = [
   { href: '/contatti/', nome: 'Contattaci' },
 ];
 
+// Sul computer «Partecipa» è un bottone in fondo al menu (proposta A della testata, scelta da Riccardo
+// il 5 novembre 2026); nel menu del telefono resta al suo posto fra le voci
+const INVITO = '/partecipa/';
+const vociAmpie = [...voci.filter((v) => v.href !== INVITO), ...voci.filter((v) => v.href === INVITO)];
+
 const percorso = Astro.url.pathname;
 const attiva = (href: string) => percorso.startsWith(href);
 ---
@@ -57,14 +62,16 @@ const attiva = (href: string) => percorso.startsWith(href);
       <div class="testata-riga">
         <a class="marchio" href="/">
           <img src="/logo-comitato.webp" alt="" width="54" height="57" />
-          <span class="marchio-nome"><span>Comitato di Quartiere</span>{' '}<span>Acilia Nord 2018</span></span>
+          <span class="marchio-nome"><span class="marchio-sopra">Comitato di Quartiere</span>{' '}<span class="marchio-sotto">Acilia Nord 2018</span></span>
         </a>
 
         <nav class="nav-ampia" aria-label="Menu principale">
           <ul>
-            {voci.map((v) => (
+            {vociAmpie.map((v) => (
               <li>
-                <a href={v.href} aria-current={attiva(v.href) ? 'page' : undefined}>{v.nome}</a>
+                <a class:list={[{ 'nav-invito': v.href === INVITO }]} href={v.href} aria-current={attiva(v.href) ? 'page' : undefined}>
+                  {v.nome}
+                </a>
               </li>
             ))}
           </ul>

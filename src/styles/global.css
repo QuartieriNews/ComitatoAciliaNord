@@ -127,38 +127,49 @@ ol {
   background: var(--carta-b);
 }
 
+/* La testata segue la proposta A scelta da Riccardo il 5 novembre 2026 («più leggera»): nome su due righe,
+   voci del menu non in grassetto e più distanziate, «Partecipa» come bottone. Sul telefono resta com'era. */
 .testata-riga {
   width: min(100% - 2rem, var(--larghezza));
   margin-inline: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.7rem 0;
+  gap: 2rem;
+  padding: 0.85rem 0;
 }
 
 .marchio {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.8rem;
   text-decoration: none;
 }
 
 .marchio img {
-  width: 48px;
+  width: 54px;
   border-radius: 50%;
 }
 
+/* Il nome su due righe: «Comitato di Quartiere» piccolo e azzurro, «Acilia Nord 2018» grande */
 .marchio-nome {
+  display: flex;
+  flex-direction: column;
   color: var(--inchiostro);
-  font-size: 1.05rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
-/* se il nome non sta su una riga, va a capo solo fra «Comitato di Quartiere» e «Acilia Nord 2018» */
-.marchio-nome span {
-  white-space: nowrap;
+.marchio-sopra {
+  color: #0f6a8d;
+  font-size: 0.85rem;
+}
+
+.marchio-sotto {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .nav-ampia ul,
@@ -168,15 +179,12 @@ ol {
   padding: 0;
 }
 
-/* Voci un po' più piccole e più vicine: con «La nostra storia», «Le notizie» e «Contattaci» le sette voci
-   stanno ancora accanto al nome su una riga (la riga è larga al massimo 70rem) */
+/* Le sette voci stanno su una riga accanto al nome (la riga è larga al massimo 70rem); sui computer
+   più piccoli lo spazio fra le voci si stringe un po' */
 .nav-ampia ul {
   display: flex;
-  gap: 0.9rem;
-}
-
-.nav-ampia a {
-  font-size: 0.95rem;
+  align-items: center;
+  gap: min(1.55rem, 2vw);
 }
 
 .nav-ampia a,
@@ -189,10 +197,35 @@ ol {
   border-bottom: 3px solid transparent;
 }
 
+.nav-ampia a {
+  font-size: 0.975rem;
+  font-weight: 500;
+}
+
 .nav-ampia a:hover,
 .nav-ampia a[aria-current='page'] {
   color: var(--pino);
   border-bottom-color: var(--pino);
+}
+
+/* «Partecipa», l'invito principale del sito: un bottone verde in fondo al menu */
+.nav-ampia .nav-invito {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pino);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.nav-ampia .nav-invito:hover,
+.nav-ampia .nav-invito[aria-current='page'] {
+  background: var(--pino-scuro);
+  color: #fff;
 }
 
 .nav-stretta {
@@ -251,8 +284,14 @@ ol {
   }
 }
 
-/* Telefoni: il nome va su due righe e il pulsante del menu mostra solo l'icona */
+/* Telefoni: la testata resta com'era prima della proposta A (le due righe del nome uguali, in grassetto)
+   e il pulsante del menu mostra solo l'icona */
 @media (max-width: 30rem) {
+  .testata-riga {
+    gap: 1rem;
+    padding: 0.7rem 0;
+  }
+
   .marchio {
     gap: 0.55rem;
   }
@@ -263,10 +302,15 @@ ol {
 
   .marchio-nome {
     font-size: 0.95rem;
+    line-height: 1.2;
   }
 
-  .marchio-nome span {
-    display: block;
+  .marchio-sopra,
+  .marchio-sotto {
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: normal;
   }
 
   .nav-stretta summary {
