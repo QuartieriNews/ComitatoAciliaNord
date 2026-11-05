@@ -1,8 +1,8 @@
 ---
-title: Insieme per il decoro
+title: Ripulito il Parco Todis e liberati i marciapiedi vicini
 date: 2026-10-25T13:49:05.000Z
 category: decoro
-summary: Oggi al Poggio di Acilia Oggi siamo tornati al Parco Todis del Poggio di Acilia e dintorni per mantenere il decoro di questa parte del quartiere con una serie di ■…
+summary: Domenica 25 ottobre i volontari hanno raccolto rifiuti, tagliato l'erba, potato rami e una grande siepe. Su richiesta del comitato, Ama ha messo due cestini sul pratone.
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/1-182993a3.webp
 imageAlt: ""
 foto:
@@ -81,7 +81,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0EGGVw7wSEPwc9hz3RUkjeZrwnXW6F3KA6V7WXBHmAJomTRAWgHiHppMrbg6FKYFMl
 facebook_id: "1124874420097974"
 versione: 615a61df36ab
-ai: false
+ai: true
 firma:
   testo: insieme per il decoro oggi al poggio di acilia oggi siamo tornati al parco todis del poggio di acilia e dintorni per mantenere il decoro di questa parte del quartiere con una serie di attivita raccolti rifiuti di ogni genere e tipo scontrini bottiglie lattine cartacce pacchetti di sigarette etc tagliata erba del pratone potati rami secchi bassi degli alberi ad alto fusto rimosse voluminose
   foto: "5343e36933800400"

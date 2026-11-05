@@ -1,0 +1,23 @@
+---
+title: Open day all'istituto Calderini Tuccimei, primaria e secondaria – venerdì 16 gennaio
+date: 2026-01-15T08:26:08.000Z
+category: eventi
+summary: Venerdì 16 gennaio le scuole primaria e secondaria dell'istituto aprono le porte alle famiglie; i riferimenti sono nella locandina.
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-01-15-open-day/1-f107d145.webp
+imageAlt: ""
+foto:
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-01-15-open-day/1-f107d145.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-01-15-open-day/1-f107d145-mini.webp
+    w: 1075
+    h: 1504
+facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0HzqDUFDd2W3S51RZTyxfhwCAU1WvBTRwBVvAYRrfHMYFWB7B2z7LgeS5T1ikDihNl
+facebook_id: "885780680674017"
+versione: 73f8d995c78d
+ai: true
+firma:
+  testo: open day scuole del nostro quartiere domani 16 gennaio open day dell istituto calderini tuccimei scuola primaria e secondaria nella locandina riferimenti e dettagli
+  foto: d9d1d9d9a0ccccd6
+  link: null
+---
+
+OPEN DAY 🙋🙋‍♀️🙋‍♂️ Scuole del nostro quartiere; domani 16 Gennaio Open day dell'Istituto Calderini Tuccimei - Scuola Primaria e Secondaria; nella locandina riferimenti e dettagli 🧐

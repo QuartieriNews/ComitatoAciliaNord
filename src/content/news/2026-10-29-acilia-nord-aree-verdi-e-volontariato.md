@@ -1,8 +1,8 @@
 ---
-title: Acilia Nord aree verdi e volontariato
+title: Nuova giornata di cura del Parco dei Monti di San Paolo
 date: 2026-10-29T10:25:47.000Z
-category: verde
-summary: Anche oggi al lavoro sul Parco dei Monti di San Paolo, grazie di cuore a Massimo e a Osvaldo per la loro disponibilità A tutte e tutti Voi la richiesta di aiutarci a…
+category: decoro
+summary: "Giovedì 29 ottobre i nostri volontari sono tornati al lavoro nel parco: a tutti l'invito ad aiutarci a tenere pulito il quartiere e a sostenere il comitato."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-1789b7d7.webp
 imageAlt: ""
 foto:
@@ -37,7 +37,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02pSKaz7iyn3jAXiqWFVmAoQ975YjdMyYc4BFtBTnw1YEt7ev7vhKSRqLadV8tnffrl
 facebook_id: "1128571599728256"
 versione: c85c3880c20e
-ai: false
+ai: true
 firma:
   testo: acilia nord aree verdi e volontariato anche oggi al lavoro sul parco dei monti di san paolo grazie di cuore a massimo e a osvaldo per la loro disponibilita a tutte e tutti voi la richiesta di aiutarci a mantenere pulito il nostro quartiere e a sostenere il comitato di quartiere nella locandina contatti e riferimenti
   foto: 2044c083c47cf0f4

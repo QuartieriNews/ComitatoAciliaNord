@@ -1,8 +1,8 @@
 ---
-title: AMAILTUOQUARTIERE Raccolte del Weekend – Fai Spazio con (24 e 25 ottobre)
+title: Raccolte del weekend di Ama nel Municipio X – 24 e 25 ottobre
 date: 2026-10-23T15:33:08.000Z
 category: decoro
-summary: Sabato 24 e Domenica 25 Ottobre, nuovo appuntamento nel Municipio Roma X con la campagna di sensibilizzazione ambientale “Raccolte del Weekend – Fai Spazio con AMA”,…
+summary: "Sabato 24 e domenica 25 ottobre si possono lasciare ad Ama i rifiuti che non vanno nei cassonetti: legno, metalli, ingombranti, RAEE, sfalci e abiti usati."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-23-amailtuoquartiere-raccolte-del-weekend-fai-spazio/1-d022925a.webp
 imageAlt: ""
 foto:
@@ -17,7 +17,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02zgXtpqEj37tmwUSwZi2L9U9YoDmrbo69Lwh4jbvMm82AYuJYaoANocpWd1NqY1nvl
 facebook_id: "1123106316941451"
 versione: 1bb1c2d9001b
-ai: false
+ai: true
 firma:
   testo: amailtuoquartiere raccolte del weekend fai spazio con sabato 24 e domenica 25 ottobre nuovo appuntamento nel municipio roma x con la campagna di sensibilizzazione ambientale raccolte del weekend fai spazio con organizzata da in collaborazione con il tgr lazio rai un occasione per disfarsi dei rifiuti che non possono essere conferiti nei cassonetti legno metallo ingombranti divani materassi raee
   foto: dd36321a3171595d

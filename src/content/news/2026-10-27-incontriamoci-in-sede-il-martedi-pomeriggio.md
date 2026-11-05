@@ -1,8 +1,8 @@
 ---
-title: Incontriamoci in sede il martedi pomeriggio
+title: Ancora un martedì pomeriggio nella sede del comitato
 date: 2026-10-27T07:35:42.000Z
-category: eventi
-summary: Nella locandina tutti i dettagli per contattarci, chiederci appuntamento, dare un contributo, tenersi aggiornati sulle criticita' e sui progetti del nostro quartiere E…
+category: comitato
+summary: "Anche martedì 27 ottobre la sede di via dei Monti di San Paolo 40 è aperta: si può passare per un appuntamento, un contributo o per aggiornarsi sul quartiere."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-27-incontriamoci-in-sede-il-martedi-pomeriggio/1-7190f559.webp
 imageAlt: ""
 foto:
@@ -13,7 +13,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0s6XWyWJv4oPmXT9nVXEewE2dMuPW1zkJLEBfqCVEKtu9ghZ1rcyzEkvPjEyQWcyDl
 facebook_id: "1126509266601156"
 versione: 10efb7282407
-ai: false
+ai: true
 firma:
   testo: incontriamoci in sede il martedi pomeriggio nella locandina tutti i dettagli per contattarci chiederci appuntamento dare un contributo tenersi aggiornati sulle criticita e sui progetti del nostro quartiere e anche oggi siamo in sede a via dei monti di san paolo 40 vi aspettiamo
   foto: 33f0e4d4f0d1d09f

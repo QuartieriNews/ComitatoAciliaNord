@@ -1,8 +1,8 @@
 ---
-title: Insieme per il decoro ai Monti di San Paolo
+title: Ripulito il Parco dei Monti di San Paolo con i ragazzi della FTS
 date: 2026-10-18T20:22:31.000Z
 category: decoro
-summary: Ringraziamo di cuore tutti i cittadini che stamattina sono passati a trovarci e gli amici che oggi si sono dedicati al volontariato ai Monti di San Paolo Per il Cdq…
+summary: "Domenica 18 ottobre gazebo informativo e pulizia del parco all'angolo con via Daniele Badiali: grazie ai cittadini passati a trovarci e ai volontari."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/1-b68c2f33.webp
 imageAlt: ""
 foto:
@@ -33,7 +33,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0V2NBjqJjicmHbPaNJ6VLC2kCEXkWLS7tZXduEHo7LrWK5wzazDjQMPhFPqQfQ1fSl
 facebook_id: "1118685370716879"
 versione: ff63b8c3e68e
-ai: false
+ai: true
 firma:
   testo: insieme per il decoro ai monti di san paolo ringraziamo di cuore tutti i cittadini che stamattina sono passati a trovarci e gli amici che oggi si sono dedicati al volontariato ai monti di san paolo per il cdq grazie a stefania ed enzo al gazebo informativo massimo maurizio e davide al decoro del parco dei monti di san paolo angolo via daniele badiali ma soprattutto grazie alla fts con i suoi
   foto: 0e868f869490b51f

@@ -1,8 +1,8 @@
 ---
-title: Passeggiata storico-naturalistica ad Acilia
+title: Oltre sessanta persone alla passeggiata sulle orme di Michele
 date: 2026-10-25T06:41:10.000Z
-category: storia
-summary: <<Sulle orme di Michele>> Pubblichiamo con piacere il messaggio ricevuto da una nostra amica che condividiamo a pieno << bellissimo evento organizzato ieri dal comitato,…
+category: eventi
+summary: Sabato 24 ottobre si è camminato lungo il Tevere, ai confini di Ficana, ascoltando lo storico Piero Labbadia e le poesie di Michele lette dal suo papà.
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1-37cbc0ec.webp
 imageAlt: ""
 foto:
@@ -53,7 +53,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02W9fyBojoTEpD9kDJg9sCy6k7Vh7a6vQN6kkK7KDjvjNiLXLBZmbYAgM4hCYZmhksl
 facebook_id: "1124580550127361"
 versione: 3a4a965a8a2f
-ai: false
+ai: true
 firma:
   testo: passeggiata storico naturalistica ad acilia sulle orme di michele pubblichiamo con piacere il messaggio ricevuto da una nostra amica che condividiamo a pieno bellissimo evento organizzato ieri dal comitato una splendida passeggiata nel silenzio dei confini di ficana vista dal basso ma che racchiude tutto il suo storico mistero il tevere ci ha accolto con un panorama silenzioso piu di sessanta
   foto: 5949858c48498d9b

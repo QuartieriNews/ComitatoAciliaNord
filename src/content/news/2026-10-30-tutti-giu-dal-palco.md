@@ -1,8 +1,8 @@
 ---
-title: Tutti giu' dal palco – da venerdì 13 novembre
+title: Tutti giù dal palco, laboratorio teatrale per tutte le età – da venerdì 13 novembre
 date: 2026-10-30T08:49:20.000Z
 category: eventi
-summary: Ti piacerebbe conoscere nuove persone e passarci del tempo insieme divertendoti ? se si partecipa al Laboratorio teatrale gratuito che il Cdq ha organizzato per tutte le…
+summary: Dal 13 novembre, ogni venerdì dalle 18 alle 20 nella sede del comitato, incontri gratuiti per scoprire le emozioni e conoscere nuovi amici. Iscrizioni via WhatsApp o email.
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-30-tutti-giu-dal-palco/1-a275275f.webp
 imageAlt: ""
 foto:
@@ -13,7 +13,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02nhQpi5zKoahsxXzXaZqXemRhfxniCeh1Pq9PKoZxLJYGxxQg7c9XbWaNG3B5Kaqal
 facebook_id: "1129487176303365"
 versione: e4af45ac6fca
-ai: false
+ai: true
 firma:
   testo: tutti giu dal palco ti piacerebbe conoscere nuove persone e passarci del tempo insieme divertendoti se si partecipa al laboratorio teatrale gratuito che il cdq ha organizzato per tutte le eta quando a partire dal 13 novembre ci saranno incontri ogni venerdi dalle 18 00 alle 20 00 presso la sede del comitato in via dei monti di san paolo 40 casetta di legno fronte bar ufficio postale sara un
   foto: 137949bb68b4b4be

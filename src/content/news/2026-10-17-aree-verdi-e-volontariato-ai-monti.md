@@ -1,8 +1,8 @@
 ---
-title: Aree verdi e volontariato ai Monti di San Paolo
+title: I volontari si prendono cura del Parco dell'Amicizia
 date: 2026-10-17T09:59:46.000Z
-category: verde
-summary: Questa settimana ci siamo dedicati al Parco dell' Amicizia, l'area verde a ridosso della sede del Cdq in Via dei Monti di San Paolo civico 40 I nostri volontari Massimo…
+category: decoro
+summary: "Accanto alla sede del comitato, in via dei Monti di San Paolo 40, il lavoro continua per rendere il parco più accogliente: aiutateci a tenerlo pulito."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1-09a09ab6.webp
 imageAlt: ""
 foto:
@@ -33,7 +33,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0RGVV3WcMcyTYXezVzCBMz4BTgnePFTx2AerVeFQchCDTroa7MHjj4YfoTD9onKq5l
 facebook_id: "1117302474188502"
 versione: 8d1df727c414
-ai: false
+ai: true
 firma:
   testo: aree verdi e volontariato ai monti di san paolo questa settimana ci siamo dedicati al parco dell amicizia l area verde a ridosso della sede del cdq in via dei monti di san paolo civico 40 i nostri volontari massimo e osvaldo continuano a lavorare per mantenere qui il decoro e per rendere sempre piu accogliente questa area per favore aiutateci a mantenerlo pulito se volete supportare il cdq
   foto: f73630b080c038f4

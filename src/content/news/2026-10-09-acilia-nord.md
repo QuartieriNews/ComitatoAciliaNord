@@ -1,8 +1,8 @@
 ---
-title: Acilia Nord – domenica 11 ottobre
+title: Donazione del sangue nella parrocchia di San Maurizio Martire – domenica 11 ottobre
 date: 2026-10-09T06:44:17.000Z
-category: comitato
-summary: _ IL POGGIO DONAZIONE SANGUE DOMENICA 11 OTTOBRE ci vediamo per la Donazione sangue presso la nostra Parrocchia di San Maurizio Martire nella locandina tutti i dettagli
+category: eventi
+summary: "Domenica 11 ottobre si dona il sangue al Poggio di Acilia, nella nostra parrocchia: tutti i dettagli sono nella locandina."
 image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-09-acilia-nord/1-5390b552.webp
 imageAlt: ""
 foto:
@@ -21,7 +21,7 @@ foto:
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02kkGc885p1hJGHfPunGtmwZSYZfosnT5ShvF1h2F8NeWjcaPRUuwdridy4hbNSxQrl
 facebook_id: "1109667768285306"
 versione: 0db97d42dd8c
-ai: false
+ai: true
 firma:
   testo: acilia nord il poggio donazione sangue domenica 11 ottobre ci vediamo per la donazione sangue presso la nostra parrocchia di san maurizio martire nella locandina tutti i dettagli
   foto: 96dcc89eac689870
