@@ -5,6 +5,11 @@ category: storia
 summary: Ti piacerebbe passeggiare sugli argini del Tevere qui dietro casa per conoscere meglio la Riserva Statale del Litorale romano, la Storia del nostro territorio e…
 image: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1.webp
+    mini: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0yxGd9d47BsnqZ32diqBpyxuufETALEAMixRk85jgVvSpY8avDEEKypwtV9YxpefWl
 facebook_id: "1119443917307691"
 versione: dfc27d3e5b96

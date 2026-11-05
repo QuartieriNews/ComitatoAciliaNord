@@ -5,6 +5,35 @@ category: verde
 summary: Anche oggi al lavoro sul Parco dei Monti di San Paolo, grazie di cuore a Massimo e a Osvaldo per la loro disponibilità A tutte e tutti Voi la richiesta di aiutarci a…
 image: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-mini.webp
+    w: 1200
+    h: 1600
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2-mini.webp
+    w: 1600
+    h: 1200
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3-mini.webp
+    w: 1200
+    h: 1600
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4-mini.webp
+    w: 1200
+    h: 1600
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5-mini.webp
+    w: 1600
+    h: 1200
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6-mini.webp
+    w: 1600
+    h: 1200
+  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7.webp
+    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02pSKaz7iyn3jAXiqWFVmAoQ975YjdMyYc4BFtBTnw1YEt7ev7vhKSRqLadV8tnffrl
 facebook_id: "1128571599728256"
 versione: c85c3880c20e
@@ -16,11 +45,3 @@ firma:
 ---
 
 ACILIA NORD AREE VERDI E VOLONTARIATO 💁🧏‍♂️🙋🏼‍♀️ Anche oggi al lavoro sul Parco dei Monti di San Paolo,  grazie di cuore a Massimo e a Osvaldo per la loro disponibilità 👏👏👏 A tutte e tutti Voi la richiesta di aiutarci a mantenere pulito il nostro quartiere e a sostenere il Comitato di quartiere 🤝 nella locandina contatti e riferimenti 🌈
-
-![](/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2.webp)
-
-![](/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3.webp)
-
-![](/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4.webp)
-
-![](/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5.webp)

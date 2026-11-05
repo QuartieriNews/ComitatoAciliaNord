@@ -5,6 +5,11 @@ category: eventi
 summary: Nella locandina tutti i dettagli per contattarci, chiederci appuntamento, dare un contributo, tenersi aggiornati sulle criticita' e sui progetti del nostro quartiere…
 image: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1.webp
+    mini: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02RMqoLDh9gXiLMzKSMRXgMq2odKwKyKLfAVtcetXdgt9K4V2j5u2f74YfhCGEC9pil
 facebook_id: "1119944727257610"
 versione: 4691ac791ddc

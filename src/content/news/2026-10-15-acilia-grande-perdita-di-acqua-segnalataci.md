@@ -4,6 +4,11 @@ date: 2026-10-15T09:22:43.000Z
 category: segnalazioni
 image: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1.webp
+    mini: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1-mini.webp
+    w: 1600
+    h: 1200
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0g3Tqur1rYGGsp579CrBpyAr1NASfYn3pDBuhsZ17uEtSrca6XpA6vEq5Q3RJLvRNl
 facebook_id: "1115411831044233"
 versione: 74401cc9bcb7

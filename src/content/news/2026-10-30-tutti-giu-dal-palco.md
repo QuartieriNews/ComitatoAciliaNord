@@ -5,6 +5,11 @@ category: eventi
 summary: Ti piacerebbe conoscere nuove persone e passarci del tempo insieme divertendoti ? se si partecipa al Laboratorio teatrale gratuito che il Cdq ha organizzato per tutte le…
 image: /news/2026-10-30-tutti-giu-dal-palco/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-30-tutti-giu-dal-palco/1.webp
+    mini: /news/2026-10-30-tutti-giu-dal-palco/1-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02nhQpi5zKoahsxXzXaZqXemRhfxniCeh1Pq9PKoZxLJYGxxQg7c9XbWaNG3B5Kaqal
 facebook_id: "1129487176303365"
 versione: e4af45ac6fca

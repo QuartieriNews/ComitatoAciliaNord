@@ -5,6 +5,11 @@ category: decoro
 summary: Domenica 18 Ottobre prossimo appuntamento ai Monti di San Paolo
 image: /news/2026-10-13-insieme-per-il-decoro/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-13-insieme-per-il-decoro/1.webp
+    mini: /news/2026-10-13-insieme-per-il-decoro/1-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02Ex8RBsX1exx5Tfxj9CvpafDZRnzPDUFjVwdmHTL7MM1hBp1sZwLsCCDV7vTSBhC3l
 facebook_id: "1113583764560373"
 versione: 0989935f9144

@@ -5,6 +5,11 @@ category: comitato
 summary: Prossimo appuntamento presso la sede del Comitato di quartiere Mercoledi 18 Novembre! Posti limitati necessario iscriversi; nella locandina trovate i dettagli e i…
 image: /news/2026-11-02-corso-base-per-disostruzione-e-rianimazione/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-11-02-corso-base-per-disostruzione-e-rianimazione/1.webp
+    mini: /news/2026-11-02-corso-base-per-disostruzione-e-rianimazione/1-mini.webp
+    w: 873
+    h: 1600
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02dDyWPEH5LVkERztVrbuPZq8ZLgAZkqPdNs2cWFwrz6F5Xb875dQQQH7BCQtLr2Yjl
 facebook_id: "1132618445990238"
 versione: 55549083cd67

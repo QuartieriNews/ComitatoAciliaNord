@@ -5,6 +5,11 @@ category: decoro
 summary: Domenica 25 Ottobre torniamo al Parchetto Todis per mantenere il decoro in questo angolo del quartiere Unitevi a noi, Vi aspettiamo
 image: /news/2026-10-23-insieme-per-il-decoro-al-poggio/1.webp
 imageAlt: ""
+foto:
+  - src: /news/2026-10-23-insieme-per-il-decoro-al-poggio/1.webp
+    mini: /news/2026-10-23-insieme-per-il-decoro-al-poggio/1-mini.webp
+    w: 1024
+    h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02aRFa1Fit4j6hw4ykUNWwivHBrgnHLQpSUxXzZ2GXgSmLiQ5E2eRFJic8X5a28btAl
 facebook_id: "1123177063601043"
 versione: 36ba5746f3bf
