@@ -14,9 +14,22 @@ const colori = (c: { vivo: string; scuro: string }) => `--vivo:${c.vivo};--scuro
     <div class="contenitore">
       <h1>Il quartiere</h1>
       <p class="introduzione">
-        Acilia Nord sono i Monti di San Paolo e il Poggio di Acilia, nel Municipio Roma X. Una borgata nata intorno alle
+        Ci occupiamo dei Monti di San Paolo e del Poggio di Acilia, nel Municipio Roma X: la zona cresciuta intorno alle
         Casette Pater, tra il Tevere, la Riserva del Litorale Romano e le tracce dell'antica Ficana.
       </p>
+      <!-- Mappa preparata da Riccardo su Google Maps: l'attribuzione a Google va lasciata nella didascalia.
+           Mostra la zona di cui si occupa il comitato, non i confini di Acilia Nord. -->
+      <figure class="mappa-zona">
+        <a href="/quartiere/zona-del-comitato.webp">
+          <img
+            src="/quartiere/zona-del-comitato.webp"
+            alt="Mappa: in blu la zona di cui si occupa il comitato, dal Tevere alla stazione di Acilia."
+            width="1279"
+            height="643"
+          />
+        </a>
+        <figcaption>In blu la zona di cui si occupa il comitato, dal Tevere alla stazione di Acilia. Mappa © Google</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -96,6 +109,25 @@ const colori = (c: { vivo: string; scuro: string }) => `--vivo:${c.vivo};--scuro
 </Base>
 
 <style>
+  /* La zona del comitato, sotto il titolo della pagina, larga quanto il contenuto */
+  .mappa-zona {
+    margin: 1.75rem 0 0;
+  }
+
+  .mappa-zona img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px var(--linea);
+  }
+
+  .mappa-zona figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--tenue);
+  }
+
   .misura-breve {
     max-width: var(--misura);
     font-size: 1.08rem;
