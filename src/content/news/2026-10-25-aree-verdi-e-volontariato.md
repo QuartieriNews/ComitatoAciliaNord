@@ -3,27 +3,27 @@ title: Aree verdi e volontariato
 date: 2026-10-25T13:54:41.000Z
 category: decoro
 summary: Oggi parchetto giovanni leonardi Stamattina dopo essersi dedicati al Parco Todis, alcuni volontari si sono spostati in Via Giovanni Leonardi per mantenere il decoro in…
-image: /news/2026-10-25-aree-verdi-e-volontariato/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/1-09cd45ea.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-25-aree-verdi-e-volontariato/1.webp
-    mini: /news/2026-10-25-aree-verdi-e-volontariato/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/1-09cd45ea.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/1-09cd45ea-mini.webp
     w: 1600
     h: 901
-  - src: /news/2026-10-25-aree-verdi-e-volontariato/2.webp
-    mini: /news/2026-10-25-aree-verdi-e-volontariato/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/2-887110e8.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/2-887110e8-mini.webp
     w: 1600
     h: 901
-  - src: /news/2026-10-25-aree-verdi-e-volontariato/3.webp
-    mini: /news/2026-10-25-aree-verdi-e-volontariato/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/3-10083fd1.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/3-10083fd1-mini.webp
     w: 901
     h: 1600
-  - src: /news/2026-10-25-aree-verdi-e-volontariato/4.webp
-    mini: /news/2026-10-25-aree-verdi-e-volontariato/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/4-1088b543.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/4-1088b543-mini.webp
     w: 901
     h: 1600
-  - src: /news/2026-10-25-aree-verdi-e-volontariato/5.webp
-    mini: /news/2026-10-25-aree-verdi-e-volontariato/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/5-1072dff0.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-aree-verdi-e-volontariato/5-1072dff0-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid06s59Wdq9jhFuAZzLMWyo7qJjug6FYmfRmX9ztuJ8TdorSmSULKNLCfQxXkxReURXl

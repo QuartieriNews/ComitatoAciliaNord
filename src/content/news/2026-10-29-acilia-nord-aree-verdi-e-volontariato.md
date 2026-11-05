@@ -3,35 +3,35 @@ title: Acilia Nord aree verdi e volontariato
 date: 2026-10-29T10:25:47.000Z
 category: verde
 summary: Anche oggi al lavoro sul Parco dei Monti di San Paolo, grazie di cuore a Massimo e a Osvaldo per la loro disponibilità A tutte e tutti Voi la richiesta di aiutarci a…
-image: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-1789b7d7.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-1789b7d7.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/1-1789b7d7-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2-d2a009bd.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/2-d2a009bd-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3-4eda083d.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/3-4eda083d-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4-358042c1.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/4-358042c1-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5-357f29af.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/5-357f29af-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6-aa245023.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/6-aa245023-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7.webp
-    mini: /news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7-ffde32d9.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-29-acilia-nord-aree-verdi-e-volontariato/7-ffde32d9-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02pSKaz7iyn3jAXiqWFVmAoQ975YjdMyYc4BFtBTnw1YEt7ev7vhKSRqLadV8tnffrl

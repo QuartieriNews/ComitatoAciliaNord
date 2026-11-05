@@ -3,11 +3,11 @@ title: Tutti giu' dal palco
 date: 2026-10-30T08:49:20.000Z
 category: eventi
 summary: Ti piacerebbe conoscere nuove persone e passarci del tempo insieme divertendoti ? se si partecipa al Laboratorio teatrale gratuito che il Cdq ha organizzato per tutte le…
-image: /news/2026-10-30-tutti-giu-dal-palco/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-30-tutti-giu-dal-palco/1-a275275f.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-30-tutti-giu-dal-palco/1.webp
-    mini: /news/2026-10-30-tutti-giu-dal-palco/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-30-tutti-giu-dal-palco/1-a275275f.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-30-tutti-giu-dal-palco/1-a275275f-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02nhQpi5zKoahsxXzXaZqXemRhfxniCeh1Pq9PKoZxLJYGxxQg7c9XbWaNG3B5Kaqal

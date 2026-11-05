@@ -3,79 +3,79 @@ title: Insieme per il decoro
 date: 2026-10-25T13:49:05.000Z
 category: decoro
 summary: Oggi al Poggio di Acilia Oggi siamo tornati al Parco Todis del Poggio di Acilia e dintorni per mantenere il decoro di questa parte del quartiere con una serie di ■…
-image: /news/2026-10-25-insieme-per-il-decoro/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/1-182993a3.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-25-insieme-per-il-decoro/1.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/1-182993a3.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/1-182993a3-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-insieme-per-il-decoro/2.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/2-57737437.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/2-57737437-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/3.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/3-4fbeae61.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/3-4fbeae61-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/4.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/4-0aa4ca99.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/4-0aa4ca99-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-insieme-per-il-decoro/5.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/5-1c399d6c.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/5-1c399d6c-mini.webp
     w: 1600
     h: 901
-  - src: /news/2026-10-25-insieme-per-il-decoro/6.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/6-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/6-9c07bd4e.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/6-9c07bd4e-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/7.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/7-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/7-a015ca72.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/7-a015ca72-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/8.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/8-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/8-a317934b.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/8-a317934b-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/9.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/9-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/9-2eb11440.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/9-2eb11440-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/10.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/10-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/10-9dc75054.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/10-9dc75054-mini.webp
     w: 1557
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/11.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/11-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/11-176fc8dd.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/11-176fc8dd-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/12.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/12-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/12-91f4a903.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/12-91f4a903-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/13.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/13-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/13-71d660b9.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/13-71d660b9-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/14.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/14-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/14-c322dab7.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/14-c322dab7-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-insieme-per-il-decoro/15.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/15-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/15-fa3dd821.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/15-fa3dd821-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-insieme-per-il-decoro/16.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/16-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/16-677d6c0a.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/16-677d6c0a-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-insieme-per-il-decoro/17.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/17-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/17-fbaabb58.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/17-fbaabb58-mini.webp
     w: 1024
     h: 1536
-  - src: /news/2026-10-25-insieme-per-il-decoro/18.webp
-    mini: /news/2026-10-25-insieme-per-il-decoro/18-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/18-8778ea1d.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-insieme-per-il-decoro/18-8778ea1d-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0EGGVw7wSEPwc9hz3RUkjeZrwnXW6F3KA6V7WXBHmAJomTRAWgHiHppMrbg6FKYFMl

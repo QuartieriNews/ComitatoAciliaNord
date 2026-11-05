@@ -3,51 +3,51 @@ title: Passeggiata storico-naturalistica ad Acilia
 date: 2026-10-25T06:41:10.000Z
 category: storia
 summary: <<Sulle orme di Michele>> Pubblichiamo con piacere il messaggio ricevuto da una nostra amica che condividiamo a pieno << bellissimo evento organizzato ieri dal comitato,…
-image: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1-37cbc0ec.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1-37cbc0ec.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/1-37cbc0ec-mini.webp
     w: 1600
     h: 876
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/2.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/2-39cc5c1e.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/2-39cc5c1e-mini.webp
     w: 1600
     h: 864
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/3.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/3-78d911a7.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/3-78d911a7-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/4.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/4-adef58d9.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/4-adef58d9-mini.webp
     w: 1600
     h: 800
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/5.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/5-e4cbcfeb.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/5-e4cbcfeb-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/6.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/6-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/6-823b2d8f.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/6-823b2d8f-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/7.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/7-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/7-b4a4f085.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/7-b4a4f085-mini.webp
     w: 1200
     h: 1600
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/8.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/8-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/8-d435924b.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/8-d435924b-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/9.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/9-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/9-e3959c21.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/9-e3959c21-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/10.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/10-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/10-a5b8b5c4.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/10-a5b8b5c4-mini.webp
     w: 1024
     h: 1536
-  - src: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/11.webp
-    mini: /news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/11-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/11-4b5ef361.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-25-passeggiata-storico-naturalistica-ad-acilia/11-4b5ef361-mini.webp
     w: 1200
     h: 1600
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02W9fyBojoTEpD9kDJg9sCy6k7Vh7a6vQN6kkK7KDjvjNiLXLBZmbYAgM4hCYZmhksl

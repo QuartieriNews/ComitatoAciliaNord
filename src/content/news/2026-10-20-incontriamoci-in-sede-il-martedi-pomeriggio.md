@@ -3,11 +3,11 @@ title: Incontriamoci in sede il martedi pomeriggio
 date: 2026-10-20T06:19:33.000Z
 category: eventi
 summary: Nella locandina tutti i dettagli per contattarci, chiederci appuntamento, dare un contributo, tenersi aggiornati sulle criticita' e sui progetti del nostro quartiere…
-image: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1-40341bc3.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1.webp
-    mini: /news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1-40341bc3.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-20-incontriamoci-in-sede-il-martedi-pomeriggio/1-40341bc3-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02RMqoLDh9gXiLMzKSMRXgMq2odKwKyKLfAVtcetXdgt9K4V2j5u2f74YfhCGEC9pil

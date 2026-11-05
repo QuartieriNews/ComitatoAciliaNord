@@ -3,31 +3,31 @@ title: Aree verdi e volontariato ai Monti di San Paolo
 date: 2026-10-17T09:59:46.000Z
 category: verde
 summary: Questa settimana ci siamo dedicati al Parco dell' Amicizia, l'area verde a ridosso della sede del Cdq in Via dei Monti di San Paolo civico 40 I nostri volontari Massimo…
-image: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1-09a09ab6.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1-09a09ab6.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/1-09a09ab6-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/2.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/2-d37af20d.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/2-d37af20d-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/3.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/3-134dabea.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/3-134dabea-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/4.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/4-108a62f9.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/4-108a62f9-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/5.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/5-f9ea1c9e.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/5-f9ea1c9e-mini.webp
     w: 1080
     h: 610
-  - src: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/6.webp
-    mini: /news/2026-10-17-aree-verdi-e-volontariato-ai-monti/6-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/6-c1bb275b.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-17-aree-verdi-e-volontariato-ai-monti/6-c1bb275b-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0RGVV3WcMcyTYXezVzCBMz4BTgnePFTx2AerVeFQchCDTroa7MHjj4YfoTD9onKq5l

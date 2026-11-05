@@ -3,31 +3,31 @@ title: Insieme per il decoro ai Monti di San Paolo
 date: 2026-10-18T20:22:31.000Z
 category: decoro
 summary: Ringraziamo di cuore tutti i cittadini che stamattina sono passati a trovarci e gli amici che oggi si sono dedicati al volontariato ai Monti di San Paolo Per il Cdq…
-image: /news/2026-10-18-insieme-per-il-decoro-ai-monti/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/1-b68c2f33.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/1.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/1-b68c2f33.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/1-b68c2f33-mini.webp
     w: 1600
     h: 1021
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/2.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/2-7ef9fa23.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/2-7ef9fa23-mini.webp
     w: 1100
     h: 1599
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/3.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/3-a54b2e91.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/3-a54b2e91-mini.webp
     w: 949
     h: 950
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/4.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/4-34ebf192.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/4-34ebf192-mini.webp
     w: 882
     h: 679
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/5.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/5-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/5-8a9b1764.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/5-8a9b1764-mini.webp
     w: 947
     h: 1600
-  - src: /news/2026-10-18-insieme-per-il-decoro-ai-monti/6.webp
-    mini: /news/2026-10-18-insieme-per-il-decoro-ai-monti/6-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/6-8104b150.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-insieme-per-il-decoro-ai-monti/6-8104b150-mini.webp
     w: 1069
     h: 1600
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0V2NBjqJjicmHbPaNJ6VLC2kCEXkWLS7tZXduEHo7LrWK5wzazDjQMPhFPqQfQ1fSl

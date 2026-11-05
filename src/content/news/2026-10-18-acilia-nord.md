@@ -3,23 +3,23 @@ title: Acilia Nord
 date: 2026-10-18T07:05:08.000Z
 category: decoro
 summary: Il Poggio Condividiamo con piacere il ripristino del decoro anche in questo angolo del quartiere; come ricorderete due settimane fa i nostri volontari hanno lavorato…
-image: /news/2026-10-18-acilia-nord/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/1-5f687d7f.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-18-acilia-nord/1.webp
-    mini: /news/2026-10-18-acilia-nord/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/1-5f687d7f.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/1-5f687d7f-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-18-acilia-nord/2.webp
-    mini: /news/2026-10-18-acilia-nord/2-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/2-db00cc4e.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/2-db00cc4e-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-18-acilia-nord/3.webp
-    mini: /news/2026-10-18-acilia-nord/3-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/3-b986c2a1.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/3-b986c2a1-mini.webp
     w: 1600
     h: 1200
-  - src: /news/2026-10-18-acilia-nord/4.webp
-    mini: /news/2026-10-18-acilia-nord/4-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/4-86f1259d.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-18-acilia-nord/4-86f1259d-mini.webp
     w: 1600
     h: 1200
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid02XkW41JuLQTjEckkxxAQeNDkmg9Qot9bNJynXYCziwAmLEi8McBRrm2Ms3EidmMnDl

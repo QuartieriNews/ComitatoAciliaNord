@@ -2,11 +2,11 @@
 title: ACILIA Grande perdita di acqua segnalataci da alcuni cittadini in Via Stefano assemani…
 date: 2026-10-15T09:22:43.000Z
 category: segnalazioni
-image: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1-99016cfb.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1.webp
-    mini: /news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1-99016cfb.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-15-acilia-grande-perdita-di-acqua-segnalataci/1-99016cfb-mini.webp
     w: 1600
     h: 1200
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0g3Tqur1rYGGsp579CrBpyAr1NASfYn3pDBuhsZ17uEtSrca6XpA6vEq5Q3RJLvRNl

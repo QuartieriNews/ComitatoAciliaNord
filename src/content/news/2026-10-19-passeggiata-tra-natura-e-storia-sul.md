@@ -3,11 +3,11 @@ title: Passeggiata tra natura e storia sul Tevere
 date: 2026-10-19T16:19:46.000Z
 category: storia
 summary: Ti piacerebbe passeggiare sugli argini del Tevere qui dietro casa per conoscere meglio la Riserva Statale del Litorale romano, la Storia del nostro territorio e…
-image: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1.webp
+image: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1-ebfcee05.webp
 imageAlt: ""
 foto:
-  - src: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1.webp
-    mini: /news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1-mini.webp
+  - src: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1-ebfcee05.webp
+    mini: https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev/news/2026-10-19-passeggiata-tra-natura-e-storia-sul/1-ebfcee05-mini.webp
     w: 1024
     h: 1536
 facebook: https://www.facebook.com/ComitatoAciliaNord/posts/pfbid0yxGd9d47BsnqZ32diqBpyxuufETALEAMixRk85jgVvSpY8avDEEKypwtV9YxpefWl
