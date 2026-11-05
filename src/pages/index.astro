@@ -14,9 +14,19 @@ import { comitato, doveSiamo } from '../data/comitato';
       <p>
         <strong>La sede del comitato è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>, in {doveSiamo}.
       </p>
-      <div class="fascia-azioni">
-        <a class="fascia-bottone" href={comitato.sede.mappa}>Apri la mappa</a>
-        <a class="fascia-bottone fascia-bottone-vuoto" href={comitato.whatsapp.link}>Entra in {comitato.whatsapp.nome}</a>
+      <!-- Loghi ufficiali dal Brand Resource Center di Meta (public/social/): non vanno ridisegnati né modificati -->
+      <div class="fascia-social" role="group" aria-labelledby="seguici-su">
+        <span class="fascia-titolo" id="seguici-su">Seguici su</span>
+        <div class="fascia-azioni">
+          <a class="fascia-bottone" href={comitato.facebook} aria-label="La pagina Facebook del comitato">
+            <img src="/social/facebook.webp" alt="" width="24" height="24" />
+            Facebook
+          </a>
+          <a class="fascia-bottone" href={comitato.whatsapp.link} aria-label={`${comitato.whatsapp.nome}, il gruppo WhatsApp del comitato`}>
+            <img src="/social/whatsapp.svg" alt="" width="24" height="24" />
+            WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -46,6 +56,19 @@ import { comitato, doveSiamo } from '../data/comitato';
     font-size: 1.05rem;
   }
 
+  /* «Seguici su» e i due bottoni; se non c'è spazio, i bottoni vanno sotto il titolo */
+  .fascia-social {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+  }
+
+  .fascia-titolo {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
   .fascia-azioni {
     display: flex;
     flex-wrap: wrap;
@@ -55,19 +78,21 @@ import { comitato, doveSiamo } from '../data/comitato';
   .fascia-bottone {
     display: inline-flex;
     align-items: center;
+    gap: 0.55em;
     min-height: 44px;
-    padding: 0.45em 1.2em;
+    padding: 0.45em 1.2em 0.45em 0.8em;
     border: 2px solid #fff;
     border-radius: 999px;
     background: #fff;
-    color: var(--pino);
+    color: var(--inchiostro);
     font-weight: 700;
     text-decoration: none;
   }
 
-  .fascia-bottone-vuoto {
-    background: transparent;
-    color: #fff;
+  .fascia-bottone img {
+    width: 1.45em;
+    height: 1.45em;
+    flex-shrink: 0;
   }
 
   .fascia-bottone:hover {
