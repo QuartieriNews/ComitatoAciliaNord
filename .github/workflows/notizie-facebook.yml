@@ -3,6 +3,8 @@
 # Legge la pagina con Apify (segreto APIFY_TOKEN) oppure, se un giorno ci sarà, con le API di Meta (FB_PAGE_TOKEN).
 # Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
 # Con la casella «Rifai le foto» non legge i post: riscarica tutte le foto delle notizie già pubblicate.
+# Con i campi «Archivio» importa una volta sola i post vecchi da dataset di Apify già letti e carica le notizie
+# sul ramo «archivio-notizie», non sul sito: titoli e sommari si sistemano prima di pubblicarle.
 # Le foto vanno nello spazio R2 di Cloudflare (segreti R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).
 name: Notizie da Facebook
 
@@ -19,6 +21,14 @@ on:
         description: 'Rifai le foto: riscarica tutte le foto delle notizie già pubblicate'
         type: boolean
         default: false
+      archivio_dal:
+        description: 'Archivio: importa i post vecchi da questo giorno (AAAA-MM-GG) fino all''inizio delle notizie'
+        type: string
+        default: ''
+      archivio_dataset:
+        description: 'Archivio: i dataset di Apify con i post già letti, separati da virgole'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -31,7 +41,11 @@ concurrency:
 jobs:
   importa:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # l'archivio scarica le foto di centinaia di post: può durare ore
+    timeout-minutes: ${{ inputs.archivio_dal && 300 || 20 }}
+    env:
+      FB_ARCHIVIO_DAL: ${{ inputs.archivio_dal }}
+      FB_ARCHIVIO_DATASET: ${{ inputs.archivio_dataset }}
     steps:
       - uses: actions/checkout@v4
 
@@ -70,12 +84,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git commit -m "$(cat "$RUNNER_TEMP/messaggio-facebook.txt")"
+          if [ -n "$FB_ARCHIVIO_DAL" ]; then
+            # l'archivio va su un ramo a parte: sul sito arriva dopo, con titoli e sommari sistemati
+            git push origin HEAD:refs/heads/archivio-notizie
+            exit 0
+          fi
           # se nel frattempo è arrivata una modifica al sito, ci si mette in coda invece di fallire
           git pull --rebase origin main
           git push
 
       - name: Avvisa se Facebook non risponde
-        if: failure()
+        # non per l'archivio, che si avvia a mano e si controlla a mano
+        if: failure() && !inputs.archivio_dal
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
