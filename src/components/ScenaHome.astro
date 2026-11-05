@@ -3,6 +3,7 @@
 // È tutta disegnata in SVG: pesa pochi KB, è nitida su ogni schermo e il testo resta testo vero.
 // L'animazione parte una volta sola all'apertura della pagina; chi ha chiesto di ridurre
 // il movimento sul proprio dispositivo vede direttamente la scena ferma.
+import { comitato } from '../data/comitato';
 
 // Le 30 persone del cerchio, in senso orario partendo dall'alto (colori presi dal video).
 const colori = [
@@ -127,14 +128,27 @@ const tavolozza = `
   <circle cx="8" cy="-13" r="4.6" fill="#45b142"/>
   <circle cx="18" cy="-3" r="4.6" fill="#2aa9e0"/>`;
 
-const bottoni = [
-  { testo: 'Chi siamo', href: '/chi-siamo/', classe: 'pillola-piena' },
-  { testo: 'Cosa facciamo', href: '/chi-siamo/#cosa-facciamo', classe: 'pillola-vuota' },
+// Sul telefono case, alberi e segnaposto stanno un po' più in basso (in unità del disegno) che nel video,
+// per lasciare fra il cerchio e gli alberi lo spazio per «Seguici su» e i due bottoni, uno sopra l'altro.
+const ABBASSA_CASE = 100;
+const altezzaTelefono = 1800 + ABBASSA_CASE;
+
+// «Seguici su» con Facebook e WhatsApp, al posto di «Chi siamo» e «Cosa facciamo» (richiesta di Riccardo,
+// 5 novembre 2026: chi siamo e il resto si trovano nel menu e più sotto nella home).
+// Loghi ufficiali dal Brand Resource Center di Meta (public/social/): non vanno ridisegnati né modificati.
+const social = [
+  { nome: 'Facebook', href: comitato.facebook, logo: '/social/facebook.webp', etichetta: 'La pagina Facebook del comitato' },
+  {
+    nome: 'WhatsApp',
+    href: comitato.whatsapp.link,
+    logo: '/social/whatsapp.svg',
+    etichetta: `${comitato.whatsapp.nome}, il gruppo WhatsApp del comitato`,
+  },
 ];
 ---
 
 <div class="scena-contenitore">
-  <div class="scena" data-stagione="decoro">
+  <div class="scena" data-stagione="decoro" style={`--alto-telefono:${altezzaTelefono};--abbassa:${ABBASSA_CASE}`}>
     <!-- Computer e tablet: composizione orizzontale, come il video 1920×1080 -->
     <svg class="scena-computer" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
       <defs>
@@ -199,7 +213,7 @@ const bottoni = [
     </svg>
 
     <!-- Telefono: composizione verticale, come il video 1080×1920 -->
-    <svg class="scena-telefono" viewBox="0 0 1080 1800" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <svg class="scena-telefono" viewBox={`0 0 1080 ${altezzaTelefono}`} preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="nastro-telefono" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0">
           <stop offset="0" stop-color="#a14ece" />
@@ -233,28 +247,30 @@ const bottoni = [
         ))}
       </g>
 
-      {alberiTelefono.map((a, i) => (
-        <g class="albero" style={`--i:${i}`}>
-          {a.tronco && <path d={a.tronco} fill="none" stroke="#1f1914" stroke-width="10" stroke-linecap="round" />}
-          <g fill="#3c8a32" transform="translate(0 10)">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
-          <g fill="#5ba844">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
-        </g>
-      ))}
+      <g transform={`translate(0 ${ABBASSA_CASE})`}>
+        {alberiTelefono.map((a, i) => (
+          <g class="albero" style={`--i:${i}`}>
+            {a.tronco && <path d={a.tronco} fill="none" stroke="#1f1914" stroke-width="10" stroke-linecap="round" />}
+            <g fill="#3c8a32" transform="translate(0 10)">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+            <g fill="#5ba844">{a.chioma.map(([cx, cy, rx, ry]) => <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />)}</g>
+          </g>
+        ))}
 
-      {caseTelefono.map((c, i) => (
-        <g class="casa" style={`--i:${i}`}>
-          <rect x={c.x} y={c.top} width={c.w} height={1802 - c.top} fill={c.corpo} />
-          <polygon points={tetto(c, 9)} fill={c.tetto} />
-          {finestre(c, 62, 34, 26).map((f, k) => (
-            <rect class:list={['finestra', { accesa: f.accesa }]} style={`--i:${(i * 3 + k) % 8}`} x={f.x} y={f.y} width={f.w} height={f.h} rx="3" />
-          ))}
-        </g>
-      ))}
+        {caseTelefono.map((c, i) => (
+          <g class="casa" style={`--i:${i}`}>
+            <rect x={c.x} y={c.top} width={c.w} height={1802 - c.top} fill={c.corpo} />
+            <polygon points={tetto(c, 9)} fill={c.tetto} />
+            {finestre(c, 62, 34, 26).map((f, k) => (
+              <rect class:list={['finestra', { accesa: f.accesa }]} style={`--i:${(i * 3 + k) % 8}`} x={f.x} y={f.y} width={f.w} height={f.h} rx="3" />
+            ))}
+          </g>
+        ))}
 
-      <g transform="translate(298 1524) scale(1.15)">
-        <g class="segnaposto">
-          <path d={segnaposto} fill="#e8097f" />
-          <circle cy="-36" r="8" fill="#fff" />
+        <g transform="translate(298 1524) scale(1.15)">
+          <g class="segnaposto">
+            <path d={segnaposto} fill="#e8097f" />
+            <circle cy="-36" r="8" fill="#fff" />
+          </g>
         </g>
       </g>
 
@@ -269,13 +285,30 @@ const bottoni = [
       </h1>
       <span class="arcobaleno" aria-hidden="true"></span>
       <p class="motto">Dal 2018, insieme per un quartiere più bello in cui vivere.</p>
-      <div class="scena-bottoni solo-computer">
-        {bottoni.map((b) => <a class:list={['pillola', b.classe]} href={b.href}>{b.testo}</a>)}
+      <div class="scena-social solo-computer" role="group" aria-labelledby="seguici-scena-computer">
+        <span class="scena-social-titolo" id="seguici-scena-computer">Seguici su</span>
+        <div class="scena-bottoni">
+          {social.map((s) => (
+            <a class="pillola" href={s.href} aria-label={s.etichetta}>
+              <img src={s.logo} alt="" width="24" height="24" />
+              {s.nome}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 
-    <div class="scena-bottoni solo-telefono">
-      {bottoni.map((b) => <a class:list={['pillola', b.classe]} href={b.href}>{b.testo}</a>)}
+    <!-- Sul telefono sotto il cerchio, prima degli alberi: «Seguici su» e sotto i due bottoni -->
+    <div class="scena-social solo-telefono" role="group" aria-labelledby="seguici-scena-telefono">
+      <span class="scena-social-titolo" id="seguici-scena-telefono">Seguici su</span>
+      <div class="scena-bottoni">
+        {social.map((s) => (
+          <a class="pillola" href={s.href} aria-label={s.etichetta}>
+            <img src={s.logo} alt="" width="24" height="24" />
+            {s.nome}
+          </a>
+        ))}
+      </div>
     </div>
   </div>
 </div>
@@ -395,6 +428,20 @@ const bottoni = [
     text-wrap: balance;
   }
 
+  /* «Seguici su» e i due bottoni. Sul computer il titolo sta sopra i bottoni, centrato come il resto del cerchio */
+  .scena-social {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .scena-social-titolo {
+    color: var(--inchiostro);
+    font-size: clamp(0.9rem, calc(22 * var(--u)), 1.1rem);
+    font-weight: 700;
+  }
+
   .scena-bottoni {
     display: flex;
     flex-wrap: wrap;
@@ -406,36 +453,31 @@ const bottoni = [
     display: none;
   }
 
+  /* Bianchi, con il logo a sinistra */
   .pillola {
     display: inline-flex;
     align-items: center;
+    gap: 0.55em;
     min-height: 44px;
-    padding: 0.5em 1.35em;
-    border: 2px solid transparent;
+    padding: 0.5em 1.35em 0.5em 0.95em;
+    border: 2px solid var(--inchiostro);
     border-radius: 999px;
+    background: #fff;
+    color: var(--inchiostro);
     font-size: clamp(0.9rem, calc(22 * var(--u)), 1.1rem);
     font-weight: 700;
     text-decoration: none;
   }
 
-  .pillola-piena {
-    background: #e2007a;
-    color: #fff;
-    box-shadow: 0 8px 18px rgb(226 0 122 / 0.28);
+  .pillola img {
+    width: 1.45em;
+    height: 1.45em;
+    flex-shrink: 0;
   }
 
-  .pillola-piena:hover {
-    background: #c4006a;
-  }
-
-  .pillola-vuota {
-    background: #fff;
-    border-color: var(--inchiostro);
-    color: var(--inchiostro);
-  }
-
-  .pillola-vuota:hover {
-    background: #fdf1f7;
+  .pillola:hover {
+    background: var(--pino-chiaro);
+    color: var(--pino-scuro);
   }
 
   .finestra {
@@ -460,9 +502,10 @@ const bottoni = [
 
   /* Telefono: composizione verticale, larga quanto lo schermo */
   @media (max-aspect-ratio: 2/3) {
+    /* --alto-telefono: l'altezza del disegno, 1800 come il video più l'abbassamento di case e alberi */
     .scena {
       --u: calc(100cqw / 1080);
-      height: calc(1800 * var(--u));
+      height: calc(var(--alto-telefono) * var(--u));
     }
 
     .scena-computer {
@@ -473,8 +516,9 @@ const bottoni = [
       display: block;
     }
 
+    /* centrato sul cerchio, che sta sempre a 720 dall'alto del disegno */
     .scena-centro {
-      bottom: calc(700 * var(--u));
+      bottom: calc((var(--alto-telefono) - 1100) * var(--u));
       width: calc(760 * var(--u));
       height: calc(760 * var(--u));
     }
@@ -504,17 +548,33 @@ const bottoni = [
       display: none;
     }
 
+    /* «Seguici su» e i bottoni, centrati nello spazio fra il cerchio (le teste più in basso arrivano a 1190)
+       e la cima degli alberi (1348, più l'abbassamento) */
     .solo-telefono {
       display: flex;
+      justify-content: center;
+      gap: 0.35rem;
       position: absolute;
       left: 0;
       right: 0;
-      top: calc(1206 * var(--u));
+      top: calc(1190 * var(--u));
+      height: calc((158 + var(--abbassa)) * var(--u));
+    }
+
+    .scena-social-titolo {
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .scena-bottoni {
+      flex-wrap: nowrap;
+      gap: 0.5rem;
     }
 
     .pillola {
       font-size: 0.92rem;
-      padding: 0.45em 1.15em;
+      line-height: 1.2;
+      padding: 0.45em 1.1em 0.45em 0.8em;
     }
   }
 
@@ -577,7 +637,7 @@ const bottoni = [
 
     h1,
     .motto,
-    .scena-bottoni {
+    .scena-social {
       animation: scena-testo 0.6s ease-out both;
     }
 
@@ -585,7 +645,7 @@ const bottoni = [
       animation-delay: 0.15s;
     }
 
-    .scena-bottoni {
+    .scena-social {
       animation-delay: 0.3s;
     }
 

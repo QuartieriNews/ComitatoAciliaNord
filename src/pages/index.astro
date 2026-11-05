@@ -9,26 +9,13 @@ import { comitato, doveSiamo } from '../data/comitato';
 <Base home>
   <ScenaHome />
 
+  <!-- Solo l'orario della sede: «Seguici su» con Facebook e WhatsApp sta nell'intestazione, sopra
+       (richiesta di Riccardo del 5 novembre 2026, perché non si ripeta) -->
   <section class="fascia-sede">
-    <div class="contenitore fascia-riga">
+    <div class="contenitore">
       <p>
-        <strong>La sede del comitato è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>,<br />
-        in {doveSiamo}.
+        <strong>La sede del comitato è aperta ogni {comitato.apertura.giorno} {comitato.apertura.orario}</strong>, in {doveSiamo}.
       </p>
-      <!-- Loghi ufficiali dal Brand Resource Center di Meta (public/social/): non vanno ridisegnati né modificati -->
-      <div class="fascia-social" role="group" aria-labelledby="seguici-su">
-        <span class="fascia-titolo" id="seguici-su">Seguici su</span>
-        <div class="fascia-azioni">
-          <a class="fascia-bottone" href={comitato.facebook} aria-label="La pagina Facebook del comitato">
-            <img src="/social/facebook.webp" alt="" width="24" height="24" />
-            Facebook
-          </a>
-          <a class="fascia-bottone" href={comitato.whatsapp.link} aria-label={`${comitato.whatsapp.nome}, il gruppo WhatsApp del comitato`}>
-            <img src="/social/whatsapp.svg" alt="" width="24" height="24" />
-            WhatsApp
-          </a>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -43,61 +30,10 @@ import { comitato, doveSiamo } from '../data/comitato';
     padding: 1.35rem 0;
   }
 
-  .fascia-riga {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem 2rem;
-  }
-
-  .fascia-riga p {
+  /* La frase va su una riga sola quando c'è spazio; sul telefono va a capo da sola */
+  .fascia-sede p {
     margin: 0;
-    max-width: 38rem;
     font-size: 1.05rem;
-  }
-
-  /* «Seguici su» e i due bottoni; se non c'è spazio, i bottoni vanno sotto il titolo */
-  .fascia-social {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6rem 1rem;
-  }
-
-  .fascia-titolo {
-    font-size: 1.05rem;
-    font-weight: 700;
-  }
-
-  .fascia-azioni {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-
-  .fascia-bottone {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55em;
-    min-height: 44px;
-    padding: 0.45em 1.2em 0.45em 0.8em;
-    border: 2px solid #fff;
-    border-radius: 999px;
-    background: #fff;
-    color: var(--inchiostro);
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .fascia-bottone img {
-    width: 1.45em;
-    height: 1.45em;
-    flex-shrink: 0;
-  }
-
-  .fascia-bottone:hover {
-    background: var(--pino-chiaro);
-    color: var(--pino-scuro);
+    text-wrap: pretty;
   }
 </style>
