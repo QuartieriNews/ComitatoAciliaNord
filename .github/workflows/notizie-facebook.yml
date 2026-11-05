@@ -3,7 +3,7 @@
 # Legge la pagina con Apify (segreto APIFY_TOKEN) oppure, se un giorno ci sarà, con le API di Meta (FB_PAGE_TOKEN).
 # Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
 # Con la casella «Rifai le foto» non legge i post: riscarica tutte le foto delle notizie già pubblicate.
-# Con i campi «Archivio» importa una volta sola i post vecchi da dataset di Apify già letti e carica le notizie
+# Con il campo «Archivio» importa una volta sola i post vecchi da un giorno in poi e carica le notizie
 # sul ramo «archivio-notizie», non sul sito: titoli e sommari si sistemano prima di pubblicarle.
 # Le foto vanno nello spazio R2 di Cloudflare (segreti R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).
 name: Notizie da Facebook
@@ -26,7 +26,7 @@ on:
         type: string
         default: ''
       archivio_dataset:
-        description: 'Archivio: i dataset di Apify con i post già letti, separati da virgole'
+        description: 'Archivio (facoltativo): dataset di Apify già letti, separati da virgole; vuoto = li legge da sé'
         type: string
         default: ''
 

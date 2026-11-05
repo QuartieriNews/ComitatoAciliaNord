@@ -36,9 +36,10 @@
 // tutte le foto delle notizie già pubblicate. Serve dopo un cambio nel modo di salvare le foto; con R2
 // sposta anche le foto dal repository a R2.
 //
-// Archivio, avvio a mano con FB_ARCHIVIO_DAL=AAAA-MM-GG e FB_ARCHIVIO_DATASET=id1,id2 (campi «Archivio»
-// su GitHub): importa una volta sola i post vecchi, dal giorno indicato fino all'inizio delle notizie
-// (stato.inizio), prendendoli dai dataset di Apify già letti (rileggerli non costa niente). Valgono le
+// Archivio, avvio a mano con FB_ARCHIVIO_DAL=AAAA-MM-GG (campo «Archivio» su GitHub): importa una volta
+// sola i post vecchi, dal giorno indicato fino all'inizio delle notizie (stato.inizio), con una lettura
+// di Apify fatta apposta (circa 0,005 $ a post). Con FB_ARCHIVIO_DATASET=id1,id2 li prende invece da
+// dataset di Apify già letti, ma solo se la chiave di GitHub li può leggere. Valgono le
 // regole di sempre, più una: si salta anche il promemoria ripetuto a settimane o mesi di distanza
 // («Incontriamoci martedì in sede»), cioè lo stesso testo di una notizia precedente con la stessa data
 // dell'evento (o senza data). Le foto vanno su R2, più post alla volta. Non tocca le notizie che ci sono
@@ -828,6 +829,44 @@ async function leggiDatasetApify(token, id) {
   return voci.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
 }
 
+// I post fra due date, letti con Apify in una lettura sola: può durare più dei 5 minuti della lettura
+// di sempre, quindi si avvia e si aspetta che finisca. La chiave di GitHub legge solo i dataset delle
+// letture che avvia lei: per questo l'archivio di solito legge da sé invece di usare dataset già pronti.
+async function leggiPostApifyArchivio(token, dal, al) {
+  const intestazioni = { authorization: `Bearer ${token}` };
+  const avvio = await fetch(`https://api.apify.com/v2/acts/${ATTORE_APIFY}/runs?timeout=7200&maxTotalChargeUsd=10`, {
+    method: 'POST',
+    headers: { ...intestazioni, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      startUrls: [{ url: PAGINA_FACEBOOK }],
+      resultsLimit: 5000,
+      onlyPostsNewerThan: dal.toISOString().slice(0, 19),
+      onlyPostsOlderThan: al.toISOString().slice(0, 19),
+    }),
+  });
+  let corsa = (await avvio.json().catch(() => null))?.data;
+  if (!avvio.ok || !corsa?.id) throw new ErroreApify(`Apify non ha avviato la lettura dei post (${avvio.status}).`);
+  console.log(`Lettura dei post su Apify avviata: ${corsa.id}.`);
+  let errori = 0;
+  while (!['SUCCEEDED', 'FAILED', 'ABORTED', 'TIMED-OUT'].includes(corsa.status)) {
+    try {
+      const risposta = await fetch(`https://api.apify.com/v2/actor-runs/${corsa.id}?waitForFinish=60`, { headers: intestazioni });
+      const dati = (await risposta.json().catch(() => null))?.data;
+      if (!risposta.ok || !dati) throw new Error(`risposta ${risposta.status}`);
+      corsa = dati;
+      errori = 0;
+    } catch (errore) {
+      // un intoppo di rete non deve buttare via una lettura già pagata: si riprova
+      if (++errori > 10) throw new ErroreApify(`Apify non dice a che punto è la lettura dei post (${errore.message}).`);
+      await new Promise((r) => setTimeout(r, 10_000));
+    }
+  }
+  if (corsa.status !== 'SUCCEEDED') throw new ErroreApify(`La lettura dei post su Apify è finita male (${corsa.status}).`);
+  const post = await leggiDatasetApify(token, corsa.defaultDatasetId);
+  console.log(`Post letti da Apify: ${post.length}.`);
+  return post;
+}
+
 // Il promemoria ripetuto a qualsiasi distanza di tempo: stesso testo di una notizia precedente e stessa
 // data dell'evento, o nessuna data per tutti e due. Lo stesso testo con un'altra data è un altro evento.
 function trovaRipetuto(firma, quando, creato, elenco) {
@@ -869,14 +908,16 @@ async function importaArchivio(tokenApify, fintoApify) {
     letti = JSON.parse(await readFile(fintoApify, 'utf8'))
       .filter((voce) => voce && voce.postId && !voce.error)
       .map(daApify);
-  } else {
-    if (!ARCHIVIO_DATASET.length) throw new Error("Archivio: serve almeno un dataset di Apify (FB_ARCHIVIO_DATASET).");
+  } else if (ARCHIVIO_DATASET.length) {
     letti = [];
     for (const id of ARCHIVIO_DATASET) {
       const dalDataset = await leggiDatasetApify(tokenApify, id);
       console.log(`Dataset ${id}: ${dalDataset.length} post.`);
       letti.push(...dalDataset);
     }
+  } else {
+    if (!tokenApify) throw new Error("Archivio: per leggere i post serve APIFY_TOKEN.");
+    letti = await leggiPostApifyArchivio(tokenApify, dal, al);
   }
   // i dataset si possono sovrapporre: ogni post una volta sola
   const perId = new Map();
