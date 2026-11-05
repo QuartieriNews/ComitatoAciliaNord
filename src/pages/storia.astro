@@ -766,6 +766,13 @@ const titoloPagina = 'La nostra storia';
       align-items: start;
     }
 
+    /* Con la linea del tempo sempre accanto, i passi fra i capitoli confondono e basta;
+       e il bottone per condividere serve sul telefono (richiesta di Riccardo, 5 novembre 2026) */
+    .passi,
+    .chiusura .condividi {
+      display: none;
+    }
+
     .linea {
       top: 1.25rem;
       margin: 2.25rem 0 0;
