@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://comitatoacilianord.it',
+  site: 'https://www.comitatoacilianord.it',
   trailingSlash: 'ignore',
 });

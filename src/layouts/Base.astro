@@ -46,6 +46,10 @@ const attiva = (href: string) => percorso.startsWith(href);
     <title>{titoloCompleto}</title>
     <meta name="description" content={description} />
     {ANTEPRIMA && <meta name="robots" content="noindex, nofollow" />}
+    {/* L'indirizzo ufficiale della pagina: per i motori di ricerca conta www.comitatoacilianord.it, anche se la
+        stessa pagina si apre dall'anteprima su workers.dev o dall'indirizzo senza www */}
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />

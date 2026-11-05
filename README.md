@@ -32,3 +32,9 @@ Finché il sito è in anteprima non deve essere indicizzato dai motori di ricerc
 2. in `public/robots.txt` sostituire `Disallow: /` con `Allow: /`;
 3. eliminare `public/_headers`;
 4. collegare il dominio comitatoacilianord.it al progetto su Cloudflare, senza toccare i record della posta (MX).
+
+Fatto a novembre 2026. Il dominio resta registrato su Aruba, con la posta (caselle Aruba) e il vecchio hosting
+spento; i name server sono quelli di Cloudflare (nile e rihana.ns.cloudflare.com), con i record della posta e
+della newsletter copiati identici da Aruba, tutti «DNS only». L'indirizzo principale è https://www.comitatoacilianord.it
+(`site` in `astro.config.mjs`, che dà anche l'indirizzo «canonical» di ogni pagina); chi scrive comitatoacilianord.it
+senza www viene portato lì da una regola di Cloudflare.
