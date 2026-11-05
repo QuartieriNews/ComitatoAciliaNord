@@ -57,7 +57,12 @@ jobs:
 
       - name: Carica le novità
         run: |
-          git add -A src/content/news public/news scripts/facebook/stato.json
+          git add -A src/content/news scripts/facebook/stato.json
+          # Le foto stanno su R2: la cartella public/news c'è solo se R2 non ha risposto, e git si ferma
+          # se gli si chiede di aggiungere una cartella che non esiste (così la corsa del 5 novembre alle 19:41)
+          if [ -d public/news ] || [ -n "$(git ls-files public/news)" ]; then
+            git add -A public/news
+          fi
           if git diff --cached --quiet; then
             echo "Nessuna novità da caricare."
             exit 0
