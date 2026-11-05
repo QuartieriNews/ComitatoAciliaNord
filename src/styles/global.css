@@ -484,10 +484,12 @@ ol {
   margin-bottom: 0.4em;
 }
 
+/* L'introduzione sotto il titolo delle pagine: larga quanto la pagina, perché non vada a capo quando c'è spazio
+   (con 40rem andava a capo a metà anche sui computer grandi). «pretty» evita una parola sola sull'ultima riga. */
 .introduzione {
   font-size: 1.2rem;
-  max-width: var(--misura);
   margin: 0;
+  text-wrap: pretty;
 }
 
 /* Testi lunghi: statuto, notizie */
