@@ -319,7 +319,8 @@ const attivita = [
     }
   }
 
-  /* Il direttivo: un tondo per ogni persona, foto o iniziali */
+  /* Il direttivo: un riquadro per ogni persona, foto o iniziali, in colonne della stessa larghezza
+     allineate a sinistra sotto il titolo */
   .direttivo {
     background: var(--carta-b);
   }
@@ -329,7 +330,8 @@ const attivita = [
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 2.25rem 1.5rem;
+    justify-content: start;
+    gap: 2.75rem 2rem;
     text-align: center;
   }
 
@@ -337,11 +339,13 @@ const attivita = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
+    gap: 0.25rem;
   }
 
-  .persone li > :first-child {
-    margin-bottom: 0.9rem;
+  /* il nome sta ben staccato dal riquadro, oltre la sua cornice colorata
+     (:global perché il riquadro è dentro il componente Ritratto) */
+  .persone li > :global(.ritratto) {
+    margin-bottom: 1.6rem;
   }
 
   .persone strong {
@@ -349,16 +353,30 @@ const attivita = [
     line-height: 1.3;
   }
 
+  /* le quattro cariche: due per riga sui telefoni, tutte in fila dal tablet in su */
   .persone-cariche {
     --misura-ritratto: 8.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    margin: 2rem 0 3.25rem;
+    grid-template-columns: repeat(2, 10.5rem);
+    margin: 2.25rem 0 3.75rem;
+  }
+
+  @media (min-width: 41rem) {
+    .persone-cariche {
+      grid-template-columns: repeat(4, minmax(0, 11rem));
+      column-gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .persone-cariche {
+      column-gap: 2.25rem;
+    }
   }
 
   .persone-consiglieri {
-    --misura-ritratto: 6.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-    margin-top: 1.5rem;
+    --misura-ritratto: 6.5rem;
+    grid-template-columns: repeat(auto-fill, 9.5rem);
+    margin-top: 1.75rem;
   }
 
   .direttivo h3 {
@@ -366,13 +384,17 @@ const attivita = [
   }
 
   @media (max-width: 26rem) {
+    .persone {
+      gap: 2.5rem 1rem;
+    }
+
     .persone-cariche {
       --misura-ritratto: 7rem;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .persone-consiglieri {
-      --misura-ritratto: 5.25rem;
+      --misura-ritratto: 5.5rem;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }

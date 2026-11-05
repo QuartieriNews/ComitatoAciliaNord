@@ -1,6 +1,7 @@
 // Archivio de «La voce di Acilia Nord», il giornalino del comitato, dal numero più recente.
 // pdf e copertina stanno in public/giornalino/. Per aggiungere un numero:
 // PDF alleggerito come la-voce-di-acilia-nord-NN-mese-anno.pdf e copertina copertina-NN.webp.
+// Il numero 3 non esiste: dopo il 2 è uscito il 4 per un errore di numerazione.
 
 import { statSync } from 'node:fs';
 
@@ -37,6 +38,11 @@ export const giornalino: Numero[] = [
   {
     numero: 6,
     uscita: 'luglio 2025',
+    titolo: 'Storia, memoria e natura al Casale Raggio di Sole',
+    sommario:
+      "L'85° anniversario delle Casette Pater e l'omaggio a Michele Mattei, le pulizie dei volontari, la sede del comitato aperta ai cittadini, la sicurezza di via della Salvia e le novità su via di Sarteano, il Ponte delle Calle e Piazza Capelvenere.",
+    pdf: '/giornalino/la-voce-di-acilia-nord-06-luglio-2025.pdf',
+    copertina: '/giornalino/copertina-06.webp',
   },
   {
     numero: 5,

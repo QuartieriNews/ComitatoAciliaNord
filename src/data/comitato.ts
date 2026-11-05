@@ -14,10 +14,12 @@ export const comitato = {
     indirizzo: 'Via dei Monti di San Paolo 40',
     citta: '00126 Roma',
     riferimento: "di fronte all'Ufficio Postale",
-    // Link che apre Google Maps (sul telefono, l'app) con il segnaposto sulla sede
-    mappa: 'https://www.google.com/maps/search/?api=1&query=Via%20dei%20Monti%20di%20San%20Paolo%2040%2C%2000126%20Roma',
-    // Mappa di Google incorporata nella pagina Contatti
-    mappaIncorporata: 'https://maps.google.com/maps?q=Via%20dei%20Monti%20di%20San%20Paolo%2040%2C%2000126%20Roma&z=17&hl=it&output=embed',
+    // Link che apre Google Maps (sul telefono, l'app) sulla scheda della sede, «Comitato Acilia Nord 2018»
+    mappa: 'https://www.google.com/maps/search/?api=1&query=Comitato%20Acilia%20Nord%202018&query_place_id=ChIJldMrdADzJRMRqeTSa2DEV0s',
+    // Mappa di Google incorporata nella pagina Contatti: cercando il nome della scheda, il segnalino
+    // cade sulla sede (con il nome), non sul numero civico
+    mappaIncorporata:
+      'https://maps.google.com/maps?q=Comitato%20Acilia%20Nord%202018%2C%20Via%20dei%20Monti%20di%20San%20Paolo%2040%2C%2000126%20Roma&z=18&hl=it&output=embed',
   },
   apertura: {
     giorno: 'martedì',
