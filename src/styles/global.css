@@ -156,6 +156,11 @@ ol {
   line-height: 1.2;
 }
 
+/* se il nome non sta su una riga, va a capo solo fra «Comitato di Quartiere» e «Acilia Nord 2018» */
+.marchio-nome span {
+  white-space: nowrap;
+}
+
 .nav-ampia ul,
 .nav-stretta ul {
   list-style: none;
@@ -163,9 +168,15 @@ ol {
   padding: 0;
 }
 
+/* Voci un po' più piccole e più vicine: con «La nostra storia», «Le notizie» e «Contattaci» le sette voci
+   stanno ancora accanto al nome su una riga (la riga è larga al massimo 70rem) */
 .nav-ampia ul {
   display: flex;
-  gap: 1.3rem;
+  gap: 0.9rem;
+}
+
+.nav-ampia a {
+  font-size: 0.95rem;
 }
 
 .nav-ampia a,

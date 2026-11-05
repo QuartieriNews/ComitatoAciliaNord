@@ -43,7 +43,11 @@ const colori = (c: { vivo: string; scuro: string }) => `--vivo:${c.vivo};--scuro
           ))
         }
       </ol>
-      <div class="azioni">
+      <div class="invito-storia">
+        <p>
+          Questo è solo un assaggio. Nella storia completa ogni capitolo ha il suo racconto, con le foto della mostra e i
+          ricordi delle famiglie che hanno fatto il quartiere.
+        </p>
         <a class="bottone bottone-pieno" href="/storia/">Leggi la nostra storia</a>
       </div>
     </div>
@@ -147,5 +151,38 @@ const colori = (c: { vivo: string; scuro: string }) => `--vivo:${c.vivo};--scuro
     font-size: 0.95rem;
     color: var(--tenue);
     line-height: 1.45;
+  }
+
+  /* Dopo l'assaggio dei capitoli, l'invito a leggere la storia intera: una frase che dice cosa si trova e il bottone */
+  .invito-storia {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: 1.75rem;
+    padding: 1.4rem 1.6rem;
+    background: var(--carta-b);
+    border-radius: 12px;
+  }
+
+  .invito-storia p {
+    margin: 0;
+    max-width: 46rem;
+    text-wrap: pretty;
+    font-size: 1.15rem;
+    line-height: 1.45;
+    color: var(--inchiostro);
+  }
+
+  .invito-storia .bottone {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 44rem) {
+    .invito-storia {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1.2rem 1.25rem;
+    }
   }
 </style>
