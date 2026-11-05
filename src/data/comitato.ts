@@ -62,10 +62,11 @@ export const direttivo: { eletto: string; cariche: Persona[]; consiglieri: Perso
   ],
 };
 
+// Donazioni: per ora solo bonifico (o di persona agli eventi). PayPal tolto su richiesta di Riccardo
+// il 5 novembre 2026, perché il comitato non lo usa: non rimetterlo dai testi del vecchio sito.
 export const donazioni = {
   iban: 'IT93 E020 0832 9740 0157 0990 909',
   beneficiario: 'Massimo Facchini',
-  paypal: 'info@comitatoacilianord.it',
   whatsapp: '338 851 8023',
 };
 

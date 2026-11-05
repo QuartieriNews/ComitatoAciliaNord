@@ -70,11 +70,9 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
           <dd class="iban">{donazioni.iban}</dd>
           <dt>Intestato a</dt>
           <dd>{donazioni.beneficiario}, presidente del comitato</dd>
-          <dt>PayPal</dt>
-          <dd>{donazioni.paypal}</dd>
         </dl>
         <p class="nota">
-          Dopo la donazione scrivici su WhatsApp al <a href={`https://wa.me/39${donazioni.whatsapp.replace(/\s/g, '')}`}>{donazioni.whatsapp}</a>,
+          Dopo la donazione scrivici su WhatsApp al <a href={`https://wa.me/39${donazioni.whatsapp.replace(/\s/g, '')}`} style="white-space: nowrap">{donazioni.whatsapp}</a>,
           così possiamo ringraziarti.
         </p>
       </div>
