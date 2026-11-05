@@ -459,6 +459,80 @@ ol {
   margin: 0;
 }
 
+/* «Leggi la notizia completa», sotto ogni notizia della pagina delle notizie */
+.notizia-leggi {
+  display: inline-block;
+  margin-top: 0.45rem;
+  color: var(--pino);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.notizia-leggi:hover {
+  text-decoration: underline;
+}
+
+/* Le prime foto della notizia nello spazio a destra: solo sui computer, dove c'è posto (richiesta di Riccardo
+   del 5 novembre 2026). Sono alte quanto il testo della notizia, che quindi non si allunga, e ognuna è larga
+   un terzo dello spazio: con una o due foto le misure restano le stesse. Sul telefono e sul tablet non si vedono. */
+.notizia-foto {
+  display: none;
+}
+
+/* La ricerca delle notizie è larga quanto la pagina, perché i risultati abbiano lo spazio per le foto;
+   la casella, i bottoni delle categorie e il conto dei risultati restano larghi quanto il testo */
+.misura > .cerca {
+  max-width: none;
+}
+
+.cerca-modulo,
+.cerca-categorie,
+.cerca-stato {
+  max-width: var(--misura);
+}
+
+@media (min-width: 72rem) {
+  .misura > .notizie-complete {
+    max-width: none;
+  }
+
+  .notizie-complete .notizia {
+    display: grid;
+    grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+
+  .notizia-foto {
+    display: block;
+    position: relative;
+  }
+
+  /* una sola riga alta quanto lo spazio: senza «grid-template-rows» le foto verticali la allungherebbero */
+  .notizia-foto-riga {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  /* «center top»: delle locandine (verticali) si vede la parte alta, col titolo */
+  .notizia-foto img {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 8px;
+    background: var(--pino-chiaro);
+  }
+
+  .notizia-foto:hover img {
+    filter: brightness(0.92);
+  }
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;

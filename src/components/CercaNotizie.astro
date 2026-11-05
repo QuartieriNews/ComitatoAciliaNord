@@ -3,8 +3,10 @@
 // e prepara un indice (cartella /pagefind/ del sito pubblicato); mentre si scrive, il browser
 // scarica solo i pezzi dell'indice che servono alle parole cercate. Cerca in tutto il testo,
 // anche nelle forme simili delle parole (potatura, potature).
-// Senza parole, i bottoni delle categorie filtrano l'elenco già presente nella pagina.
-// La ricerca si può linkare: /news/?q=parco oppure /news/?q=parco&categoria=verde
+// Senza parole, i bottoni delle categorie mostrano tutte le notizie di quella categoria, dalla più recente,
+// anche quelle delle altre pagine dell'elenco (l'elenco è diviso in pagine di PER_PAGINA notizie).
+// I risultati hanno lo stesso aspetto dell'elenco: sul computer con le prime foto accanto.
+// La ricerca si può linkare: /news/?q=parco, /news/?categoria=verde oppure /news/?q=parco&categoria=verde
 import { categorie, type CategoriaId } from '../data/categorie';
 
 interface Props {
@@ -50,7 +52,7 @@ const { presenti } = Astro.props;
   }
 
   <p class="cerca-stato" aria-live="polite"></p>
-  <ul class="notizie cerca-risultati" hidden></ul>
+  <ul class="notizie notizie-complete cerca-risultati" hidden></ul>
   <button type="button" class="bottone bottone-vuoto cerca-altre" hidden>Mostra altre</button>
 </div>
 
@@ -66,8 +68,9 @@ const { presenti } = Astro.props;
     const risultati = radice.querySelector<HTMLUListElement>('.cerca-risultati')!;
     const altre = radice.querySelector<HTMLButtonElement>('.cerca-altre')!;
     const bottoni = [...radice.querySelectorAll<HTMLButtonElement>('[data-cat]')];
+    // l'elenco della pagina e i numeri delle pagine: si nascondono mentre si vedono i risultati
     const elenco = document.querySelector<HTMLElement>('ul.notizie:not(.cerca-risultati)');
-    const voci = elenco ? [...elenco.querySelectorAll<HTMLElement>('li[data-categoria]')] : [];
+    const numeriPagine = document.querySelector<HTMLElement>('.pagine');
     const PER_VOLTA = 20;
 
     let pagefind: any = null;
@@ -117,13 +120,15 @@ const { presenti } = Astro.props;
       history.replaceState(null, '', q ? `?${q}` : location.pathname);
     };
 
-    // Un risultato, con lo stesso aspetto delle notizie dell'elenco
+    // Un risultato, con lo stesso aspetto delle notizie dell'elenco (components/ElencoNotizie.astro)
     const voce = (d: any) => {
       const id = d.filters?.categoria?.[0];
       const cat = categorie[id] ?? categorie.comitato;
       const li = document.createElement('li');
       li.className = 'notizia';
       li.style.setProperty('--cat', cat.colore);
+      const testo = document.createElement('div');
+      testo.className = 'notizia-testo';
       const meta = document.createElement('div');
       meta.className = 'meta';
       const quando = document.createElement('span');
@@ -138,8 +143,39 @@ const { presenti } = Astro.props;
       link.textContent = d.meta?.title ?? '';
       titolo.append(link);
       const frase = document.createElement('p');
-      frase.innerHTML = d.excerpt; // la frase con le parole cercate evidenziate (<mark>), presa dalle nostre pagine
-      li.append(meta, titolo, frase);
+      // con le parole cercate: la frase che le contiene, evidenziate (<mark>), presa dalle nostre pagine;
+      // con la sola categoria: il sommario della notizia, come nell'elenco
+      if (!parole() && d.meta?.sommario) frase.textContent = d.meta.sommario;
+      else frase.innerHTML = d.excerpt;
+      // come nell'elenco della pagina: sotto ogni notizia il link alla notizia completa
+      const leggi = document.createElement('a');
+      leggi.className = 'notizia-leggi';
+      leggi.href = d.url;
+      leggi.textContent = 'Leggi la notizia completa';
+      leggi.setAttribute('aria-label', `Leggi la notizia completa: ${link.textContent}`);
+      testo.append(meta, titolo, frase, leggi);
+      li.append(testo);
+      // le prime foto (miniature), dal campo «foto» che ogni notizia dà all'indice: si vedono solo sul computer
+      const foto = String(d.meta?.foto ?? '').split(' ').filter(Boolean).slice(0, 3);
+      if (foto.length) {
+        const a = document.createElement('a');
+        a.className = 'notizia-foto';
+        a.href = d.url;
+        a.tabIndex = -1;
+        a.setAttribute('aria-hidden', 'true');
+        const riga = document.createElement('span');
+        riga.className = 'notizia-foto-riga';
+        for (const src of foto) {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          riga.append(img);
+        }
+        a.append(riga);
+        li.append(a);
+      }
       return li;
     };
 
@@ -156,23 +192,14 @@ const { presenti } = Astro.props;
       return buoni.length;
     };
 
-    const filtraElenco = (cat: string) => {
-      let n = 0;
-      voci.forEach((li) => {
-        const si = !cat || li.dataset.categoria === cat;
-        li.hidden = !si;
-        if (si) n++;
-      });
-      return n;
-    };
-
-    const mostraElenco = (cat: string) => {
+    // Senza parole e senza categoria: l'elenco della pagina, con i numeri delle pagine
+    const mostraElenco = () => {
       risultati.hidden = true;
       risultati.replaceChildren();
       altre.hidden = true;
       if (elenco) elenco.hidden = false;
-      const n = filtraElenco(cat);
-      stato.textContent = cat ? `${quante(n)}${nella(cat)}` : '';
+      if (numeriPagine) numeriPagine.hidden = false;
+      stato.textContent = '';
     };
 
     const cerca = async () => {
@@ -180,27 +207,32 @@ const { presenti } = Astro.props;
       const testo = parole();
       const cat = scelta();
       aggiornaIndirizzo();
-      if (!testo) return mostraElenco(cat);
+      if (!testo && !cat) return mostraElenco();
       try {
         const pf = await carica();
-        const risposta = await pf.debouncedSearch(testo, cat ? { filters: { categoria: cat } } : {}, 200);
+        const filtri = cat ? { filters: { categoria: cat } } : {};
+        // solo una categoria: tutte le sue notizie, dalla più recente («data» viene da data-pagefind-sort in news/[slug])
+        const risposta = testo ? await pf.debouncedSearch(testo, filtri, 200) : await pf.search(null, { ...filtri, sort: { data: 'desc' } });
         if (risposta === null || mio !== giro) return; // nel frattempo è partita una ricerca più recente
         trovate = risposta.results;
         mostrate = 0;
         risultati.replaceChildren();
         if (elenco) elenco.hidden = true;
+        if (numeriPagine) numeriPagine.hidden = true;
         risultati.hidden = false;
         altre.hidden = true;
         const buoni = trovate.length ? await mostraAltre() : 0;
         if (mio !== giro) return;
         // se i risultati stavano tutti nel primo gruppo, il conto è esatto; altrimenti è quello di Pagefind
         const totale = trovate.length <= PER_VOLTA ? buoni : trovate.length;
-        stato.textContent = totale
-          ? `${quante(totale)} con «${testo}»${nella(cat)}`
-          : `Nessuna notizia con «${testo}»${nella(cat)}. Prova con un'altra parola${cat ? ' o con tutte le categorie' : ''}.`;
+        if (!testo) stato.textContent = `${quante(totale)}${nella(cat)}`;
+        else
+          stato.textContent = totale
+            ? `${quante(totale)} con «${testo}»${nella(cat)}`
+            : `Nessuna notizia con «${testo}»${nella(cat)}. Prova con un'altra parola${cat ? ' o con tutte le categorie' : ''}.`;
       } catch {
         if (mio !== giro) return;
-        mostraElenco(cat);
+        mostraElenco();
         stato.textContent = 'La ricerca in questo momento non funziona: trovi tutte le notizie nell’elenco qui sotto.';
       }
     };

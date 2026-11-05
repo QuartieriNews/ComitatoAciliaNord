@@ -19,19 +19,21 @@ const { Content } = notizia;
 const foto = notizia.foto ?? (notizia.image ? [{ src: notizia.image }] : []);
 // Con un video, la prima foto è la sua copertina: in alto c'è il video, nella galleria le altre foto
 const altreFoto = notizia.video ? foto.slice(1) : foto;
+// Per i risultati della ricerca e delle categorie: le miniature delle prime tre foto, come nell'elenco
+const miniature = foto.slice(0, 3).map((f) => ('mini' in f && f.mini) || f.src);
 ---
 
 <Base title={notizia.title} description={notizia.summary}>
   {/* data-pagefind-*: cosa entra nell'indice della ricerca (vedi components/CercaNotizie.astro) */}
-  <article data-pagefind-body>
+  <article data-pagefind-body data-pagefind-meta={miniature.length ? `foto:${miniature.join(' ')}` : undefined}>
     <header class="pagina-testa">
       <div class="contenitore">
         <div class="meta" style={`--cat:${cat.colore}`} data-pagefind-ignore>
-          <time datetime={notizia.date} data-pagefind-meta="quando">{dataLeggibile(notizia.date)}</time>
+          <time datetime={notizia.date} data-pagefind-meta="quando" data-pagefind-sort="data[datetime]">{dataLeggibile(notizia.date)}</time>
           <span class="categoria" data-pagefind-filter={`categoria:${idCategoria(notizia.category)}`}>{cat.nome}</span>
         </div>
         <h1>{notizia.title}</h1>
-        {notizia.summary && <p class="introduzione" data-pagefind-ignore>{notizia.summary}</p>}
+        {notizia.summary && <p class="introduzione" data-pagefind-ignore data-pagefind-meta="sommario">{notizia.summary}</p>}
       </div>
     </header>
 

@@ -1,0 +1,14 @@
+---
+// Le pagine dell'elenco delle notizie dopo la prima: /news/pagina/2/, /news/pagina/3/ …
+import PaginaNotizie from '../../../components/PaginaNotizie.astro';
+import { PER_PAGINA, tutteLeNotizie } from '../../../data/notizie';
+
+export function getStaticPaths() {
+  const pagine = Math.ceil(tutteLeNotizie().length / PER_PAGINA);
+  return Array.from({ length: Math.max(0, pagine - 1) }, (_, i) => ({ params: { numero: String(i + 2) } }));
+}
+
+const pagina = Number(Astro.params.numero);
+---
+
+<PaginaNotizie pagina={pagina} />

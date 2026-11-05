@@ -5,26 +5,52 @@ import { dataLeggibile, type Notizia } from '../data/notizie';
 
 interface Props {
   notizie: Notizia[];
+  // Solo nella pagina delle notizie (richiesta di Riccardo del 5 novembre 2026): sotto ogni notizia
+  // «Leggi la notizia completa» e, sui computer, nello spazio a destra le prime foto della notizia
+  completa?: boolean;
 }
 
-const { notizie } = Astro.props;
+const { notizie, completa = false } = Astro.props;
+
+// Quante foto al massimo accanto a ogni notizia: le miniature (640 px) delle prime, nell'ordine della notizia.
+// Le notizie scritte prima della galleria hanno solo la copertina («image»).
+const FOTO = 3;
+const anteprime = (n: Notizia) => (n.foto ?? (n.image ? [{ src: n.image }] : [])).slice(0, FOTO).map((f) => ('mini' in f && f.mini) || f.src);
 ---
 
 {
   notizie.length > 0 ? (
-    <ul class="notizie">
+    <ul class:list={['notizie', { 'notizie-complete': completa }]}>
       {notizie.map((n) => {
         const cat = categoria(n.category);
+        const indirizzo = `/news/${n.slug}/`;
+        const foto = completa ? anteprime(n) : [];
         return (
           <li class="notizia" style={`--cat:${cat.colore}`} data-categoria={idCategoria(n.category)}>
-            <div class="meta">
-              <time datetime={n.date}>{dataLeggibile(n.date)}</time>
-              <span class="categoria">{cat.nome}</span>
+            <div class="notizia-testo">
+              <div class="meta">
+                <time datetime={n.date}>{dataLeggibile(n.date)}</time>
+                <span class="categoria">{cat.nome}</span>
+              </div>
+              <h3>
+                <a href={indirizzo}>{n.title}</a>
+              </h3>
+              {n.summary && <p>{n.summary}</p>}
+              {completa && (
+                <a class="notizia-leggi" href={indirizzo} aria-label={`Leggi la notizia completa: ${n.title}`}>
+                  Leggi la notizia completa
+                </a>
+              )}
             </div>
-            <h3>
-              <a href={`/news/${n.slug}/`}>{n.title}</a>
-            </h3>
-            {n.summary && <p>{n.summary}</p>}
+            {foto.length > 0 && (
+              <a class="notizia-foto" href={indirizzo} tabindex="-1" aria-hidden="true">
+                <span class="notizia-foto-riga">
+                  {foto.map((src) => (
+                    <img src={src} alt="" loading="lazy" decoding="async" />
+                  ))}
+                </span>
+              </a>
+            )}
           </li>
         );
       })}

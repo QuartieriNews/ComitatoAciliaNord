@@ -1,0 +1,178 @@
+---
+// Una pagina dell'elenco delle notizie: la prima è /news/, le altre /news/pagina/2/, /news/pagina/3/ …
+// La ricerca e i bottoni delle categorie lavorano su tutte le notizie, non solo su quelle della pagina.
+import Base from '../layouts/Base.astro';
+import CercaNotizie from './CercaNotizie.astro';
+import ElencoNotizie from './ElencoNotizie.astro';
+import { categorie, idCategoria, type CategoriaId } from '../data/categorie';
+import { PER_PAGINA, indirizzoPagina, tutteLeNotizie } from '../data/notizie';
+
+interface Props {
+  pagina: number;
+}
+
+const { pagina } = Astro.props;
+const tutte = tutteLeNotizie();
+const pagine = Math.max(1, Math.ceil(tutte.length / PER_PAGINA));
+const notizie = tutte.slice((pagina - 1) * PER_PAGINA, pagina * PER_PAGINA);
+// Nei bottoni della ricerca solo le categorie che hanno almeno una notizia, nell'ordine di categorie.ts
+const usate = new Set(tutte.map((n) => idCategoria(n.category)));
+const presenti = (Object.keys(categorie) as CategoriaId[]).filter((id) => usate.has(id));
+
+// I numeri delle pagine: la prima, l'ultima e quelle vicine alla pagina aperta; «…» dove ne mancano
+const numeri: (number | null)[] = [];
+for (let n = 1; n <= pagine; n++) {
+  if (n === 1 || n === pagine || Math.abs(n - pagina) <= 1) numeri.push(n);
+  else if (numeri[numeri.length - 1] !== null) numeri.push(null);
+}
+---
+
+<Base
+  title={pagina > 1 ? `Notizie, pagina ${pagina}` : 'Notizie'}
+  description="Le notizie del Comitato di Quartiere Acilia Nord 2018: iniziative, segnalazioni e appuntamenti nel quartiere."
+>
+  <section class="pagina-testa">
+    <div class="contenitore">
+      <h1>Notizie</h1>
+      <p class="introduzione">
+        Iniziative, segnalazioni e appuntamenti del comitato nei Monti di San Paolo e al Poggio di Acilia.
+      </p>
+    </div>
+  </section>
+
+  <section class="sezione">
+    <div class="contenitore misura">
+      {tutte.length > 0 && <CercaNotizie presenti={presenti} />}
+      <ElencoNotizie notizie={notizie} completa />
+      {
+        pagine > 1 && (
+          <nav class="pagine" aria-label="Pagine delle notizie">
+            {pagina > 1 ? (
+              <a class="bottone bottone-vuoto pagine-passo" href={indirizzoPagina(pagina - 1)} rel="prev">
+                Più recenti
+              </a>
+            ) : (
+              <span class="pagine-passo" aria-hidden="true" />
+            )}
+            <ol class="pagine-numeri">
+              {numeri.map((n) =>
+                n === null ? (
+                  <li class="pagine-salto" aria-hidden="true">
+                    …
+                  </li>
+                ) : (
+                  <li>
+                    {n === pagina ? (
+                      <span class="pagine-numero" aria-current="page">
+                        <span class="nascosto">Pagina </span>
+                        {n}
+                      </span>
+                    ) : (
+                      <a class="pagine-numero" href={indirizzoPagina(n)}>
+                        <span class="nascosto">Pagina </span>
+                        {n}
+                      </a>
+                    )}
+                  </li>
+                ),
+              )}
+            </ol>
+            {pagina < pagine ? (
+              <a class="bottone bottone-vuoto pagine-passo" href={indirizzoPagina(pagina + 1)} rel="next">
+                Meno recenti
+              </a>
+            ) : (
+              <span class="pagine-passo" aria-hidden="true" />
+            )}
+          </nav>
+        )
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* «Più recenti» · numeri · «Meno recenti», sotto l'elenco */
+  .pagine {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--linea);
+  }
+
+  /* i due passi hanno la stessa larghezza; quando uno manca (prima o ultima pagina) resta il suo posto vuoto,
+     così i numeri stanno sempre al centro */
+  .pagine-passo {
+    min-width: 9rem;
+    text-align: center;
+  }
+
+  .pagine-numeri {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pagine-numero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 10px;
+    font-weight: 700;
+    color: var(--inchiostro);
+    text-decoration: none;
+  }
+
+  a.pagine-numero:hover {
+    background: var(--pino-chiaro);
+    color: var(--pino-scuro);
+  }
+
+  .pagine-numero[aria-current='page'] {
+    background: var(--pino);
+    color: #fff;
+  }
+
+  .pagine-salto {
+    padding: 0 0.25rem;
+    color: var(--tenue);
+  }
+
+  /* il testo «Pagina» si legge con il lettore di schermo, ma non si vede */
+  .nascosto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* sul telefono i passi vanno sopra, larghi quanto c'è posto, e i numeri sotto, al centro */
+  @media (max-width: 30rem) {
+    .pagine-numeri {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .pagine-passo {
+      min-width: 0;
+      flex: 1;
+    }
+
+    span.pagine-passo {
+      display: none;
+    }
+  }
+</style>

@@ -31,6 +31,11 @@ export type Notizia = {
   Content: any;
 };
 
+// La pagina Notizie mostra le notizie a gruppi, dalla più recente: /news/ è la prima pagina, poi
+// /news/pagina/2/ e così via (richiesta di Riccardo del 5 novembre 2026, prima di importare l'archivio)
+export const PER_PAGINA = 12;
+export const indirizzoPagina = (n: number) => (n <= 1 ? '/news/' : `/news/pagina/${n}/`);
+
 export function tutteLeNotizie(): Notizia[] {
   const moduli = import.meta.glob('../content/news/*.md', { eager: true });
   return Object.entries(moduli)
