@@ -1,5 +1,5 @@
 ---
-title: Insieme per il decoro
+title: Insieme per il decoro – domenica 18 ottobre
 date: 2026-10-13T11:47:44.000Z
 category: decoro
 summary: Domenica 18 Ottobre prossimo appuntamento ai Monti di San Paolo

@@ -1,5 +1,5 @@
 ---
-title: Corso base per disostruzione e rianimazione , gratuito
+title: Corso base per disostruzione e rianimazione , gratuito – mercoledì 18 novembre
 date: 2026-11-02T12:20:42.000Z
 category: comitato
 summary: Prossimo appuntamento presso la sede del Comitato di quartiere Mercoledi 18 Novembre! Posti limitati necessario iscriversi; nella locandina trovate i dettagli e i…

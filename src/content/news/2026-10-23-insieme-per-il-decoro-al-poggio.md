@@ -1,5 +1,5 @@
 ---
-title: Insieme per il decoro al Poggio
+title: Insieme per il decoro al Poggio – domenica 25 ottobre
 date: 2026-10-23T17:06:32.000Z
 category: decoro
 summary: Domenica 25 Ottobre torniamo al Parchetto Todis per mantenere il decoro in questo angolo del quartiere Unitevi a noi, Vi aspettiamo

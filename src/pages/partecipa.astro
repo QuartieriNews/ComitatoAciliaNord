@@ -56,7 +56,7 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
           <dt>Bonifico, IBAN</dt>
           <dd class="iban">{donazioni.iban}</dd>
           <dt>Intestato a</dt>
-          <dd>{donazioni.beneficiario}, presidente del comitato</dd>
+          <dd>{donazioni.beneficiario}</dd>
         </dl>
         <p class="nota">
           Dopo la donazione scrivici su WhatsApp al <a href={`https://wa.me/39${donazioni.whatsapp.replace(/\s/g, '')}`} style="white-space: nowrap">{donazioni.whatsapp}</a>,

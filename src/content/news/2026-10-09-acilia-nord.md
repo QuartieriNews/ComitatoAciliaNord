@@ -1,5 +1,5 @@
 ---
-title: Acilia Nord
+title: Acilia Nord – domenica 11 ottobre
 date: 2026-10-09T06:44:17.000Z
 category: comitato
 summary: _ IL POGGIO DONAZIONE SANGUE DOMENICA 11 OTTOBRE ci vediamo per la Donazione sangue presso la nostra Parrocchia di San Maurizio Martire nella locandina tutti i dettagli

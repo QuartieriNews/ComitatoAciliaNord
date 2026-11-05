@@ -1,5 +1,5 @@
 ---
-title: AMAILTUOQUARTIERE Raccolte del Weekend – Fai Spazio con
+title: AMAILTUOQUARTIERE Raccolte del Weekend – Fai Spazio con (24 e 25 ottobre)
 date: 2026-10-23T15:33:08.000Z
 category: decoro
 summary: Sabato 24 e Domenica 25 Ottobre, nuovo appuntamento nel Municipio Roma X con la campagna di sensibilizzazione ambientale “Raccolte del Weekend – Fai Spazio con AMA”,…

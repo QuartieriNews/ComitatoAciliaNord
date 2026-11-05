@@ -1,5 +1,5 @@
 ---
-title: Passeggiata tra natura e storia sul Tevere
+title: Passeggiata tra natura e storia sul Tevere – sabato 24 ottobre
 date: 2026-10-19T16:19:46.000Z
 category: storia
 summary: Ti piacerebbe passeggiare sugli argini del Tevere qui dietro casa per conoscere meglio la Riserva Statale del Litorale romano, la Storia del nostro territorio e…

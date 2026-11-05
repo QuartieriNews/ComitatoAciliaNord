@@ -1,5 +1,5 @@
 ---
-title: Tutti giu' dal palco
+title: Tutti giu' dal palco – da venerdì 13 novembre
 date: 2026-10-30T08:49:20.000Z
 category: eventi
 summary: Ti piacerebbe conoscere nuove persone e passarci del tempo insieme divertendoti ? se si partecipa al Laboratorio teatrale gratuito che il Cdq ha organizzato per tutte le…

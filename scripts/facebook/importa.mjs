@@ -17,6 +17,10 @@
 // - al primo avvio si importa l'ultimo mese di post.
 // - titolo, sommario e categoria sono provvisori (la prima frase del post): poi li riscrive l'AI,
 //   che cerca le notizie con «ai: false».
+// - se il post dice quando avviene l'evento («sabato 24 ottobre», «13 novembre»), la data va in fondo
+//   al titolo: «Passeggiata tra natura e storia sul Tevere – sabato 24 ottobre» (regole in data-evento.mjs).
+//   Vale anche per le notizie già pubblicate con il titolo provvisorio. L'AI, quando riscrive il titolo,
+//   la deve tenere.
 // - ogni notizia porta tutte le foto del post. Il lettore dei post di Apify ne vede al massimo cinque,
 //   piccole: per le notizie nuove o modificate le foto si prendono da «Facebook Photos Scraper»,
 //   tutte e alla risoluzione piena. Ogni foto si salva grande e in miniatura.
@@ -45,6 +49,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import YAML from 'yaml';
+import { titoloConData } from './data-evento.mjs';
 
 const RADICE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CARTELLA_NOTIZIE = path.join(RADICE, 'src/content/news');
@@ -696,8 +701,9 @@ function mettiVideo(notizia, p) {
 }
 
 async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
-  const titolo = primaFrase(testo);
-  const base = `${dataRoma(p.created_time)}-${slugDa(titolo) || 'notizia'}`;
+  const senzaData = primaFrase(testo);
+  const titolo = titoloConData(senzaData, testo, p.created_time);
+  const base = `${dataRoma(p.created_time)}-${slugDa(senzaData) || 'notizia'}`;
   let slug = base;
   for (let n = 2; slugEsistenti.has(slug); n++) slug = `${base}-${n}`;
   slugEsistenti.add(slug);
@@ -729,8 +735,7 @@ async function aggiornaNotizia(notizia, p, testo) {
   const testoCambiato = firma.testo !== notizia.dati.firma?.testo;
   if (testoCambiato) {
     // Il testo è cambiato: titolo e sommario tornano provvisori e l'AI li riscrive
-    const titolo = primaFrase(testo);
-    notizia.dati.title = titolo;
+    notizia.dati.title = titoloConData(primaFrase(testo), testo, p.created_time);
     notizia.dati.summary = sommarioProvvisorio(testo);
     notizia.dati.ai = false;
   }
@@ -874,6 +879,19 @@ async function main() {
     delete stato.saltati[p.id];
     conta.nuove++;
     console.log(`Nuova: ${nuova.slug}`);
+  }
+
+  // Notizie già pubblicate con il titolo provvisorio: se il testo dice quando avviene l'evento
+  // e il titolo non lo dice ancora, la data va in fondo al titolo. Le notizie già sistemate restano così.
+  for (const n of notizie.elenco) {
+    if (n.dati.ai !== false || !n.dati.title || !n.dati.date) continue;
+    const corpo = (await readFile(n.file, 'utf8')).replace(/^---\n[\s\S]*?\n---\n*/, '');
+    const titolo = titoloConData(n.dati.title, corpo, n.dati.date);
+    if (titolo === n.dati.title) continue;
+    n.dati.title = titolo;
+    await scriviNotizia(n, corpo);
+    conta.aggiornate++;
+    console.log(`Data nel titolo: ${n.slug} → ${titolo}`);
   }
 
   // Post cancellati su Facebook: le notizie recenti il cui post non c'è più spariscono.
