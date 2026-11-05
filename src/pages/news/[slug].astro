@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import FotoNotizia from '../../components/FotoNotizia.astro';
+import VideoNotizia from '../../components/VideoNotizia.astro';
 import { categoria, idCategoria } from '../../data/categorie';
 import { dataLeggibile, tutteLeNotizie, type Notizia } from '../../data/notizie';
 
@@ -16,6 +17,8 @@ const cat = categoria(notizia.category);
 const { Content } = notizia;
 // Le notizie scritte prima della galleria hanno solo la copertina («image»): vale come unica foto.
 const foto = notizia.foto ?? (notizia.image ? [{ src: notizia.image }] : []);
+// Con un video, la prima foto è la sua copertina: in alto c'è il video, nella galleria le altre foto
+const altreFoto = notizia.video ? foto.slice(1) : foto;
 ---
 
 <Base title={notizia.title} description={notizia.summary}>
@@ -34,9 +37,13 @@ const foto = notizia.foto ?? (notizia.image ? [{ src: notizia.image }] : []);
 
     <div class="sezione">
       <div class="contenitore testo">
-        <FotoNotizia foto={foto} titolo={notizia.title} parte="sopra" />
+        {notizia.video ? (
+          <VideoNotizia video={notizia.video} copertina={foto[0]?.src} titolo={notizia.title} />
+        ) : (
+          <FotoNotizia foto={foto} titolo={notizia.title} parte="sopra" />
+        )}
         <Content />
-        <FotoNotizia foto={foto} titolo={notizia.title} parte="sotto" />
+        <FotoNotizia foto={altreFoto} titolo={notizia.title} parte="sotto" galleriaCompleta={Boolean(notizia.video)} />
         {notizia.facebook && (
           <p class="fonte" data-pagefind-ignore>
             <a href={notizia.facebook}>Commenta su Facebook</a>

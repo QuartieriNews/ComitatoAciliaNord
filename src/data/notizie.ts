@@ -26,6 +26,7 @@ export type Notizia = {
   image?: string;
   imageAlt?: string;
   foto?: FotoNotizia[];
+  video?: { url: string; verticale?: boolean }; // i post con un video: si vede col lettore di Facebook
   facebook?: string;
   Content: any;
 };

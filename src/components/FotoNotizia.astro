@@ -9,9 +9,11 @@ interface Props {
   foto: FotoNotizia[];
   titolo: string;
   parte: 'sopra' | 'sotto';
+  // nelle notizie con un video in alto c'è il video: allora la galleria mostra anche una foto sola
+  galleriaCompleta?: boolean;
 }
 
-const { foto, titolo, parte } = Astro.props;
+const { foto, titolo, parte, galleriaCompleta = false } = Astro.props;
 const n = foto.length;
 const VISIBILI = 9; // oltre, l'ultima casella dice quante foto restano
 ---
@@ -25,7 +27,7 @@ const VISIBILI = 9; // oltre, l'ultima casella dice quante foto restano
 }
 
 {
-  parte === 'sotto' && n > 1 && (
+  parte === 'sotto' && n > (galleriaCompleta ? 0 : 1) && (
     <section class="galleria" aria-label="Le foto" data-pagefind-ignore>
       <h2>
         Le foto <span class="quante">({n})</span>

@@ -1,0 +1,122 @@
+---
+// Il video di una notizia (anche i reel, in verticale). Si vede la copertina con un ▶: il lettore di
+// Facebook si carica solo quando la si tocca, così chi non guarda il video non riceve niente da Facebook
+// (lo spiega la pagina Privacy). Sotto, il link per aprire il video su Facebook se il lettore non parte.
+interface Props {
+  video: { url: string; verticale?: boolean };
+  copertina?: string;
+  titolo: string;
+}
+
+const { video, copertina, titolo } = Astro.props;
+const verticale = video.verticale ?? /\/reel\//.test(video.url);
+---
+
+<figure class:list={['video', { verticale }]} data-video={video.url}>
+  <button type="button" class="video-avvia" aria-label={`Guarda il video: ${titolo}`}>
+    {copertina && <img src={copertina} alt="" />}
+    <span class="video-play" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+    </span>
+  </button>
+  <figcaption>
+    Il video si apre con il lettore di Facebook. Se non parte, <a href={video.url}>guardalo su Facebook</a>.
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('figure.video').forEach((figura) => {
+    const bottone = figura.querySelector<HTMLButtonElement>('.video-avvia');
+    bottone?.addEventListener('click', () => {
+      const { width, height } = bottone.getBoundingClientRect();
+      const parametri = new URLSearchParams({
+        href: figura.dataset.video ?? '',
+        show_text: 'false',
+        autoplay: 'true',
+        width: String(Math.round(width)),
+        height: String(Math.round(height)),
+      });
+      const lettore = document.createElement('iframe');
+      lettore.className = 'video-lettore';
+      lettore.src = `https://www.facebook.com/plugins/video.php?${parametri}`;
+      lettore.title = bottone.getAttribute('aria-label') ?? 'Video';
+      lettore.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share';
+      lettore.allowFullscreen = true;
+      bottone.replaceWith(lettore);
+      lettore.focus();
+    });
+  });
+</script>
+
+<style>
+  .video {
+    margin: 0 0 1.5rem;
+  }
+
+  .video-avvia,
+  .video :global(.video-lettore) {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #12161c;
+  }
+
+  .verticale .video-avvia,
+  .verticale :global(.video-lettore) {
+    width: min(100%, 22rem);
+    aspect-ratio: 9 / 16;
+  }
+
+  .video-avvia {
+    cursor: pointer;
+  }
+
+  .video-avvia img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    display: grid;
+    place-items: center;
+    width: 4.75rem;
+    height: 4.75rem;
+    border-radius: 50%;
+    background: rgb(18 22 28 / 0.72);
+    box-shadow: 0 0 0 3px rgb(255 255 255 / 0.85);
+    transition: background-color 0.2s ease;
+  }
+
+  .video-avvia:hover .video-play,
+  .video-avvia:focus-visible .video-play {
+    background: var(--pino);
+  }
+
+  .video-play svg {
+    width: 2.3rem;
+    height: 2.3rem;
+    fill: #fff;
+    translate: 0.15rem 0;
+  }
+
+  figcaption {
+    margin-top: 0.55rem;
+    font-size: 0.9rem;
+    color: var(--tenue);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-play {
+      transition: none;
+    }
+  }
+</style>

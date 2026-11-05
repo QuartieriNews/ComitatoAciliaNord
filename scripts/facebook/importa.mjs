@@ -20,6 +20,8 @@
 // - ogni notizia porta tutte le foto del post. Il lettore dei post di Apify ne vede al massimo cinque,
 //   piccole: per le notizie nuove o modificate le foto si prendono da «Facebook Photos Scraper»,
 //   tutte e alla risoluzione piena. Ogni foto si salva grande e in miniatura.
+// - i post con un video (anche i reel) portano la copertina del video e l'indirizzo del video:
+//   sul sito la copertina ha un ▶ e toccandola parte il lettore di Facebook.
 // - le foto vanno nello spazio R2 di Cloudflare (contenitore «comitato-foto», segreti R2_ENDPOINT,
 //   R2_ACCESS_KEY_ID e R2_SECRET_ACCESS_KEY): così il repository resta leggero. Il nome di ogni file
 //   contiene un pezzo della sua impronta (news/<notizia>/1-ab12cd34.webp), quindi una foto cambiata
@@ -190,7 +192,15 @@ function daApify(voce) {
 
   let allegati;
   if (video) {
-    allegati = [{ media_type: 'video', type: 'video_inline', media: src(video) ? { image: { src: src(video) } } : undefined, target: { id: video.id } }];
+    allegati = [
+      {
+        media_type: 'video',
+        type: 'video_inline',
+        url: video.url,
+        media: src(video) ? { image: { src: src(video) } } : undefined,
+        target: { id: video.id },
+      },
+    ];
   } else if (foto.length > 1) {
     allegati = [
       {
@@ -617,7 +627,6 @@ function testoInMarkdown(testo) {
 // Il testo della notizia. Le foto non stanno qui: sono nell'intestazione («foto») e la pagina le mostra.
 function corpoNotizia(p, testo) {
   const parti = [testoInMarkdown(testo)];
-  if (eVideo(p) && p.permalink_url) parti.push(`[Guarda il video su Facebook](${p.permalink_url})`);
   const link = linkPulito(p);
   if (link && !/(^|\.)facebook\.com$/.test(link.hostname)) {
     const etichetta = (allegato(p).title || link.hostname.replace(/^www\./, '')).trim();
@@ -661,7 +670,7 @@ async function leggiNotizie() {
 }
 
 async function scriviNotizia(notizia, corpo) {
-  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'foto', 'facebook', 'facebook_id', 'versione', 'ai', 'firma'];
+  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'foto', 'video', 'facebook', 'facebook_id', 'versione', 'ai', 'firma'];
   const dati = Object.fromEntries(ordine.filter((k) => notizia.dati[k] !== undefined).map((k) => [k, notizia.dati[k]]));
   await writeFile(notizia.file, `---\n${YAML.stringify(dati, { lineWidth: 0 })}---\n\n${corpo}`);
 }
@@ -671,6 +680,19 @@ function mettiFoto(notizia, elenco) {
   notizia.dati.image = elenco.length ? elenco[0].src : undefined;
   notizia.dati.imageAlt = elenco.length ? (notizia.dati.imageAlt ?? '') : undefined;
   notizia.dati.foto = elenco.length ? elenco : undefined;
+}
+
+// I post con un video: la notizia mostra la copertina del video, e toccandola parte il lettore
+// di Facebook (vedi src/components/VideoNotizia.astro). «verticale» vale per i reel.
+function mettiVideo(notizia, p) {
+  if (!eVideo(p)) {
+    notizia.dati.video = undefined;
+    return;
+  }
+  const url = allegato(p)?.url || p.permalink_url;
+  const copertina = notizia.dati.foto?.[0];
+  const verticale = copertina?.w && copertina?.h ? copertina.h > copertina.w : /\/reel\//.test(url);
+  notizia.dati.video = { url, verticale };
 }
 
 async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
@@ -696,6 +718,7 @@ async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
     },
   };
   mettiFoto(notizia, await salvaFoto(slug, foto));
+  mettiVideo(notizia, p);
   await scriviNotizia(notizia, corpoNotizia(p, testo));
   return notizia;
 }
@@ -712,6 +735,7 @@ async function aggiornaNotizia(notizia, p, testo) {
     notizia.dati.ai = false;
   }
   mettiFoto(notizia, await salvaFoto(notizia.slug, foto, notizia.dati.foto));
+  mettiVideo(notizia, p);
   notizia.dati.facebook = p.permalink_url;
   notizia.dati.versione = versioneDelPost(p);
   notizia.dati.firma = firma;
@@ -726,7 +750,7 @@ async function rifaiFoto(notizie) {
     if (!notizia.dati.image || !notizia.dati.facebook) continue;
     const contenuto = await readFile(notizia.file, 'utf8');
     const corpo = contenuto.replace(/^---\n[\s\S]*?\n---\n*/, '');
-    if (corpo.includes('[Guarda il video su Facebook]')) continue;
+    if (notizia.dati.video || corpo.includes('[Guarda il video su Facebook]')) continue;
     const fonti = await fotoComplete(notizia.dati.facebook);
     const foto = fonti.length ? await scaricaFoto(fonti, notizia.slug) : [];
     if (!foto.length) {
