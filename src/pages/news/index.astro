@@ -1,9 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
+import CercaNotizie from '../../components/CercaNotizie.astro';
 import ElencoNotizie from '../../components/ElencoNotizie.astro';
+import { categorie, idCategoria, type CategoriaId } from '../../data/categorie';
 import { tutteLeNotizie } from '../../data/notizie';
 
 const notizie = tutteLeNotizie();
+// Nei bottoni della ricerca solo le categorie che hanno almeno una notizia, nell'ordine di categorie.ts
+const usate = new Set(notizie.map((n) => idCategoria(n.category)));
+const presenti = (Object.keys(categorie) as CategoriaId[]).filter((id) => usate.has(id));
 ---
 
 <Base title="Notizie" description="Le notizie del Comitato di Quartiere Acilia Nord 2018: iniziative, segnalazioni e appuntamenti nel quartiere.">
@@ -18,6 +23,7 @@ const notizie = tutteLeNotizie();
 
   <section class="sezione">
     <div class="contenitore misura">
+      {notizie.length > 0 && <CercaNotizie presenti={presenti} />}
       <ElencoNotizie notizie={notizie} />
     </div>
   </section>

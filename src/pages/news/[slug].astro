@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { categoria } from '../../data/categorie';
+import FotoNotizia from '../../components/FotoNotizia.astro';
+import { categoria, idCategoria } from '../../data/categorie';
 import { dataLeggibile, tutteLeNotizie, type Notizia } from '../../data/notizie';
 
 export function getStaticPaths() {
@@ -13,31 +14,35 @@ export function getStaticPaths() {
 const { notizia } = Astro.props as { notizia: Notizia };
 const cat = categoria(notizia.category);
 const { Content } = notizia;
+// Le notizie scritte prima della galleria hanno solo la copertina («image»): vale come unica foto.
+const foto = notizia.foto ?? (notizia.image ? [{ src: notizia.image }] : []);
 ---
 
 <Base title={notizia.title} description={notizia.summary}>
-  <article>
+  {/* data-pagefind-*: cosa entra nell'indice della ricerca (vedi components/CercaNotizie.astro) */}
+  <article data-pagefind-body>
     <header class="pagina-testa">
       <div class="contenitore">
-        <div class="meta" style={`--cat:${cat.colore}`}>
-          <time datetime={notizia.date}>{dataLeggibile(notizia.date)}</time>
-          <span class="categoria">{cat.nome}</span>
+        <div class="meta" style={`--cat:${cat.colore}`} data-pagefind-ignore>
+          <time datetime={notizia.date} data-pagefind-meta="quando">{dataLeggibile(notizia.date)}</time>
+          <span class="categoria" data-pagefind-filter={`categoria:${idCategoria(notizia.category)}`}>{cat.nome}</span>
         </div>
         <h1>{notizia.title}</h1>
-        {notizia.summary && <p class="introduzione">{notizia.summary}</p>}
+        {notizia.summary && <p class="introduzione" data-pagefind-ignore>{notizia.summary}</p>}
       </div>
     </header>
 
     <div class="sezione">
       <div class="contenitore testo">
-        {notizia.image && <img class="foto-notizia" src={notizia.image} alt={notizia.imageAlt ?? ''} />}
+        <FotoNotizia foto={foto} titolo={notizia.title} parte="sopra" />
         <Content />
+        <FotoNotizia foto={foto} titolo={notizia.title} parte="sotto" />
         {notizia.facebook && (
-          <p class="fonte">
+          <p class="fonte" data-pagefind-ignore>
             <a href={notizia.facebook}>Commenta su Facebook</a>
           </p>
         )}
-        <p><a href="/news/">Tutte le notizie</a></p>
+        <p data-pagefind-ignore><a href="/news/">Tutte le notizie</a></p>
       </div>
     </div>
   </article>

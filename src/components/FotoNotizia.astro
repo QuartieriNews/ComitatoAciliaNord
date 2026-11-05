@@ -1,0 +1,286 @@
+---
+// Le foto di una notizia. Sopra il testo la prima foto; dopo il testo, se sono più di una,
+// le miniature di tutte («Le foto (n)»). Un tocco su una foto apre il visore a schermo intero,
+// che si sfoglia col dito, con le frecce o con la tastiera; Esc o la crocetta lo chiudono.
+// Nella pagina si usa due volte: parte="sopra" prima del testo, parte="sotto" dopo.
+import type { FotoNotizia } from '../data/notizie';
+
+interface Props {
+  foto: FotoNotizia[];
+  titolo: string;
+  parte: 'sopra' | 'sotto';
+}
+
+const { foto, titolo, parte } = Astro.props;
+const n = foto.length;
+const VISIBILI = 9; // oltre, l'ultima casella dice quante foto restano
+---
+
+{
+  parte === 'sopra' && n > 0 && (
+    <button type="button" class="copertina" data-apri="0" aria-label={n > 1 ? `Ingrandisci la foto 1 di ${n}` : 'Ingrandisci la foto'}>
+      <img src={foto[0].src} alt="" width={foto[0].w} height={foto[0].h} />
+    </button>
+  )
+}
+
+{
+  parte === 'sotto' && n > 1 && (
+    <section class="galleria" aria-label="Le foto" data-pagefind-ignore>
+      <h2>
+        Le foto <span class="quante">({n})</span>
+      </h2>
+      <ul>
+        {foto.slice(0, VISIBILI).map((f, i) => (
+          <li>
+            <a href={f.src} data-apri={i} aria-label={`Ingrandisci la foto ${i + 1} di ${n}`}>
+              <img src={f.mini ?? f.src} alt="" loading="lazy" />
+              {i === VISIBILI - 1 && n > VISIBILI && <span class="altre">+{n - VISIBILI + 1}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+{
+  parte === 'sotto' && n > 0 && (
+    <dialog class="vista" aria-label={`Foto: ${titolo}`} data-foto={JSON.stringify(foto.map((f) => f.src))}>
+      <img alt="" />
+      <p class="vista-conto" aria-live="polite"></p>
+      <button type="button" class="vista-chiudi" aria-label="Chiudi">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" />
+        </svg>
+      </button>
+      {n > 1 && (
+        <>
+          <button type="button" class="vista-freccia indietro" aria-label="Foto precedente">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 5 8 12l7 7" />
+            </svg>
+          </button>
+          <button type="button" class="vista-freccia avanti" aria-label="Foto successiva">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+          </button>
+        </>
+      )}
+    </dialog>
+  )
+}
+
+<script>
+  const vista = document.querySelector<HTMLDialogElement>('dialog.vista');
+  if (vista) {
+    const foto: string[] = JSON.parse(vista.dataset.foto ?? '[]');
+    const img = vista.querySelector('img')!;
+    const conto = vista.querySelector('.vista-conto')!;
+    let attuale = 0;
+    const mostra = (i: number) => {
+      attuale = (i + foto.length) % foto.length;
+      img.src = foto[attuale];
+      conto.textContent = foto.length > 1 ? `${attuale + 1} di ${foto.length}` : '';
+      // carica in anticipo la foto prima e quella dopo, così sfogliando non si aspetta
+      [attuale + 1, attuale - 1].forEach((j) => {
+        new Image().src = foto[(j + foto.length) % foto.length];
+      });
+    };
+    document.querySelectorAll<HTMLElement>('[data-apri]').forEach((el) =>
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        mostra(Number(el.dataset.apri));
+        vista.showModal();
+      }),
+    );
+    vista.querySelector('.vista-chiudi')?.addEventListener('click', () => vista.close());
+    vista.querySelector('.vista-freccia.indietro')?.addEventListener('click', () => mostra(attuale - 1));
+    vista.querySelector('.vista-freccia.avanti')?.addEventListener('click', () => mostra(attuale + 1));
+    vista.addEventListener('click', (e) => {
+      if (e.target === vista) vista.close();
+    });
+    vista.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') mostra(attuale - 1);
+      if (e.key === 'ArrowRight') mostra(attuale + 1);
+    });
+    // trascinando col dito a destra o a sinistra si passa alla foto dopo o a quella prima
+    let partenza: number | null = null;
+    vista.addEventListener('pointerdown', (e) => (partenza = e.clientX));
+    vista.addEventListener('pointerup', (e) => {
+      if (partenza === null || foto.length < 2) return;
+      const spostamento = e.clientX - partenza;
+      if (Math.abs(spostamento) > 40) mostra(attuale + (spostamento < 0 ? 1 : -1));
+      partenza = null;
+    });
+  }
+</script>
+
+<style>
+  .copertina {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    margin-bottom: 1.5rem;
+  }
+
+  .copertina img {
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  .galleria {
+    margin-top: 2.25rem;
+  }
+
+  .galleria h2 {
+    font-size: 1.3rem;
+    margin: 0 0 0.8rem;
+  }
+
+  .galleria li {
+    margin: 0;
+  }
+
+  .quante {
+    color: var(--tenue);
+  }
+
+  .galleria ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .galleria a {
+    position: relative;
+    display: block;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+
+  .galleria img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+
+  .galleria a:hover img {
+    transform: scale(1.04);
+  }
+
+  .altre {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgb(29 37 48 / 0.62);
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  /* Visore a schermo intero */
+  .vista {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: #12161c;
+    color: #fff;
+  }
+
+  .vista::backdrop {
+    background: #12161c;
+  }
+
+  .vista[open] {
+    display: grid;
+    place-items: center;
+  }
+
+  .vista img {
+    max-width: min(94vw, 1600px);
+    max-height: 84dvh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .vista-conto {
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .vista button {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0;
+    background: rgb(40 48 60 / 0.72);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .vista button:hover {
+    background: rgb(70 80 94 / 0.9);
+  }
+
+  .vista button:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .vista svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .vista-chiudi {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .vista-freccia {
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .vista-freccia.indietro {
+    left: 1rem;
+  }
+
+  .vista-freccia.avanti {
+    right: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .galleria img {
+      transition: none;
+    }
+  }
+</style>

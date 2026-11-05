@@ -2,6 +2,8 @@
 # Se ci sono novità le carica su GitHub, e Cloudflare aggiorna il sito da solo.
 # Legge la pagina con Apify (segreto APIFY_TOKEN) oppure, se un giorno ci sarà, con le API di Meta (FB_PAGE_TOKEN).
 # Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
+# Con la casella «Rifai le foto» non legge i post: riscarica tutte le foto delle notizie già pubblicate.
+# Le foto vanno nello spazio R2 di Cloudflare (segreti R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).
 name: Notizie da Facebook
 
 on:
@@ -9,6 +11,11 @@ on:
     # alle 7, 10, 13, 16, 19 e 22 ora italiana (in inverno; d'estate un'ora dopo)
     - cron: '23 6-21/3 * * *'
   workflow_dispatch:
+    inputs:
+      rifai_foto:
+        description: 'Rifai le foto: riscarica tutte le foto delle notizie già pubblicate'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -21,7 +28,7 @@ concurrency:
 jobs:
   importa:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -39,6 +46,10 @@ jobs:
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          FB_RIFAI_FOTO: ${{ inputs.rifai_foto && '1' || '' }}
         run: node scripts/facebook/importa.mjs
 
       - name: Carica le novità
@@ -51,6 +62,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git commit -m "$(cat "$RUNNER_TEMP/messaggio-facebook.txt")"
+          # se nel frattempo è arrivata una modifica al sito, ci si mette in coda invece di fallire
+          git pull --rebase origin main
           git push
 
       - name: Avvisa se Facebook non risponde

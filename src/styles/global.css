@@ -54,6 +54,11 @@ a:hover {
   text-decoration-thickness: 0.14em;
 }
 
+/* Quello che è nascosto resta nascosto, anche se una regola gli dà un display */
+[hidden] {
+  display: none !important;
+}
+
 :focus-visible {
   outline: 3px solid var(--tevere);
   outline-offset: 3px;
@@ -487,14 +492,9 @@ ol {
   overflow-wrap: anywhere;
 }
 
-.foto-notizia,
 .testo p img {
   width: 100%;
   border-radius: 6px;
-}
-
-.foto-notizia {
-  margin-bottom: 1.5rem;
 }
 
 .fonte {

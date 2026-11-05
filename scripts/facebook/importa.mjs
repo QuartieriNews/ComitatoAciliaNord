@@ -17,9 +17,24 @@
 // - al primo avvio si importa l'ultimo mese di post.
 // - titolo, sommario e categoria sono provvisori (la prima frase del post): poi li riscrive l'AI,
 //   che cerca le notizie con «ai: false».
+// - ogni notizia porta tutte le foto del post. Il lettore dei post di Apify ne vede al massimo cinque,
+//   piccole: per le notizie nuove o modificate le foto si prendono da «Facebook Photos Scraper»,
+//   tutte e alla risoluzione piena. Ogni foto si salva grande e in miniatura.
+// - le foto vanno nello spazio R2 di Cloudflare (contenitore «comitato-foto», segreti R2_ENDPOINT,
+//   R2_ACCESS_KEY_ID e R2_SECRET_ACCESS_KEY): così il repository resta leggero. Il nome di ogni file
+//   contiene un pezzo della sua impronta (news/<notizia>/1-ab12cd34.webp), quindi una foto cambiata
+//   ha un indirizzo nuovo e i browser la possono tenere in memoria per sempre. Senza i segreti, o se R2
+//   non risponde, le foto si salvano nel repository come prima (public/news/<notizia>/1.webp).
 //
-// Per le prove senza Facebook: FB_FINTO=percorso/di/post.json (stesso formato della risposta di Facebook).
+// Avvio a mano con FB_RIFAI_FOTO=1 (casella «Rifai le foto» su GitHub): non legge i post, riscarica
+// tutte le foto delle notizie già pubblicate. Serve dopo un cambio nel modo di salvare le foto; con R2
+// sposta anche le foto dal repository a R2.
+//
+// Per le prove senza Facebook: FB_FINTO=percorso/di/post.json (stesso formato della risposta di Facebook);
+// FB_FINTO_FOTO=percorso/di/foto.json ({ "indirizzo del post": [{ "image": "file:///..." }] }).
+// Per le prove senza Cloudflare: R2_ENDPOINT verso un server finto e R2_PUBBLICO con il suo indirizzo.
 
+import { AwsClient } from 'aws4fetch';
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -38,14 +53,32 @@ const FILE_MESSAGGIO = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'messag
 const VERSIONE_API = process.env.FB_VERSIONE_API || 'v26.0';
 const PAGINA_FACEBOOK = 'https://www.facebook.com/ComitatoAciliaNord/';
 const ATTORE_APIFY = 'apify~facebook-posts-scraper';
+const ATTORE_FOTO_APIFY = 'apify~facebook-photos-scraper';
 const GIORNO = 24 * 60 * 60 * 1000;
 const GIORNI_STORICO = 30; // al primo avvio
 const GIORNI_CONTROLLO = 60; // quanto indietro si controllano modifiche e cancellazioni (API di Meta)
 const GIORNI_CONTROLLO_APIFY = 1; // con Apify si rilegge solo l'ultimo giorno, per spendere poco
 const GIORNI_DOPPIONI = 7;
 const DOMINIO_SITO = 'comitatoacilianord.it';
-const MAX_FOTO = 10;
+const MAX_FOTO = 40; // per post: un tetto di sicurezza, i post del comitato ne hanno molte meno
+const LATO_FOTO = 1600; // pixel del lato lungo della foto grande
+const LATO_MINI = 640; // pixel del lato lungo della miniatura
 const SOGLIA_FOTO_UGUALI = 6; // differenza massima tra le impronte di due foto «uguali»
+
+// Lo spazio R2 di Cloudflare per le foto: il contenitore e il suo indirizzo pubblico.
+// Al lancio del sito l'indirizzo pubblico diventerà un sottodominio di comitatoacilianord.it.
+const R2_CONTENITORE = 'comitato-foto';
+const R2_PUBBLICO = (process.env.R2_PUBBLICO || 'https://pub-1a652fc7e0ed4778866523e19f9f24bf.r2.dev').replace(/\/+$/, '');
+const R2_INDIRIZZO = (process.env.R2_ENDPOINT || '').trim().replace(/\/+$/, '').replace(new RegExp(`/${R2_CONTENITORE}$`), '');
+const r2 =
+  R2_INDIRIZZO && process.env.R2_ACCESS_KEY_ID && process.env.R2_SECRET_ACCESS_KEY
+    ? new AwsClient({
+        accessKeyId: process.env.R2_ACCESS_KEY_ID.trim(),
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY.trim(),
+        service: 's3',
+        region: 'auto',
+      })
+    : null;
 
 class ErroreFacebook extends Error {
   constructor(errore) {
@@ -108,6 +141,40 @@ async function leggiPostApify(token, daQuando, limite) {
     throw new ErroreApify(`Apify ha risposto con un errore (${risposta.status}): ${JSON.stringify(dati)?.slice(0, 300)}`);
   }
   return dati.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+}
+
+// Da dove prendere tutte le foto di un post: la chiave di Apify, oppure un file di prova. Lo imposta main().
+const fonteFoto = { token: null, finto: null };
+
+// Tutte le foto di un post, alla risoluzione piena, con «Facebook Photos Scraper» di Apify
+// (0,002 $ a foto più 0,001 $ a lettura). Se qualcosa va storto restituisce un elenco vuoto
+// e la notizia tiene le foto del lettore dei post.
+async function fotoComplete(indirizzoPost) {
+  if (!indirizzoPost) return [];
+  if (fonteFoto.finto) return (fonteFoto.finto[indirizzoPost] ?? []).map((v) => v.image).filter(Boolean).slice(0, MAX_FOTO);
+  if (!fonteFoto.token) return [];
+  try {
+    const risposta = await fetch(
+      `https://api.apify.com/v2/acts/${ATTORE_FOTO_APIFY}/run-sync-get-dataset-items?timeout=180&maxTotalChargeUsd=0.25`,
+      {
+        method: 'POST',
+        headers: { authorization: `Bearer ${fonteFoto.token}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ startUrls: [{ url: indirizzoPost }], resultsLimit: MAX_FOTO }),
+      },
+    );
+    const dati = await risposta.json().catch(() => null);
+    if (!risposta.ok || !Array.isArray(dati)) {
+      console.warn(`Foto complete non lette per ${indirizzoPost} (${risposta.status}): restano quelle del post.`);
+      return [];
+    }
+    return dati
+      .filter((v) => v && !v.error && typeof v.image === 'string')
+      .map((v) => v.image)
+      .slice(0, MAX_FOTO);
+  } catch (errore) {
+    console.warn(`Foto complete non lette per ${indirizzoPost}: ${errore.message}`);
+    return [];
+  }
 }
 
 // Trasforma un post letto da Apify nella stessa forma delle API di Meta
@@ -297,18 +364,119 @@ function fontiFoto(p) {
   return fonti.slice(0, MAX_FOTO);
 }
 
-async function preparaFoto(p) {
+// L'impronta della prima foto del post, per riconoscere i doppioni prima di scaricare tutto
+async function improntaPrimaFoto(p) {
+  const fonte = fontiFoto(p)[0];
+  if (!fonte) return null;
+  try {
+    return await improntaFoto(await scarica(fonte));
+  } catch {
+    return null;
+  }
+}
+
+// Scarica le foto: per ognuna una versione grande e una miniatura, con le misure
+async function scaricaFoto(fonti, chi) {
   const foto = [];
-  for (const fonte of fontiFoto(p)) {
+  for (const fonte of fonti.slice(0, MAX_FOTO)) {
     try {
-      const originale = await scarica(fonte);
-      const buffer = await sharp(originale).rotate().resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 78 }).toBuffer();
-      foto.push({ buffer, impronta: foto.length === 0 ? await improntaFoto(originale) : null });
+      const originale = sharp(await scarica(fonte)).rotate();
+      const grande = await originale
+        .clone()
+        .resize({ width: LATO_FOTO, height: LATO_FOTO, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 78 })
+        .toBuffer({ resolveWithObject: true });
+      const mini = await originale
+        .clone()
+        .resize({ width: LATO_MINI, height: LATO_MINI, fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 72 })
+        .toBuffer();
+      foto.push({ buffer: grande.data, mini, w: grande.info.width, h: grande.info.height });
     } catch (errore) {
-      console.warn(`Una foto del post ${p.id} non è stata scaricata: ${errore.message}`);
+      console.warn(`Una foto di ${chi} non è stata scaricata: ${errore.message}`);
     }
   }
   return foto;
+}
+
+// Le foto di una notizia: tutte quelle del post se si riesce a leggerle, altrimenti quelle del lettore dei post
+async function preparaFoto(p) {
+  const delPost = fontiFoto(p);
+  if (!delPost.length) return [];
+  const tutte = eVideo(p) ? [] : await fotoComplete(p.permalink_url);
+  const foto = tutte.length >= delPost.length ? await scaricaFoto(tutte, `${p.id}`) : [];
+  return foto.length ? foto : scaricaFoto(delPost, `${p.id}`);
+}
+
+// ---------- Dove stanno le foto ----------
+
+async function caricaSuR2(chiave, dati) {
+  const risposta = await r2.fetch(`${R2_INDIRIZZO}/${R2_CONTENITORE}/${chiave}`, {
+    method: 'PUT',
+    body: dati,
+    headers: { 'content-type': 'image/webp', 'cache-control': 'public, max-age=31536000, immutable' },
+  });
+  if (!risposta.ok) throw new Error(`R2 ha risposto ${risposta.status}: ${(await risposta.text()).slice(0, 200)}`);
+}
+
+// Quante notizie hanno dovuto tenere le foto nel repository perché R2 non rispondeva: finisce nel
+// messaggio del caricamento, così si vede dall'elenco delle modifiche su GitHub.
+let ripieghiR2 = 0;
+const notaR2 = () => (ripieghiR2 ? ` (foto nel repository: R2 non ha risposto per ${ripieghiR2})` : '');
+
+// Le chiavi su R2 delle foto di una notizia, ricavate dagli indirizzi scritti nella notizia
+function chiaviSuR2(elenco = []) {
+  return elenco
+    .flatMap((f) => [f.src, f.mini])
+    .filter((indirizzo) => typeof indirizzo === 'string' && indirizzo.startsWith(`${R2_PUBBLICO}/`))
+    .map((indirizzo) => indirizzo.slice(R2_PUBBLICO.length + 1));
+}
+
+// Toglie da R2 le foto che non servono più. Se non ci riesce restano lì: occupano poco e non si vedono.
+async function togliDaR2(chiavi) {
+  if (!r2) return;
+  for (const chiave of chiavi) {
+    try {
+      await r2.fetch(`${R2_INDIRIZZO}/${R2_CONTENITORE}/${chiave}`, { method: 'DELETE' });
+    } catch (errore) {
+      console.warn(`Non ho tolto ${chiave} da R2: ${errore.message}`);
+    }
+  }
+}
+
+// Salva le foto di una notizia e restituisce come la notizia le indica ({ src, mini, w, h }).
+// «prima» sono le foto che la notizia aveva: quelle su R2 che non servono più si tolgono.
+async function salvaFoto(slug, foto, prima = []) {
+  const cartella = path.join(CARTELLA_FOTO, slug);
+  await rm(cartella, { recursive: true, force: true });
+  if (r2 && foto.length) {
+    try {
+      const elenco = [];
+      for (const [i, f] of foto.entries()) {
+        const impronta = createHash('sha256').update(f.buffer).digest('hex').slice(0, 8);
+        const nome = `news/${slug}/${i + 1}-${impronta}`;
+        await caricaSuR2(`${nome}.webp`, f.buffer);
+        await caricaSuR2(`${nome}-mini.webp`, f.mini);
+        elenco.push({ src: `${R2_PUBBLICO}/${nome}.webp`, mini: `${R2_PUBBLICO}/${nome}-mini.webp`, w: f.w, h: f.h });
+      }
+      const nuove = new Set(chiaviSuR2(elenco));
+      await togliDaR2(chiaviSuR2(prima).filter((chiave) => !nuove.has(chiave)));
+      return elenco;
+    } catch (errore) {
+      console.warn(`Le foto di ${slug} non sono andate su R2 (${errore.message}): le salvo nel repository.`);
+      ripieghiR2++;
+    }
+  }
+  await togliDaR2(chiaviSuR2(prima));
+  if (!foto.length) return [];
+  await mkdir(cartella, { recursive: true });
+  await Promise.all(
+    foto.flatMap((f, i) => [
+      writeFile(path.join(cartella, `${i + 1}.webp`), f.buffer),
+      writeFile(path.join(cartella, `${i + 1}-mini.webp`), f.mini),
+    ]),
+  );
+  return foto.map((f, i) => ({ src: `/news/${slug}/${i + 1}.webp`, mini: `/news/${slug}/${i + 1}-mini.webp`, w: f.w, h: f.h }));
 }
 
 // ---------- Testi provvisori ----------
@@ -446,9 +614,9 @@ function testoInMarkdown(testo) {
     .join('\n\n');
 }
 
-function corpoNotizia(p, testo, foto, slug) {
+// Il testo della notizia. Le foto non stanno qui: sono nell'intestazione («foto») e la pagina le mostra.
+function corpoNotizia(p, testo) {
   const parti = [testoInMarkdown(testo)];
-  for (let i = 1; i < foto.length; i++) parti.push(`![](/news/${slug}/${i + 1}.webp)`);
   if (eVideo(p) && p.permalink_url) parti.push(`[Guarda il video su Facebook](${p.permalink_url})`);
   const link = linkPulito(p);
   if (link && !/(^|\.)facebook\.com$/.test(link.hostname)) {
@@ -493,17 +661,16 @@ async function leggiNotizie() {
 }
 
 async function scriviNotizia(notizia, corpo) {
-  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'facebook', 'facebook_id', 'versione', 'ai', 'firma'];
+  const ordine = ['title', 'date', 'category', 'summary', 'image', 'imageAlt', 'foto', 'facebook', 'facebook_id', 'versione', 'ai', 'firma'];
   const dati = Object.fromEntries(ordine.filter((k) => notizia.dati[k] !== undefined).map((k) => [k, notizia.dati[k]]));
   await writeFile(notizia.file, `---\n${YAML.stringify(dati, { lineWidth: 0 })}---\n\n${corpo}`);
 }
 
-async function salvaFoto(slug, foto) {
-  const cartella = path.join(CARTELLA_FOTO, slug);
-  await rm(cartella, { recursive: true, force: true });
-  if (!foto.length) return;
-  await mkdir(cartella, { recursive: true });
-  await Promise.all(foto.map((f, i) => writeFile(path.join(cartella, `${i + 1}.webp`), f.buffer)));
+// Le foto nell'intestazione della notizia (come le restituisce salvaFoto): la prima fa da copertina
+function mettiFoto(notizia, elenco) {
+  notizia.dati.image = elenco.length ? elenco[0].src : undefined;
+  notizia.dati.imageAlt = elenco.length ? (notizia.dati.imageAlt ?? '') : undefined;
+  notizia.dati.foto = elenco.length ? elenco : undefined;
 }
 
 async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
@@ -521,8 +688,6 @@ async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
       date: new Date(p.created_time).toISOString(),
       category: categoriaProvvisoria(testo),
       summary: sommarioProvvisorio(testo),
-      image: foto.length ? `/news/${slug}/1.webp` : undefined,
-      imageAlt: foto.length ? '' : undefined,
       facebook: p.permalink_url,
       facebook_id: p.id,
       versione: versioneDelPost(p),
@@ -530,14 +695,14 @@ async function creaNotizia(p, testo, foto, firma, slugEsistenti) {
       firma,
     },
   };
-  await salvaFoto(slug, foto);
-  await scriviNotizia(notizia, corpoNotizia(p, testo, foto, slug));
+  mettiFoto(notizia, await salvaFoto(slug, foto));
+  await scriviNotizia(notizia, corpoNotizia(p, testo));
   return notizia;
 }
 
 async function aggiornaNotizia(notizia, p, testo) {
   const foto = await preparaFoto(p);
-  const firma = { testo: improntaTesto(testo), foto: foto[0]?.impronta ?? null, link: linkEsterno(p) };
+  const firma = { testo: improntaTesto(testo), foto: await improntaPrimaFoto(p), link: linkEsterno(p) };
   const testoCambiato = firma.testo !== notizia.dati.firma?.testo;
   if (testoCambiato) {
     // Il testo è cambiato: titolo e sommario tornano provvisori e l'AI li riscrive
@@ -546,18 +711,42 @@ async function aggiornaNotizia(notizia, p, testo) {
     notizia.dati.summary = sommarioProvvisorio(testo);
     notizia.dati.ai = false;
   }
-  notizia.dati.image = foto.length ? `/news/${notizia.slug}/1.webp` : undefined;
-  if (!foto.length) notizia.dati.imageAlt = undefined;
+  mettiFoto(notizia, await salvaFoto(notizia.slug, foto, notizia.dati.foto));
   notizia.dati.facebook = p.permalink_url;
   notizia.dati.versione = versioneDelPost(p);
   notizia.dati.firma = firma;
-  await salvaFoto(notizia.slug, foto);
-  await scriviNotizia(notizia, corpoNotizia(p, testo, foto, notizia.slug));
+  await scriviNotizia(notizia, corpoNotizia(p, testo));
+}
+
+// «Rifai le foto»: riscarica tutte le foto delle notizie già pubblicate, senza leggere i post.
+// Le notizie dei video tengono l'anteprima che hanno.
+async function rifaiFoto(notizie) {
+  let rifatte = 0;
+  for (const notizia of notizie.elenco) {
+    if (!notizia.dati.image || !notizia.dati.facebook) continue;
+    const contenuto = await readFile(notizia.file, 'utf8');
+    const corpo = contenuto.replace(/^---\n[\s\S]*?\n---\n*/, '');
+    if (corpo.includes('[Guarda il video su Facebook]')) continue;
+    const fonti = await fotoComplete(notizia.dati.facebook);
+    const foto = fonti.length ? await scaricaFoto(fonti, notizia.slug) : [];
+    if (!foto.length) {
+      console.warn(`Foto non rifatte per ${notizia.slug}: restano quelle di prima.`);
+      continue;
+    }
+    mettiFoto(notizia, await salvaFoto(notizia.slug, foto, notizia.dati.foto));
+    // Le foto in fondo al testo, come le salvava la versione precedente, ora stanno nella galleria
+    const senzaFoto = corpo.replace(/\n*!\[\]\(\/news\/[^)\s]+\/\d+\.webp\)/g, '').trimEnd();
+    await scriviNotizia(notizia, `${senzaFoto}\n`);
+    rifatte++;
+    console.log(`Foto rifatte: ${notizia.slug} (${foto.length})`);
+  }
+  return rifatte;
 }
 
 async function togliNotizia(notizia) {
   await rm(notizia.file, { force: true });
   await rm(path.join(CARTELLA_FOTO, notizia.slug), { recursive: true, force: true });
+  await togliDaR2(chiaviSuR2(notizia.dati.foto));
 }
 
 // ---------- Stato ----------
@@ -577,14 +766,26 @@ async function main() {
   const tokenApify = process.env.APIFY_TOKEN;
   const finto = process.env.FB_FINTO;
   const fintoApify = process.env.FB_FINTO_APIFY;
-  if (!token && !tokenApify && !finto && !fintoApify) {
+  if (!token && !tokenApify && !finto && !fintoApify && !process.env.FB_FINTO_FOTO) {
     console.log('Nessun collegamento con Facebook configurato (APIFY_TOKEN o FB_PAGE_TOKEN): per ora non faccio niente.');
     return;
   }
   const conApify = !token && Boolean(tokenApify || fintoApify);
+  fonteFoto.token = tokenApify || null;
+  console.log(r2 ? `Foto: nello spazio R2 di Cloudflare (${R2_CONTENITORE}).` : 'Foto: nel repository (i segreti R2 non ci sono).');
+  if (process.env.FB_FINTO_FOTO) fonteFoto.finto = JSON.parse(await readFile(process.env.FB_FINTO_FOTO, 'utf8'));
+
+  if (process.env.FB_RIFAI_FOTO) {
+    const rifatte = await rifaiFoto(await leggiNotizie());
+    const messaggio = `Notizie da Facebook: tutte le foto in ${rifatte} ${rifatte === 1 ? 'notizia' : 'notizie'}${notaR2()}`;
+    await writeFile(FILE_MESSAGGIO, messaggio);
+    console.log(messaggio);
+    return;
+  }
 
   const adesso = Date.now();
   const stato = await leggiStato();
+  const saltatiPrima = JSON.stringify(stato.saltati);
   stato.inizio ??= new Date(adesso - GIORNI_STORICO * GIORNO).toISOString();
   const primoAvvio = !stato.ultimaLettura;
   const giorniControllo = conApify && !primoAvvio ? GIORNI_CONTROLLO_APIFY : GIORNI_CONTROLLO;
@@ -634,8 +835,7 @@ async function main() {
     const giaSaltato = stato.saltati[p.id];
     if (giaSaltato && giaSaltato.versione === versioneDelPost(p)) continue;
 
-    const foto = await preparaFoto(p);
-    const firma = { testo: improntaTesto(testo), foto: foto[0]?.impronta ?? null, link: linkEsterno(p) };
+    const firma = { testo: improntaTesto(testo), foto: await improntaPrimaFoto(p), link: linkEsterno(p) };
     const doppione = trovaDoppione(firma, p.created_time, notizie.elenco);
     if (doppione) {
       stato.saltati[p.id] = { motivo: `uguale a ${doppione.slug}`, data: p.created_time, versione: versioneDelPost(p) };
@@ -643,6 +843,7 @@ async function main() {
       continue;
     }
 
+    const foto = await preparaFoto(p); // tutte, solo per i post che diventano notizie
     const nuova = await creaNotizia(p, testo, foto, firma, slugEsistenti);
     notizie.elenco.push(nuova);
     notizie.perId.set(p.id, nuova);
@@ -664,18 +865,23 @@ async function main() {
     }
   }
 
-  // Lo stato tiene solo i post saltati ancora dentro la finestra di controllo
-  for (const [id, voce] of Object.entries(stato.saltati)) {
-    if (new Date(voce.data) < daQuando) delete stato.saltati[id];
+  // Lo stato si riscrive solo se è successo qualcosa: altrimenti ogni lettura senza novità
+  // diventerebbe una modifica su GitHub (e una pubblicazione su Cloudflare) solo per la data dell'ultima lettura.
+  const daSalvare = primoAvvio || conta.nuove || conta.aggiornate || conta.tolte || JSON.stringify(stato.saltati) !== saltatiPrima;
+  if (daSalvare) {
+    // Lo stato tiene solo i post saltati ancora dentro la finestra di controllo
+    for (const [id, voce] of Object.entries(stato.saltati)) {
+      if (new Date(voce.data) < daQuando) delete stato.saltati[id];
+    }
+    stato.ultimaLettura = new Date(adesso).toISOString();
+    await writeFile(FILE_STATO, `${JSON.stringify(stato, null, 2)}\n`);
   }
-  stato.ultimaLettura = new Date(adesso).toISOString();
-  await writeFile(FILE_STATO, `${JSON.stringify(stato, null, 2)}\n`);
 
   const parti = [];
   if (conta.nuove) parti.push(`${conta.nuove} ${conta.nuove === 1 ? 'nuova' : 'nuove'}`);
   if (conta.aggiornate) parti.push(`${conta.aggiornate} ${conta.aggiornate === 1 ? 'aggiornata' : 'aggiornate'}`);
   if (conta.tolte) parti.push(`${conta.tolte} ${conta.tolte === 1 ? 'tolta' : 'tolte'}`);
-  const messaggio = parti.length ? `Notizie da Facebook: ${parti.join(', ')}` : 'Notizie da Facebook: nessuna novità';
+  const messaggio = (parti.length ? `Notizie da Facebook: ${parti.join(', ')}` : 'Notizie da Facebook: nessuna novità') + notaR2();
   await writeFile(FILE_MESSAGGIO, messaggio);
   console.log(messaggio);
 }

@@ -7,6 +7,7 @@
     "importa": "node importa.mjs"
   },
   "dependencies": {
+    "aws4fetch": "1.0.20",
     "sharp": "^0.35.5",
     "yaml": "^2.9.1"
   }

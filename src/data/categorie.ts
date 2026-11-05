@@ -12,6 +12,11 @@ export const categorie = {
 
 export type CategoriaId = keyof typeof categorie;
 
+// Le notizie senza categoria, o con una che non esiste, valgono come «Vita del comitato».
+export function idCategoria(id: string | undefined): CategoriaId {
+  return id && id in categorie ? (id as CategoriaId) : 'comitato';
+}
+
 export function categoria(id: string | undefined) {
-  return categorie[(id ?? 'comitato') as CategoriaId] ?? categorie.comitato;
+  return categorie[idCategoria(id)];
 }

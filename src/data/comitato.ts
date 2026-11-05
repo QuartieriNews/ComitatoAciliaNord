@@ -21,7 +21,7 @@ export const comitato = {
   },
   apertura: {
     giorno: 'martedì',
-    orario: 'dalle 18:30 alle 20',
+    orario: 'dalle 18 alle 19:30',
   },
   facebook: 'https://www.facebook.com/ComitatoAciliaNord/',
   whatsapp: {

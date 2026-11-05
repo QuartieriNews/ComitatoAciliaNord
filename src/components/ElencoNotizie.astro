@@ -1,5 +1,5 @@
 ---
-import { categoria } from '../data/categorie';
+import { categoria, idCategoria } from '../data/categorie';
 import { comitato } from '../data/comitato';
 import { dataLeggibile, type Notizia } from '../data/notizie';
 
@@ -16,7 +16,7 @@ const { notizie } = Astro.props;
       {notizie.map((n) => {
         const cat = categoria(n.category);
         return (
-          <li class="notizia" style={`--cat:${cat.colore}`}>
+          <li class="notizia" style={`--cat:${cat.colore}`} data-categoria={idCategoria(n.category)}>
             <div class="meta">
               <time datetime={n.date}>{dataLeggibile(n.date)}</time>
               <span class="categoria">{cat.nome}</span>

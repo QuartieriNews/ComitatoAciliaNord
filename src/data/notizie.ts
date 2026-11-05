@@ -5,11 +5,17 @@
 // date: 2026-10-28T18:00:00+01:00
 // category: decoro
 // summary: "Una frase che riassume il post."
-// image: /news/2026-10-28-stazione.jpg
+// image: /news/2026-10-28-stazione/1.webp
+// foto:
+//   - { src: /news/2026-10-28-stazione/1.webp, mini: /news/2026-10-28-stazione/1-mini.webp, w: 1600, h: 1200 }
+//   - { src: /news/2026-10-28-stazione/2.webp, mini: /news/2026-10-28-stazione/2-mini.webp, w: 1200, h: 1600 }
 // facebook: https://www.facebook.com/...
 // ---
+// «image» è la prima foto (copertina, anteprime nei social); «foto» le contiene tutte, con la miniatura.
 
 import type { CategoriaId } from './categorie';
+
+export type FotoNotizia = { src: string; mini?: string; w?: number; h?: number };
 
 export type Notizia = {
   slug: string;
@@ -19,6 +25,7 @@ export type Notizia = {
   summary?: string;
   image?: string;
   imageAlt?: string;
+  foto?: FotoNotizia[];
   facebook?: string;
   Content: any;
 };

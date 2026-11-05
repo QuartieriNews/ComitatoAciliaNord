@@ -1,0 +1,373 @@
+---
+// La ricerca nella pagina Notizie. A ogni pubblicazione Pagefind legge le pagine delle notizie
+// e prepara un indice (cartella /pagefind/ del sito pubblicato); mentre si scrive, il browser
+// scarica solo i pezzi dell'indice che servono alle parole cercate. Cerca in tutto il testo,
+// anche nelle forme simili delle parole (potatura, potature).
+// Senza parole, i bottoni delle categorie filtrano l'elenco già presente nella pagina.
+// La ricerca si può linkare: /news/?q=parco oppure /news/?q=parco&categoria=verde
+import { categorie, type CategoriaId } from '../data/categorie';
+
+interface Props {
+  presenti: CategoriaId[]; // le categorie che hanno almeno una notizia
+}
+
+const { presenti } = Astro.props;
+---
+
+<div class="cerca" data-categorie={JSON.stringify(categorie)} hidden>
+  <form class="cerca-modulo" role="search" action="/news/" method="get">
+    <label for="cerca-parole">Cerca nelle notizie</label>
+    <div class="cerca-campo">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5"></circle>
+        <path d="m15.5 15.5 5 5"></path>
+      </svg>
+      <input
+        id="cerca-parole"
+        name="q"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        placeholder="Per esempio: parco, AMA"
+      />
+    </div>
+  </form>
+
+  {
+    presenti.length > 1 && (
+      <div class="cerca-categorie" role="group" aria-label="Categoria">
+        <button type="button" data-cat="" aria-pressed="true">
+          Tutte
+        </button>
+        {presenti.map((id) => (
+          <button type="button" data-cat={id} aria-pressed="false" style={`--cat:${categorie[id].colore}`}>
+            {categorie[id].nome}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <p class="cerca-stato" aria-live="polite"></p>
+  <ul class="notizie cerca-risultati" hidden></ul>
+  <button type="button" class="bottone bottone-vuoto cerca-altre" hidden>Mostra altre</button>
+</div>
+
+<script>
+  type Categoria = { nome: string; colore: string };
+  const radice = document.querySelector<HTMLElement>('.cerca');
+
+  if (radice) {
+    radice.hidden = false; // senza JavaScript la casella resta nascosta e si vede solo l'elenco
+    const categorie: Record<string, Categoria> = JSON.parse(radice.dataset.categorie ?? '{}');
+    const campo = radice.querySelector<HTMLInputElement>('#cerca-parole')!;
+    const stato = radice.querySelector<HTMLElement>('.cerca-stato')!;
+    const risultati = radice.querySelector<HTMLUListElement>('.cerca-risultati')!;
+    const altre = radice.querySelector<HTMLButtonElement>('.cerca-altre')!;
+    const bottoni = [...radice.querySelectorAll<HTMLButtonElement>('[data-cat]')];
+    const elenco = document.querySelector<HTMLElement>('ul.notizie:not(.cerca-risultati)');
+    const voci = elenco ? [...elenco.querySelectorAll<HTMLElement>('li[data-categoria]')] : [];
+    const PER_VOLTA = 20;
+
+    let pagefind: any = null;
+    let trovate: any[] = [];
+    let mostrate = 0;
+    let giro = 0; // ogni ricerca ha il suo numero: le risposte arrivate in ritardo si ignorano
+
+    const parole = () => campo.value.trim();
+    const pulita = (s: string) =>
+      s
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]/g, '');
+    const inComune = (a: string, b: string) => {
+      let i = 0;
+      while (i < a.length && i < b.length && a[i] === b[i]) i++;
+      return i;
+    };
+    // Quando una parola non c'è in nessuna notizia, Pagefind ripiega su parole che ne condividono
+    // solo l'inizio («xyzqwe» trova la «X» di «Municipio Roma X»). Teniamo un risultato solo se
+    // una parola evidenziata comincia come una parola cercata (almeno 4 lettere, o tutta se è più corta).
+    const pertinente = (d: any, termini: string[]) => {
+      const segnate = [...String(d.excerpt).matchAll(/<mark>(.*?)<\/mark>/g)].map((m) => pulita(m[1]));
+      if (!segnate.length || !termini.length) return true; // la parola è nel titolo: non si può giudicare
+      return segnate.some((w) => termini.some((t) => inComune(w, t) >= Math.min(t.length, 4)));
+    };
+    const scelta = () => bottoni.find((b) => b.getAttribute('aria-pressed') === 'true')?.dataset.cat ?? '';
+    const quante = (n: number) => (n === 1 ? '1 notizia' : `${n} notizie`);
+    const nella = (cat: string) => (cat ? ` in «${categorie[cat]?.nome ?? cat}»` : '');
+
+    const carica = async () => {
+      if (!pagefind) {
+        const indirizzo = '/pagefind/pagefind.js';
+        pagefind = await import(/* @vite-ignore */ indirizzo);
+        await pagefind.options({ excerptLength: 24 });
+        pagefind.init();
+      }
+      return pagefind;
+    };
+
+    const aggiornaIndirizzo = () => {
+      const p = new URLSearchParams();
+      if (parole()) p.set('q', parole());
+      if (scelta()) p.set('categoria', scelta());
+      const q = p.toString();
+      history.replaceState(null, '', q ? `?${q}` : location.pathname);
+    };
+
+    // Un risultato, con lo stesso aspetto delle notizie dell'elenco
+    const voce = (d: any) => {
+      const id = d.filters?.categoria?.[0];
+      const cat = categorie[id] ?? categorie.comitato;
+      const li = document.createElement('li');
+      li.className = 'notizia';
+      li.style.setProperty('--cat', cat.colore);
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      const quando = document.createElement('span');
+      quando.textContent = d.meta?.quando ?? '';
+      const categoria = document.createElement('span');
+      categoria.className = 'categoria';
+      categoria.textContent = cat.nome;
+      meta.append(quando, categoria);
+      const titolo = document.createElement('h3');
+      const link = document.createElement('a');
+      link.href = d.url;
+      link.textContent = d.meta?.title ?? '';
+      titolo.append(link);
+      const frase = document.createElement('p');
+      frase.innerHTML = d.excerpt; // la frase con le parole cercate evidenziate (<mark>), presa dalle nostre pagine
+      li.append(meta, titolo, frase);
+      return li;
+    };
+
+    // Carica e mostra il prossimo gruppo di risultati; restituisce quanti erano pertinenti
+    const mostraAltre = async () => {
+      const mio = giro;
+      const termini = parole().split(/\s+/).map(pulita).filter(Boolean);
+      const pezzo = await Promise.all(trovate.slice(mostrate, mostrate + PER_VOLTA).map((r) => r.data()));
+      if (mio !== giro) return 0;
+      const buoni = pezzo.filter((d) => pertinente(d, termini));
+      buoni.forEach((d) => risultati.append(voce(d)));
+      mostrate += pezzo.length;
+      altre.hidden = mostrate >= trovate.length;
+      return buoni.length;
+    };
+
+    const filtraElenco = (cat: string) => {
+      let n = 0;
+      voci.forEach((li) => {
+        const si = !cat || li.dataset.categoria === cat;
+        li.hidden = !si;
+        if (si) n++;
+      });
+      return n;
+    };
+
+    const mostraElenco = (cat: string) => {
+      risultati.hidden = true;
+      risultati.replaceChildren();
+      altre.hidden = true;
+      if (elenco) elenco.hidden = false;
+      const n = filtraElenco(cat);
+      stato.textContent = cat ? `${quante(n)}${nella(cat)}` : '';
+    };
+
+    const cerca = async () => {
+      const mio = ++giro;
+      const testo = parole();
+      const cat = scelta();
+      aggiornaIndirizzo();
+      if (!testo) return mostraElenco(cat);
+      try {
+        const pf = await carica();
+        const risposta = await pf.debouncedSearch(testo, cat ? { filters: { categoria: cat } } : {}, 200);
+        if (risposta === null || mio !== giro) return; // nel frattempo è partita una ricerca più recente
+        trovate = risposta.results;
+        mostrate = 0;
+        risultati.replaceChildren();
+        if (elenco) elenco.hidden = true;
+        risultati.hidden = false;
+        altre.hidden = true;
+        const buoni = trovate.length ? await mostraAltre() : 0;
+        if (mio !== giro) return;
+        // se i risultati stavano tutti nel primo gruppo, il conto è esatto; altrimenti è quello di Pagefind
+        const totale = trovate.length <= PER_VOLTA ? buoni : trovate.length;
+        stato.textContent = totale
+          ? `${quante(totale)} con «${testo}»${nella(cat)}`
+          : `Nessuna notizia con «${testo}»${nella(cat)}. Prova con un'altra parola${cat ? ' o con tutte le categorie' : ''}.`;
+      } catch {
+        if (mio !== giro) return;
+        mostraElenco(cat);
+        stato.textContent = 'La ricerca in questo momento non funziona: trovi tutte le notizie nell’elenco qui sotto.';
+      }
+    };
+
+    campo.addEventListener('input', cerca);
+    radice.querySelector('form')!.addEventListener('submit', (e) => {
+      e.preventDefault();
+      cerca();
+      campo.blur(); // sul telefono chiude la tastiera e lascia vedere i risultati
+    });
+    bottoni.forEach((b) =>
+      b.addEventListener('click', () => {
+        bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        cerca();
+      }),
+    );
+    altre.addEventListener('click', mostraAltre);
+    // l'indice si comincia a caricare appena si tocca la casella, così la prima ricerca è pronta
+    campo.addEventListener('focus', () => carica().catch(() => {}), { once: true });
+
+    const iniziale = new URLSearchParams(location.search);
+    const catIniziale = iniziale.get('categoria') ?? '';
+    campo.value = iniziale.get('q') ?? '';
+    const bottoneIniziale = bottoni.find((b) => b.dataset.cat === catIniziale);
+    if (catIniziale && bottoneIniziale) {
+      bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x === bottoneIniziale)));
+      // sul telefono la riga delle categorie scorre: si porta in vista quella scelta
+      const riga = bottoneIniziale.parentElement!;
+      riga.scrollLeft = bottoneIniziale.offsetLeft - riga.offsetLeft - 16;
+    }
+    if (campo.value || scelta()) cerca();
+  }
+</script>
+
+<style>
+  .cerca {
+    margin-bottom: 2.25rem;
+  }
+
+  .cerca-modulo label {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .cerca-campo {
+    position: relative;
+  }
+
+  .cerca-campo svg {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 1.35rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: var(--tenue);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    pointer-events: none;
+  }
+
+  .cerca-campo input {
+    width: 100%;
+    font: inherit;
+    font-size: 1.1rem;
+    padding: 0.8rem 1rem 0.8rem 3rem;
+    border: 2px solid var(--linea);
+    border-radius: 8px;
+    background: var(--carta);
+    color: var(--testo);
+  }
+
+  .cerca-campo input:focus {
+    border-color: var(--pino);
+  }
+
+  .cerca-campo input::placeholder {
+    color: var(--tenue);
+    opacity: 0.85;
+  }
+
+  .cerca-categorie {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.9rem;
+  }
+
+  .cerca-categorie button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.35rem 0.8rem;
+    border: 2px solid var(--linea);
+    border-radius: 999px;
+    background: var(--carta);
+    color: var(--testo);
+    cursor: pointer;
+  }
+
+  .cerca-categorie button[style]::before {
+    content: '';
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--cat);
+  }
+
+  .cerca-categorie button:hover {
+    border-color: var(--cat, var(--pino));
+  }
+
+  .cerca-categorie button[aria-pressed='true'] {
+    border-color: var(--cat, var(--pino));
+    background: color-mix(in srgb, var(--cat, var(--pino)) 12%, var(--carta));
+    font-weight: 700;
+  }
+
+  /* Sul telefono le categorie stanno su una riga sola che si scorre col dito, fino ai bordi dello schermo */
+  @media (max-width: 40rem) {
+    .cerca-categorie {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: -1rem;
+      padding: 0.2rem 1rem;
+      scroll-padding-inline: 1rem;
+    }
+
+    .cerca-categorie::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cerca-categorie button {
+      flex: none;
+    }
+  }
+
+  .cerca-stato {
+    margin: 1rem 0 0;
+    color: var(--tenue);
+  }
+
+  .cerca-stato:empty {
+    display: none;
+  }
+
+  .cerca-risultati {
+    margin-top: 1.2rem;
+  }
+
+  .cerca-risultati :global(mark) {
+    background: #fde9a2;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 0.1em;
+  }
+
+  .cerca-altre {
+    margin-top: 1.5rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
