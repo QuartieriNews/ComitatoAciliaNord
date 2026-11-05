@@ -229,7 +229,8 @@ ol {
   color: var(--pino);
 }
 
-@media (max-width: 76rem) {
+/* Sotto questa larghezza le sette voci non stanno accanto al nome: si usa il pulsante Menu */
+@media (max-width: 78rem) {
   .nav-ampia {
     display: none;
   }
