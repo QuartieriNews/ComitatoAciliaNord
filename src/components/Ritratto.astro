@@ -1,15 +1,14 @@
 ---
 // Foto di una persona del direttivo, in un quadrato con gli angoli arrotondati. Finché la foto non c'è,
-// si vedono le sue iniziali su uno dei colori del logo. La grandezza la decide chi lo usa con --misura-ritratto.
+// si vede la figura del logo (testa e braccia aperte, come nelle icone di «Cosa facciamo» e nella scena
+// della home) in bianco su uno dei colori del logo. La grandezza la decide chi lo usa con --misura-ritratto.
 interface Props {
   nome: string;
   foto?: string;
   colore: string;
 }
 
-const { nome, foto, colore } = Astro.props;
-const parole = nome.split(/\s+/).filter(Boolean);
-const iniziali = `${parole[0]?.[0] ?? ''}${parole.length > 1 ? parole[parole.length - 1][0] : ''}`.toUpperCase();
+const { foto, colore } = Astro.props;
 ---
 
 {
@@ -17,7 +16,12 @@ const iniziali = `${parole[0]?.[0] ?? ''}${parole.length > 1 ? parole[parole.len
     <img class="ritratto" src={foto} alt="" width="320" height="320" loading="lazy" style={`--colore:${colore}`} />
   ) : (
     <span class="ritratto ritratto-vuoto" style={`--colore:${colore}`} aria-hidden="true">
-      {iniziali}
+      <svg viewBox="0 0 100 100" focusable="false">
+        <g transform="translate(50 40.7) scale(0.9)">
+          <circle r="17.2" />
+          <path d="M-33.47 5.86A33.5 33.5 0 1 0 33.47 5.86A36.6 36.6 0 0 1-33.47 5.86Z" />
+        </g>
+      </svg>
     </span>
   )
 }
@@ -37,11 +41,9 @@ const iniziali = `${parole[0]?.[0] ?? ''}${parole.length > 1 ? parole[parole.len
       0 0 0 7px var(--colore);
   }
 
-  .ritratto-vuoto {
-    color: #fff;
-    font-size: calc(var(--misura-ritratto, 8rem) * 0.34);
-    font-weight: 800;
-    letter-spacing: 0.03em;
-    line-height: 1;
+  .ritratto-vuoto svg {
+    width: 100%;
+    height: 100%;
+    fill: #fff;
   }
 </style>

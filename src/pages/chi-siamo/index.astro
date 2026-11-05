@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Ritratto from '../../components/Ritratto.astro';
 import { comitato, direttivo } from '../../data/comitato';
 
-// Colori dei tondi del direttivo, presi dal cerchio del logo (abbastanza scuri per le iniziali bianche)
+// Colori dei riquadri del direttivo, presi dal cerchio del logo (abbastanza scuri per la figura bianca)
 const coloriRitratti = ['#1182ae', '#d60a8b', '#1e8f34', '#6c2e83', '#e84435', '#0f6a8d', '#c75f00', '#9246b9', '#b12152', '#146c44', '#2d6fb7', '#d90a75', '#034c4f'];
 
 // Cosa facciamo: ogni attività ha un'icona bianca in un tondo colorato, come i badge della home.
@@ -319,7 +319,7 @@ const attivita = [
     }
   }
 
-  /* Il direttivo: un riquadro per ogni persona, foto o iniziali, in colonne della stessa larghezza
+  /* Il direttivo: un riquadro per ogni persona, foto o figura del logo, in colonne della stessa larghezza
      allineate a sinistra sotto il titolo */
   .direttivo {
     background: var(--carta-b);

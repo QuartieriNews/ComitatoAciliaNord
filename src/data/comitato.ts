@@ -37,27 +37,28 @@ export const comitato = {
 export const doveSiamo = `${comitato.sede.indirizzo.replace(/^Via /, 'via ')}, ${comitato.sede.riferimento}`;
 
 // Il direttivo. Ogni persona può avere una foto: file quadrato in public/direttivo/,
-// per esempio foto: '/direttivo/massimo-facchini.webp'. Senza foto si vedono le iniziali.
+// per esempio foto: '/direttivo/massimo-facchini.webp'. Senza foto si vede la figura del logo.
 export type Persona = { nome: string; ruolo?: string; foto?: string };
 
 export const direttivo: { eletto: string; cariche: Persona[]; consiglieri: Persona[] } = {
   eletto: "l'11 e il 12 aprile 2026",
   cariche: [
-    { ruolo: 'Presidente', nome: 'Massimo Facchini' },
-    { ruolo: 'Vicepresidente', nome: 'Roberto Casuccio' },
-    { ruolo: 'Tesoriere', nome: 'Maurizio Ciottilli' },
-    { ruolo: 'Segretaria', nome: 'Annie Illuzzi' },
+    { ruolo: 'Presidente', nome: 'Massimo Facchini', foto: '/direttivo/massimo-facchini.webp' },
+    { ruolo: 'Vicepresidente', nome: 'Roberto Casuccio', foto: '/direttivo/roberto-casuccio.webp' },
+    { ruolo: 'Tesoriere', nome: 'Maurizio Ciottilli', foto: '/direttivo/maurizio-ciottilli.webp' },
+    { ruolo: 'Segretaria', nome: 'Annie Illuzzi', foto: '/direttivo/annie-illuzzi.webp' },
   ],
+  // Consiglieri in ordine alfabetico per nome; in fondo Fabio e Vincenzo, che non hanno ancora la foto.
   consiglieri: [
-    { nome: 'Riccardo Benvenuti' },
-    { nome: 'Davide Ceccarini' },
-    { nome: 'Vincenzo Fabbri' },
-    { nome: 'Stefania Ferramola' },
-    { nome: 'Stefano Gasbarro' },
+    { nome: 'Davide Ceccarini', foto: '/direttivo/davide-ceccarini.webp' },
+    { nome: 'Fabiola Vicari', foto: '/direttivo/fabiola-vicari.webp' },
+    { nome: 'Giada Nardacci', foto: '/direttivo/giada-nardacci.webp' },
+    { nome: 'Liliana Pozzi', foto: '/direttivo/liliana-pozzi.webp' },
+    { nome: 'Riccardo Benvenuti', foto: '/direttivo/riccardo-benvenuti.webp' },
+    { nome: 'Stefania Ferramola', foto: '/direttivo/stefania-ferramola.webp' },
+    { nome: 'Stefano Gasbarro', foto: '/direttivo/stefano-gasbarro.webp' },
     { nome: 'Fabio Gerlando' },
-    { nome: 'Giada Nardacci' },
-    { nome: 'Liliana Pozzi' },
-    { nome: 'Fabiola Vicari' },
+    { nome: 'Vincenzo Fabbri' },
   ],
 };
 
