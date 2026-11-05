@@ -8,8 +8,11 @@ name: Notizie da Facebook
 
 on:
   schedule:
-    # alle 7, 10, 13, 16, 19 e 22 ora italiana (in inverno; d'estate un'ora dopo)
-    - cron: '23 6-21/3 * * *'
+    # alle 7:29, 10:29, 13:29, 16:29, 19:29 e 22:29 ora italiana (in inverno; d'estate un'ora dopo).
+    # Dal 29 ottobre GitHub non aveva mai avviato l'automazione da sola: il 5 novembre 2026 QN-Builder ha spostato
+    # l'orario da :23 a :29 (scelta di Riccardo), perché secondo GitHub chi ha i permessi di scrittura riattiva
+    # un orario cambiandolo.
+    - cron: '29 6-21/3 * * *'
   workflow_dispatch:
     inputs:
       rifai_foto:
