@@ -1,11 +1,31 @@
 {
   "saltati": {
-    "1136102138975202": {
+    "1137583392160410": {
       "motivo": "uguale a 2026-11-05-insieme-per-il-decoro-ai-monti",
-      "data": "2026-11-05T21:13:11.000Z",
-      "versione": "000aa1e178b2"
+      "data": "2026-11-07T07:44:26.000Z",
+      "versione": "9b149caa6d6c"
+    },
+    "1137750055477077": {
+      "motivo": "senza un testo nostro",
+      "data": "2026-11-07T11:33:10.000Z",
+      "versione": "3eb416223e9e"
+    },
+    "1137750678810348": {
+      "motivo": "senza un testo nostro",
+      "data": "2026-11-07T11:34:03.000Z",
+      "versione": "3eb416223e9e"
+    },
+    "1137751208810295": {
+      "motivo": "senza un testo nostro",
+      "data": "2026-11-07T11:34:31.000Z",
+      "versione": "3eb416223e9e"
+    },
+    "1137751545476928": {
+      "motivo": "senza un testo nostro",
+      "data": "2026-11-07T11:34:59.000Z",
+      "versione": "3eb416223e9e"
     }
   },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-05T22:35:10.942Z"
+  "ultimaLettura": "2026-11-07T13:25:25.442Z"
 }
