@@ -31,6 +31,9 @@ export const comitato = {
     link: 'https://chat.whatsapp.com/5R1JSYp9uuXCKyXXPN45rc',
   },
   mappaQuartiere: 'https://www.openstreetmap.org/#map=15/41.7899/12.3570',
+  // Questionario di quartiere su Tally (preparato con Riccardo a ottobre 2026). «source» e «medium» sono campi
+  // nascosti del questionario: dicono che chi risponde è arrivato dalla pagina Partecipa del sito.
+  questionario: 'https://tally.so/r/q42Ja5?source=sito&medium=partecipa',
 };
 
 // L'indirizzo dentro una frase: «Ci trovi in via dei Monti di San Paolo 40, di fronte all'Ufficio Postale».

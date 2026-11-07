@@ -19,6 +19,21 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
   </section>
 
   <section class="sezione">
+    <div class="contenitore">
+      <div class="questionario">
+        <div>
+          <h2>Dicci come vivi il quartiere</h2>
+          <p>
+            Abbiamo preparato un breve questionario per capire come ti trovi nel quartiere, quali servizi vorresti e su
+            cosa lavorare prima. Bastano pochi minuti: nome ed email li lasci solo se vuoi essere ricontattato.
+          </p>
+        </div>
+        <a class="bottone bottone-pieno" href={comitato.questionario}>Rispondi al questionario</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sezione">
     <div class="contenitore doppia">
       <div>
         <h2>Vieni alla sede del comitato</h2>
@@ -66,3 +81,39 @@ import { comitato, donazioni, doveSiamo } from '../data/comitato';
     </div>
   </section>
 </Base>
+
+<style>
+  /* Il questionario di quartiere su Tally: riquadro color carta con il titolo, due righe e il bottone,
+     come l'invito a leggere la storia nella pagina Il quartiere */
+  .questionario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2.5rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--carta-b);
+    border-radius: 12px;
+  }
+
+  .questionario h2 {
+    margin-top: 0;
+  }
+
+  .questionario p {
+    margin: 0;
+    max-width: 46rem;
+    text-wrap: pretty;
+  }
+
+  .questionario .bottone {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 44rem) {
+    .questionario {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1.25rem 1.25rem 1.4rem;
+    }
+  }
+</style>
