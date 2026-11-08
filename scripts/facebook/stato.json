@@ -1,31 +1,16 @@
 {
   "saltati": {
-    "1137583392160410": {
+    "1138609045391178": {
       "motivo": "uguale a 2026-11-05-insieme-per-il-decoro-ai-monti",
-      "data": "2026-11-07T07:44:26.000Z",
-      "versione": "9b149caa6d6c"
+      "data": "2026-11-08T06:20:01.000Z",
+      "versione": "2f3f88334b00"
     },
-    "1137750055477077": {
-      "motivo": "senza un testo nostro",
-      "data": "2026-11-07T11:33:10.000Z",
-      "versione": "3eb416223e9e"
-    },
-    "1137750678810348": {
-      "motivo": "senza un testo nostro",
-      "data": "2026-11-07T11:34:03.000Z",
-      "versione": "3eb416223e9e"
-    },
-    "1137751208810295": {
-      "motivo": "senza un testo nostro",
-      "data": "2026-11-07T11:34:31.000Z",
-      "versione": "3eb416223e9e"
-    },
-    "1137751545476928": {
-      "motivo": "senza un testo nostro",
-      "data": "2026-11-07T11:34:59.000Z",
-      "versione": "3eb416223e9e"
+    "1138610132057736": {
+      "motivo": "uguale a 2026-11-07-donazione-sangue-ad-acilia",
+      "data": "2026-11-08T06:21:13.000Z",
+      "versione": "50e21d1dc5d1"
     }
   },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-07T19:32:25.988Z"
+  "ultimaLettura": "2026-11-08T13:45:02.743Z"
 }
