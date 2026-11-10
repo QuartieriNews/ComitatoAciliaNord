@@ -1,26 +1,21 @@
 {
   "saltati": {
-    "1139785218606894": {
-      "motivo": "uguale a 2026-11-08-corso-gratuito-di-teatro",
-      "data": "2026-11-09T08:12:03.000Z",
-      "versione": "9c66f921c848"
+    "1140770755175007": {
+      "motivo": "uguale a 2026-11-07-incontriamoci-in-sede-il-martedi-pomeriggio",
+      "data": "2026-11-10T06:59:19.000Z",
+      "versione": "973b4277116f"
     },
-    "1139785678606848": {
-      "motivo": "uguale a 2026-11-07-donazione-sangue-ad-acilia",
-      "data": "2026-11-09T08:12:47.000Z",
-      "versione": "af2cd0eb3fe7"
-    },
-    "1139786255273457": {
+    "1140783011840448": {
       "motivo": "rimanda a un articolo del sito",
-      "data": "2026-11-09T08:13:27.000Z",
+      "data": "2026-11-10T07:17:18.000Z",
       "versione": "af5e230d7a37"
     },
-    "1139787015273381": {
-      "motivo": "uguale a 2026-11-07-incontriamoci-in-sede-il-martedi-pomeriggio",
-      "data": "2026-11-09T08:14:42.000Z",
-      "versione": "734cf76470b1"
+    "1140783761840373": {
+      "motivo": "uguale a 2026-11-07-donazione-sangue-ad-acilia",
+      "data": "2026-11-10T07:18:24.000Z",
+      "versione": "b5fa7a162465"
     }
   },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-09T16:44:38.767Z"
+  "ultimaLettura": "2026-11-10T15:08:35.004Z"
 }
