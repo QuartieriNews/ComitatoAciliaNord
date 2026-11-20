@@ -1,12 +1,25 @@
 # Sei volte al giorno legge i post della pagina Facebook del comitato e li trasforma in notizie.
 # Se ci sono novità le carica su GitHub, e Cloudflare aggiorna il sito da solo.
 # Legge la pagina con Apify (segreto APIFY_TOKEN) oppure, se un giorno ci sarà, con le API di Meta (FB_PAGE_TOKEN).
+# Dopo un blocco (corse non riuscite per giorni) rilegge da sola anche i post persi, dall'ultima corsa riuscita
+# (al massimo 30 giorni indietro).
 # Si può anche avviare a mano da GitHub: scheda Actions → Notizie da Facebook → Run workflow.
+# Con il campo «Recupera» rilegge i post da un giorno in poi e pubblica sul sito le notizie che mancano.
 # Con la casella «Rifai le foto» non legge i post: riscarica tutte le foto delle notizie già pubblicate.
 # Con il campo «Archivio» importa una volta sola i post vecchi da un giorno in poi e carica le notizie
 # sul ramo «archivio-notizie», non sul sito: titoli e sommari si sistemano prima di pubblicarle.
 # Le foto vanno nello spazio R2 di Cloudflare (segreti R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY).
+# Avvisi: ogni corsa lo dice a Healthchecks.io (segreto HC_PING_URL), che scrive a Riccardo se una corsa non
+# riesce, se il credito di Apify sta finendo o se per più di un giorno non arriva nessuna corsa. Senza
+# HC_PING_URL, quando una corsa non riesce si apre una segnalazione su GitHub.
 name: Notizie da Facebook
+# Il nome di ogni corsa nella scheda Actions. Le corse che leggono i post si chiamano tutte «Notizie da
+# Facebook…»: il passo «Cerca l'ultima corsa riuscita» le riconosce così.
+run-name: >-
+  ${{ inputs.archivio_dal && format('Archivio dal {0}', inputs.archivio_dal)
+  || inputs.rifai_foto && 'Rifai le foto delle notizie'
+  || inputs.recupera_dal && format('Notizie da Facebook, recupero dal {0}', inputs.recupera_dal)
+  || 'Notizie da Facebook' }}
 
 on:
   schedule:
@@ -17,6 +30,10 @@ on:
     - cron: '29 6-21/3 * * *'
   workflow_dispatch:
     inputs:
+      recupera_dal:
+        description: 'Recupera: rilegge i post da questo giorno (AAAA-MM-GG) e pubblica sul sito le notizie che mancano'
+        type: string
+        default: ''
       rifai_foto:
         description: 'Rifai le foto: riscarica tutte le foto delle notizie già pubblicate'
         type: boolean
@@ -33,6 +50,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read # per sapere quando è riuscita l'ultima corsa
 
 concurrency:
   group: notizie-facebook
@@ -41,8 +59,9 @@ concurrency:
 jobs:
   importa:
     runs-on: ubuntu-latest
-    # l'archivio scarica le foto di centinaia di post: può durare ore
-    timeout-minutes: ${{ inputs.archivio_dal && 300 || 20 }}
+    # l'archivio scarica le foto di centinaia di post: può durare ore. Di solito bastano pochi minuti,
+    # ma dopo un blocco di giorni ci sono le foto di tutti i post persi.
+    timeout-minutes: ${{ inputs.archivio_dal && 300 || 60 }}
     env:
       FB_ARCHIVIO_DAL: ${{ inputs.archivio_dal }}
       FB_ARCHIVIO_DATASET: ${{ inputs.archivio_dataset }}
@@ -59,6 +78,20 @@ jobs:
         working-directory: scripts/facebook
         run: npm ci
 
+      - name: Cerca l'ultima corsa riuscita
+        id: ultima
+        # Dopo un blocco l'importatore rilegge anche i post persi, da un'ora prima dell'ultima corsa riuscita
+        # che ha letto i post (non l'archivio né «Rifai le foto»). Se GitHub non risponde, legge l'ultimo giorno.
+        if: ${{ !inputs.archivio_dal && !inputs.rifai_foto }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          quando=$(gh run list -R "$GITHUB_REPOSITORY" --workflow notizie-facebook.yml --status success --limit 30 \
+            --json createdAt,displayTitle \
+            --jq '[.[] | select(.displayTitle | startswith("Notizie da Facebook"))][0].createdAt // ""') || quando=""
+          echo "Ultima corsa riuscita: ${quando:-non trovata}"
+          echo "quando=$quando" >> "$GITHUB_OUTPUT"
+
       - name: Leggi i post e prepara le notizie
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
@@ -67,7 +100,12 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           FB_RIFAI_FOTO: ${{ inputs.rifai_foto && '1' || '' }}
-        run: node scripts/facebook/importa.mjs
+          FB_RECUPERA_DAL: ${{ inputs.recupera_dal }}
+          FB_ULTIMA_RIUSCITA: ${{ steps.ultima.outputs.quando }}
+        # il registro va anche in un file, per l'avviso a Healthchecks
+        run: |
+          set -o pipefail
+          node scripts/facebook/importa.mjs 2>&1 | tee "$RUNNER_TEMP/registro-notizie.txt"
 
       - name: Carica le novità
         run: |
@@ -93,12 +131,66 @@ jobs:
           git pull --rebase origin main
           git push
 
+      - name: Avvisa Healthchecks
+        # Healthchecks.io scrive a Riccardo quando una corsa non riesce o il credito di Apify sta finendo (ping
+        # «fail», con il motivo) e quando per più di un giorno non arriva nessun ping (periodo e tolleranza si
+        # impostano su Healthchecks). Il ping di una corsa riuscita riporta l'avviso a posto. Non per l'archivio
+        # e per «Rifai le foto», che si avviano a mano e si controllano a mano.
+        if: always() && !inputs.archivio_dal && !inputs.rifai_foto
+        env:
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
+          ESITO: ${{ job.status }}
+          CORSA: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          indirizzo=$(printf '%s' "$HC_PING_URL" | tr -d '[:space:]')
+          indirizzo=${indirizzo%/}
+          if [ -z "$indirizzo" ]; then
+            echo "Healthchecks non è collegato (manca il segreto HC_PING_URL): nessun avviso."
+            exit 0
+          fi
+          corpo="$RUNNER_TEMP/healthchecks.txt"
+          avviso="$RUNNER_TEMP/avviso-notizie.txt"
+          if [ "$ESITO" = success ] && [ ! -s "$avviso" ]; then
+            # tutto a posto: il messaggio della corsa («Notizie da Facebook: 2 nuove»)
+            { cat "$RUNNER_TEMP/messaggio-facebook.txt" 2>/dev/null || echo "Notizie da Facebook: corsa riuscita."; echo; echo "$CORSA"; } > "$corpo"
+          elif [ "$ESITO" = success ]; then
+            # le notizie si aggiornano, ma il credito di Apify sta finendo
+            indirizzo="$indirizzo/fail"
+            { cat "$avviso"; echo; echo; echo "Dettagli: $CORSA"; } > "$corpo"
+          else
+            indirizzo="$indirizzo/fail"
+            {
+              echo "Le notizie del sito non si sono aggiornate: la corsa del $(TZ=Europe/Rome date '+%-d/%-m alle %H:%M') non è riuscita."
+              echo "Il motivo è nelle ultime righe del registro, qui sotto."
+              echo
+              echo "Cosa fare: apri una chat con Claude e scrivi «le notizie da Facebook si sono fermate»."
+              echo "Dettagli: $CORSA"
+              if [ -s "$RUNNER_TEMP/registro-notizie.txt" ]; then
+                echo
+                echo "Ultime righe del registro:"
+                tail -n 15 "$RUNNER_TEMP/registro-notizie.txt"
+              fi
+            } > "$corpo"
+          fi
+          if curl -fsS -m 10 --retry 5 -o /dev/null --data-binary @"$corpo" "$indirizzo"; then
+            echo "Mandato a Healthchecks:"
+            cat "$corpo"
+          else
+            echo "::warning::Healthchecks non ha risposto: controlla il segreto HC_PING_URL."
+          fi
+
       - name: Avvisa se Facebook non risponde
-        # non per l'archivio, che si avvia a mano e si controlla a mano
-        if: failure() && !inputs.archivio_dal
+        # Di riserva, se Healthchecks non è collegato: una segnalazione su GitHub, una sola finché resta aperta.
+        # Non per l'archivio e per «Rifai le foto», che si avviano a mano e si controllano a mano.
+        if: failure() && !inputs.archivio_dal && !inputs.rifai_foto
         env:
           GH_TOKEN: ${{ github.token }}
+          HC_PING_URL: ${{ secrets.HC_PING_URL }}
         run: |
+          if [ -n "$HC_PING_URL" ]; then
+            echo "L'avviso è andato a Healthchecks: niente segnalazione su GitHub."
+            exit 0
+          fi
           titolo="Il sito non riesce a leggere la pagina Facebook"
           if [ -z "$(gh issue list --state open --search "in:title \"$titolo\"" --json number --jq '.[].number')" ]; then
             gh issue create --title "$titolo" --body "L'automazione che trasforma i post di Facebook in notizie si è fermata. Di solito succede quando il codice di accesso (token) di Apify o di Facebook non è più valido, o quando su Apify è finito il credito.

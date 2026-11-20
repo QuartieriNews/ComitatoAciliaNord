@@ -46,6 +46,13 @@
 // già, non cancella niente e non cambia stato.json; il workflow carica il risultato sul ramo
 // «archivio-notizie», non sul sito, così titoli e sommari si sistemano prima di pubblicare.
 //
+// Dopo un blocco (corse non riuscite per giorni) si rileggono da soli anche i post persi: il workflow passa
+// l'ora dell'ultima corsa riuscita (FB_ULTIMA_RIUSCITA) e la lettura riparte da un'ora prima, al massimo
+// 30 giorni indietro. Con FB_RECUPERA_DAL=AAAA-MM-GG (campo «Recupera» su GitHub) si rilegge dal giorno
+// indicato. Le cancellazioni su Facebook valgono comunque solo per l'ultimo giorno, come sempre (vedi
+// controlli.mjs). Se la lettura con Apify riesce ma il credito del mese sta finendo, l'avviso va nel file
+// avviso-notizie.txt (in RUNNER_TEMP) e il workflow lo manda a Healthchecks.io, che scrive a Riccardo.
+//
 // Per le prove senza Facebook: FB_FINTO=percorso/di/post.json (stesso formato della risposta di Facebook);
 // FB_FINTO_FOTO=percorso/di/foto.json ({ "indirizzo del post": [{ "image": "file:///..." }] }).
 // Per le prove senza Cloudflare: R2_ENDPOINT verso un server finto e R2_PUBBLICO con il suo indirizzo.
@@ -59,6 +66,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import YAML from 'yaml';
+import { avvisoCredito, inizioLettura, leggiGiorno, limitePost, mezzanotteRoma } from './controlli.mjs';
 import { dataEvento, titoloConData } from './data-evento.mjs';
 
 const RADICE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -66,6 +74,7 @@ const CARTELLA_NOTIZIE = path.join(RADICE, 'src/content/news');
 const CARTELLA_FOTO = path.join(RADICE, 'public/news');
 const FILE_STATO = path.join(RADICE, 'scripts/facebook/stato.json');
 const FILE_MESSAGGIO = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'messaggio-facebook.txt');
+const FILE_AVVISO = path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'avviso-notizie.txt');
 
 const VERSIONE_API = process.env.FB_VERSIONE_API || 'v26.0';
 const PAGINA_FACEBOOK = 'https://www.facebook.com/ComitatoAciliaNord/';
@@ -74,7 +83,7 @@ const ATTORE_FOTO_APIFY = 'apify~facebook-photos-scraper';
 const GIORNO = 24 * 60 * 60 * 1000;
 const GIORNI_STORICO = 30; // al primo avvio
 const GIORNI_CONTROLLO = 60; // quanto indietro si controllano modifiche e cancellazioni (API di Meta)
-const GIORNI_CONTROLLO_APIFY = 1; // con Apify si rilegge solo l'ultimo giorno, per spendere poco
+const GIORNI_CONTROLLO_APIFY = 1; // con Apify si rilegge solo l'ultimo giorno, per spendere poco (dopo un blocco di più)
 const GIORNI_DOPPIONI = 7;
 const DOMINIO_SITO = 'comitatoacilianord.it';
 const MAX_FOTO = 40; // per post: un tetto di sicurezza, i post del comitato ne hanno molte meno
@@ -148,6 +157,17 @@ async function leggiPost(token, daQuando) {
 
 class ErroreApify extends Error {}
 
+// L'errore di Apify, con la spiegazione dei due casi più comuni: la chiave non valida e il credito finito
+function erroreApify(frase, risposta, dati) {
+  const { type = '', message = '' } = dati?.error ?? {};
+  let perche = '';
+  if (risposta.status === 401) perche = ': la chiave (segreto APIFY_TOKEN su GitHub) non è valida, va rinnovata';
+  else if (risposta.status === 402 || /usage|credit|payment/i.test(`${type} ${message}`)) perche = ': probabilmente il credito del mese è finito';
+  return new ErroreApify(`${frase} (${risposta.status})${perche}. Risposta di Apify: ${JSON.stringify(dati)?.slice(0, 300)}`);
+}
+
+// I post dell'ultimo giorno (o poco più), in una lettura che dura pochi secondi. «alLimite» dice se Apify
+// si è fermato al numero massimo di post: allora i più vecchi della finestra possono mancare.
 async function leggiPostApify(token, daQuando, limite) {
   const risposta = await fetch(`https://api.apify.com/v2/acts/${ATTORE_APIFY}/run-sync-get-dataset-items?timeout=280`, {
     method: 'POST',
@@ -159,10 +179,31 @@ async function leggiPostApify(token, daQuando, limite) {
     }),
   });
   const dati = await risposta.json().catch(() => null);
-  if (!risposta.ok || !Array.isArray(dati)) {
-    throw new ErroreApify(`Apify ha risposto con un errore (${risposta.status}): ${JSON.stringify(dati)?.slice(0, 300)}`);
+  if (!risposta.ok || !Array.isArray(dati)) throw erroreApify('Apify non ha letto i post', risposta, dati);
+  const post = dati.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+  post.alLimite = dati.length >= limite;
+  return post;
+}
+
+// Il credito del mese su Apify: se sta finendo, l'avviso va in FILE_AVVISO e il workflow lo manda a Healthchecks.
+// Se il credito non si legge (Apify non risponde, o la chiave non può leggerlo) non è un blocco: resta nel registro.
+async function controllaCredito(token, adesso) {
+  try {
+    const risposta = await fetch('https://api.apify.com/v2/users/me/limits', { headers: { authorization: `Bearer ${token}` } });
+    const dati = (await risposta.json().catch(() => null))?.data;
+    if (!risposta.ok || !dati) {
+      console.log(`Credito di Apify non letto (${risposta.status}).`);
+      return;
+    }
+    const { riga, avviso } = avvisoCredito(dati, adesso);
+    console.log(riga);
+    if (avviso) {
+      await writeFile(FILE_AVVISO, avviso);
+      console.log(avviso);
+    }
+  } catch (errore) {
+    console.log(`Credito di Apify non letto: ${errore.message}`);
   }
-  return dati.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
 }
 
 // Da dove prendere tutte le foto di un post: la chiave di Apify, oppure un file di prova. Lo imposta main().
@@ -801,17 +842,9 @@ async function togliNotizia(notizia) {
   await togliDaR2(chiaviSuR2(notizia.dati.foto));
 }
 
-// ---------- Archivio ----------
+// ---------- Letture lunghe e archivio ----------
 
-// Mezzanotte a Roma del giorno indicato (AAAA-MM-GG)
-function mezzanotteRoma(giorno) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(giorno)) throw new Error(`Data dell'archivio non valida: «${giorno}» (serve AAAA-MM-GG).`);
-  const utc = new Date(`${giorno}T00:00:00Z`);
-  const ora = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', hourCycle: 'h23' }).format(utc));
-  return new Date(utc.getTime() - ora * 60 * 60 * 1000);
-}
-
-// Tutti i post di un dataset di Apify già letto
+// Tutti i post di un dataset di Apify già letto. «letti» conta anche le voci scartate.
 async function leggiDatasetApify(token, id) {
   const voci = [];
   for (let offset = 0; ; offset += 1000) {
@@ -820,32 +853,35 @@ async function leggiDatasetApify(token, id) {
       { headers: { authorization: `Bearer ${token}` } },
     );
     const dati = await risposta.json().catch(() => null);
-    if (!risposta.ok || !Array.isArray(dati)) {
-      throw new ErroreApify(`Il dataset ${id} di Apify non si legge (${risposta.status}): ${JSON.stringify(dati)?.slice(0, 300)}`);
-    }
+    if (!risposta.ok || !Array.isArray(dati)) throw erroreApify(`Apify non dà il dataset ${id}`, risposta, dati);
     voci.push(...dati);
     if (dati.length < 1000) break;
   }
-  return voci.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+  const post = voci.filter((voce) => voce && voce.postId && !voce.error).map(daApify);
+  post.letti = voci.length;
+  return post;
 }
 
-// I post fra due date, letti con Apify in una lettura sola: può durare più dei 5 minuti della lettura
-// di sempre, quindi si avvia e si aspetta che finisca. La chiave di GitHub legge solo i dataset delle
-// letture che avvia lei: per questo l'archivio di solito legge da sé invece di usare dataset già pronti.
-async function leggiPostApifyArchivio(token, dal, al) {
+// I post da un giorno (e fino a un altro, se c'è), letti con Apify in una lettura sola che si avvia e si
+// aspetta fino alla fine: serve quando può durare più dei 5 minuti della lettura di sempre (l'archivio,
+// o la ripresa dopo un blocco di più giorni). «durata» è il tempo massimo in secondi, «spesa» il tetto in
+// dollari. La chiave di GitHub legge solo i dataset delle letture che avvia lei: per questo l'archivio
+// di solito legge da sé invece di usare dataset già pronti.
+async function leggiPostApifyInAttesa(token, { dal, al = null, limite, durata, spesa }) {
   const intestazioni = { authorization: `Bearer ${token}` };
-  const avvio = await fetch(`https://api.apify.com/v2/acts/${ATTORE_APIFY}/runs?timeout=7200&maxTotalChargeUsd=10`, {
+  const avvio = await fetch(`https://api.apify.com/v2/acts/${ATTORE_APIFY}/runs?timeout=${durata}&maxTotalChargeUsd=${spesa}`, {
     method: 'POST',
     headers: { ...intestazioni, 'content-type': 'application/json' },
     body: JSON.stringify({
       startUrls: [{ url: PAGINA_FACEBOOK }],
-      resultsLimit: 5000,
+      resultsLimit: limite,
       onlyPostsNewerThan: dal.toISOString().slice(0, 19),
-      onlyPostsOlderThan: al.toISOString().slice(0, 19),
+      ...(al ? { onlyPostsOlderThan: al.toISOString().slice(0, 19) } : {}),
     }),
   });
-  let corsa = (await avvio.json().catch(() => null))?.data;
-  if (!avvio.ok || !corsa?.id) throw new ErroreApify(`Apify non ha avviato la lettura dei post (${avvio.status}).`);
+  const avviata = await avvio.json().catch(() => null);
+  let corsa = avviata?.data;
+  if (!avvio.ok || !corsa?.id) throw erroreApify('Apify non ha avviato la lettura dei post', avvio, avviata);
   console.log(`Lettura dei post su Apify avviata: ${corsa.id}.`);
   let errori = 0;
   while (!['SUCCEEDED', 'FAILED', 'ABORTED', 'TIMED-OUT'].includes(corsa.status)) {
@@ -863,6 +899,7 @@ async function leggiPostApifyArchivio(token, dal, al) {
   }
   if (corsa.status !== 'SUCCEEDED') throw new ErroreApify(`La lettura dei post su Apify è finita male (${corsa.status}).`);
   const post = await leggiDatasetApify(token, corsa.defaultDatasetId);
+  post.alLimite = post.letti >= limite;
   console.log(`Post letti da Apify: ${post.length}.`);
   return post;
 }
@@ -899,9 +936,14 @@ async function inParallelo(elementi, quanti, lavoro) {
 async function importaArchivio(tokenApify, fintoApify) {
   if (!r2) throw new Error("Per l'archivio le foto devono andare su R2, ma i segreti R2_* non ci sono.");
   const stato = await leggiStato();
-  const dal = mezzanotteRoma(ARCHIVIO_DAL);
-  const al = process.env.FB_ARCHIVIO_AL ? mezzanotteRoma(process.env.FB_ARCHIVIO_AL) : new Date(stato.inizio);
-  if (!(dal < al)) throw new Error(`Archivio: il ${ARCHIVIO_DAL} non viene prima dell'inizio delle notizie (${al.toISOString()}).`);
+  const dal = mezzanotteRoma(leggiGiorno(ARCHIVIO_DAL, 'Archivio'));
+  const al = process.env.FB_ARCHIVIO_AL ? mezzanotteRoma(leggiGiorno(process.env.FB_ARCHIVIO_AL, 'Archivio')) : new Date(stato.inizio);
+  if (!(dal < al)) {
+    throw new Error(
+      `Archivio: il ${dataRoma(dal)} non viene prima dell'inizio delle notizie (${dataRoma(al)}). L'archivio serve solo ` +
+        'per i post più vecchi: per rileggere quelli recenti e pubblicare le notizie che mancano c\'è il campo «Recupera».',
+    );
+  }
 
   let letti;
   if (fintoApify) {
@@ -917,7 +959,7 @@ async function importaArchivio(tokenApify, fintoApify) {
     }
   } else {
     if (!tokenApify) throw new Error("Archivio: per leggere i post serve APIFY_TOKEN.");
-    letti = await leggiPostApifyArchivio(tokenApify, dal, al);
+    letti = await leggiPostApifyInAttesa(tokenApify, { dal, al, limite: 5000, durata: 7200, spesa: 10 });
   }
   // i dataset si possono sovrapporre: ogni post una volta sola
   const perId = new Map();
@@ -1013,6 +1055,7 @@ async function main() {
     return;
   }
   const conApify = !token && Boolean(tokenApify || fintoApify);
+  await rm(FILE_AVVISO, { force: true });
   fonteFoto.token = tokenApify || null;
   console.log(r2 ? `Foto: nello spazio R2 di Cloudflare (${R2_CONTENITORE}).` : 'Foto: nel repository (i segreti R2 non ci sono).');
   if (process.env.FB_FINTO_FOTO) fonteFoto.finto = JSON.parse(await readFile(process.env.FB_FINTO_FOTO, 'utf8'));
@@ -1033,13 +1076,32 @@ async function main() {
   stato.inizio ??= new Date(adesso - GIORNI_STORICO * GIORNO).toISOString();
   const primoAvvio = !stato.ultimaLettura;
   const giorniControllo = conApify && !primoAvvio ? GIORNI_CONTROLLO_APIFY : GIORNI_CONTROLLO;
-  const daQuando = new Date(Math.max(new Date(stato.inizio).getTime(), adesso - giorniControllo * GIORNO));
+  const recupera = (process.env.FB_RECUPERA_DAL || '').trim();
+  const { daQuando, controlloDa } = inizioLettura({
+    adesso,
+    inizio: stato.inizio,
+    giorniControllo,
+    ultimaRiuscita: process.env.FB_ULTIMA_RIUSCITA,
+    recuperaDal: recupera ? mezzanotteRoma(leggiGiorno(recupera, 'Recupera')) : null,
+  });
+  const ripresa = daQuando < controlloDa; // si rileggono anche giorni persi
+  console.log(
+    `Leggo i post dal ${daQuando.toISOString()}` +
+      (ripresa ? ` (ultima corsa riuscita: ${process.env.FB_ULTIMA_RIUSCITA || '?'}${recupera ? `; Recupera: ${recupera}` : ''}).` : '.'),
+  );
 
   let post;
   if (finto) post = JSON.parse(await readFile(finto, 'utf8')).data;
   else if (fintoApify) post = JSON.parse(await readFile(fintoApify, 'utf8')).map(daApify);
   else if (token) post = await leggiPost(token, daQuando);
-  else post = await leggiPostApify(tokenApify, daQuando, primoAvvio ? 80 : 15);
+  else {
+    const limite = primoAvvio ? 80 : limitePost(daQuando, adesso);
+    // Più di due giorni di post possono richiedere più dei 5 minuti della lettura di sempre
+    post =
+      adesso - daQuando.getTime() > 2 * GIORNO
+        ? await leggiPostApifyInAttesa(tokenApify, { dal: daQuando, limite, durata: 1800, spesa: Math.max(1, Math.ceil(limite / 100)) })
+        : await leggiPostApify(tokenApify, daQuando, limite);
+  }
   for (const p of post) p.updated_time ??= p.created_time;
   post.sort((a, b) => new Date(a.created_time) - new Date(b.created_time));
 
@@ -1109,12 +1171,18 @@ async function main() {
     console.log(`Data nel titolo: ${n.slug} → ${titolo}`);
   }
 
-  // Post cancellati su Facebook: le notizie recenti il cui post non c'è più spariscono.
-  // Se Facebook non ha restituito nessun post, per prudenza non si cancella niente.
+  // Post cancellati su Facebook: le notizie recenti il cui post non c'è più spariscono. Vale solo nella
+  // finestra di sempre, anche quando si rileggono giorni persi; se Apify si è fermato al numero massimo
+  // di post, solo da dove arriva la lettura. Se non è arrivato nessun post, per prudenza non si cancella niente.
+  let cancellaDa = controlloDa.getTime();
+  if (post.alLimite) {
+    const date = post.map((p) => new Date(p.created_time).getTime()).filter((t) => t >= daQuando.getTime());
+    cancellaDa = Math.max(cancellaDa, date.length ? Math.min(...date) : Infinity);
+  }
   if (post.length > 0) {
     for (const n of [...notizie.elenco]) {
       const id = n.dati.facebook_id && String(n.dati.facebook_id);
-      if (!id || visti.has(id) || new Date(n.dati.date) < daQuando) continue;
+      if (!id || visti.has(id) || new Date(n.dati.date).getTime() < cancellaDa) continue;
       await togliNotizia(n);
       notizie.elenco.splice(notizie.elenco.indexOf(n), 1);
       conta.tolte++;
@@ -1138,9 +1206,14 @@ async function main() {
   if (conta.nuove) parti.push(`${conta.nuove} ${conta.nuove === 1 ? 'nuova' : 'nuove'}`);
   if (conta.aggiornate) parti.push(`${conta.aggiornate} ${conta.aggiornate === 1 ? 'aggiornata' : 'aggiornate'}`);
   if (conta.tolte) parti.push(`${conta.tolte} ${conta.tolte === 1 ? 'tolta' : 'tolte'}`);
-  const messaggio = (parti.length ? `Notizie da Facebook: ${parti.join(', ')}` : 'Notizie da Facebook: nessuna novità') + notaR2();
+  const messaggio =
+    (parti.length ? `Notizie da Facebook: ${parti.join(', ')}` : 'Notizie da Facebook: nessuna novità') +
+    (ripresa ? ` (riletti i post dal ${dataRoma(daQuando)})` : '') +
+    notaR2();
   await writeFile(FILE_MESSAGGIO, messaggio);
   console.log(messaggio);
+
+  if (tokenApify && conApify && !fintoApify) await controllaCredito(tokenApify, adesso);
 }
 
 main().catch((errore) => {

@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Trasforma i post della pagina Facebook del comitato in notizie del sito",
   "scripts": {
-    "importa": "node importa.mjs"
+    "importa": "node importa.mjs",
+    "prova": "node prova-controlli.mjs"
   },
   "dependencies": {
     "aws4fetch": "1.0.20",
