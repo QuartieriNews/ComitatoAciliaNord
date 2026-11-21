@@ -1,5 +1,16 @@
 {
-  "saltati": {},
+  "saltati": {
+    "1151400597445356": {
+      "motivo": "uguale a 2026-11-20-storie-di-danza-e-liberta",
+      "data": "2026-11-20T20:07:42.000Z",
+      "versione": "780b553ed0bd"
+    },
+    "1151401597445256": {
+      "motivo": "uguale a 2026-11-17-biblioteca-sandro-onofri-sede-suppletiva-piazza",
+      "data": "2026-11-20T20:08:34.000Z",
+      "versione": "26745c290605"
+    }
+  },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-20T15:40:55.290Z"
+  "ultimaLettura": "2026-11-21T00:06:33.445Z"
 }
