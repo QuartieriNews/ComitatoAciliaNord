@@ -1,11 +1,21 @@
 {
   "saltati": {
-    "1152945573957525": {
-      "motivo": "uguale a 2026-11-20-acilia-il-poggio",
-      "data": "2026-11-22T08:11:45.000Z",
-      "versione": "f03ea88c0464"
+    "1153959670522782": {
+      "motivo": "uguale a 2026-11-22-acilia-nord-piazza-capelvenere",
+      "data": "2026-11-23T07:44:16.000Z",
+      "versione": "b856426e4232"
+    },
+    "1153960950522654": {
+      "motivo": "uguale a 2026-11-22-acilia-nord-4",
+      "data": "2026-11-23T07:45:56.000Z",
+      "versione": "c42ec57d7ff7"
+    },
+    "1153961110522638": {
+      "motivo": "uguale a 2026-11-22-acilia-nord-3",
+      "data": "2026-11-23T07:46:10.000Z",
+      "versione": "492a6a30db75"
     }
   },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-23T01:54:20.383Z"
+  "ultimaLettura": "2026-11-23T18:37:05.085Z"
 }
