@@ -1,21 +1,16 @@
 {
   "saltati": {
-    "1153959670522782": {
+    "1155073313744751": {
+      "motivo": "uguale a 2026-11-23-acilia-nuovo-centro-antiviolenza-oggi-inaugurato",
+      "data": "2026-11-24T07:59:23.000Z",
+      "versione": "8f2b049316b4"
+    },
+    "1155074107078005": {
       "motivo": "uguale a 2026-11-22-acilia-nord-piazza-capelvenere",
-      "data": "2026-11-23T07:44:16.000Z",
+      "data": "2026-11-24T08:00:13.000Z",
       "versione": "b856426e4232"
-    },
-    "1153960950522654": {
-      "motivo": "uguale a 2026-11-22-acilia-nord-4",
-      "data": "2026-11-23T07:45:56.000Z",
-      "versione": "c42ec57d7ff7"
-    },
-    "1153961110522638": {
-      "motivo": "uguale a 2026-11-22-acilia-nord-3",
-      "data": "2026-11-23T07:46:10.000Z",
-      "versione": "492a6a30db75"
     }
   },
   "inizio": "2026-10-06T08:55:49.545Z",
-  "ultimaLettura": "2026-11-23T18:37:05.085Z"
+  "ultimaLettura": "2026-11-24T18:06:21.729Z"
 }
